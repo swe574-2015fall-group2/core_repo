@@ -1,4 +1,4 @@
-package edu.boun.swe74.teamproject;
+package edu.boun.swe74.pinkelephant;
 
 /**
  * Hello world!
