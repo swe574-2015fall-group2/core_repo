@@ -2,11 +2,13 @@ package edu.boun.swe74.pinkelephant.web.service.rest.common;
 
 import java.util.Hashtable;
 
+import edu.boun.swe74.pinkelephant.db.model.User;
+
 public class PESession {
 
 	private static PESession instance = new PESession();
 	
-	private Hashtable<String, String> tokenTable = new Hashtable<>();
+	private Hashtable<String, User> tokenTable = new Hashtable<String, User>();
 	
 	public static PESession getInstance() {
 		return instance;
@@ -15,11 +17,11 @@ public class PESession {
 	private PESession() {
 	}
 	
-	public void putToken(String token, String user){
+	public void putToken(String token, User user){
 		tokenTable.put(token, user);
 	}
 	
-	public String getUser(String token){
+	public User getUser(String token){
 		return tokenTable.get(token);
 	}
 	

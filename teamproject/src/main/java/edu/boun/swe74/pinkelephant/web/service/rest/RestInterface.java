@@ -27,7 +27,7 @@ public class RestInterface {
 		if(response.isResult()){
 			return response.getToken();
 		}else{
-			return response.getErrorMessage();
+			return response.getErrorMessage().getValue();
 		}
 	}
 
