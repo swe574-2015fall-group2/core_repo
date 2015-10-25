@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.boun</groupId>
+	<artifactId>pink-elephant-api</artifactId>
+	<version>1.1.0</version>
+	<packaging>jar</packaging>
+
+	<name>Pink elephant API</name>
+	<description>Pink Elephant REST API</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.2.5.RELEASE</version>
+		<relativePath />
+	</parent>
+
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<start-class>com.boun.PinkElephantApiApplication</start-class>
+		<java.version>1.8</java.version>
+		<pinkelephant.starter.version>1.0.0</pinkelephant.starter.version>
+		<pinkelephant.services.version>1.1.0</pinkelephant.services.version>
+		<spring.security.version>4.0.0.RELEASE</spring.security.version>
+		<swagger.markup.version>0.7.1</swagger.markup.version>
+		<asciidoctor.version>1.5.2</asciidoctor.version>
+	</properties>
+
+	<dependencies>
+
+
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-web</artifactId>
+			</dependency>
+
+		<!-- Pink Elephant Commons -->
+		<dependency>
+			<groupId>com.boun</groupId>
+			<artifactId>pinkelephant-services</artifactId>
+			<version>${pinkelephant.services.version}</version>
+		</dependency>
+
+		<!-- Spring Security
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency> -->
+
+		<!-- Swagger Markup -->
+		<dependency>
+			<groupId>io.github.robwin</groupId>
+			<artifactId>swagger2markup</artifactId>
+			<version>${swagger.markup.version}</version>
+		</dependency>
+
+		<!--
+		<dependency>
+			<groupId>org.asciidoctor</groupId>
+			<artifactId>asciidoctorj</artifactId>
+			<version>${asciidoctor.version}</version>
+		</dependency> -->
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<!--
+			<plugin>
+				<groupId>org.asciidoctor</groupId>
+				<artifactId>asciidoctor-maven-plugin</artifactId>
+				<version>${asciidoctor.version}</version>
+				<executions>
+					<execution>
+						<id>generate-docs</id>
+						<phase>package</phase>
+						<goals>
+							<goal>process-asciidoc</goal>
+						</goals>
+						<configuration>
+							<sourceDirectory>target/docs/ascii</sourceDirectory>
+							<outputDirectory>target/docs/html</outputDirectory>
+							<backend>html</backend>
+							<doctype>book</doctype>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin> -->
+		</plugins>
+	</build>
+
+	<repositories>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>bintray</name>
+			<url>http://jcenter.bintray.com</url>
+		</repository>
+	</repositories>
+
+</project>

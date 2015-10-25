@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.boun</groupId>
+	<artifactId>pinkelephant-services</artifactId>
+	<version>1.1.0</version>
+	<packaging>jar</packaging>
+
+	<name>Pink Elephant Services</name>
+	<description>This artifact provides Pink Elephant business logic</description>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<start-class>com.boun.PinkElephantServicesApplication</start-class>
+		<java.version>1.8</java.version>
+		<pinkelephant.starter.version>1.0.0</pinkelephant.starter.version>
+		<spring.boot.version>1.2.5.RELEASE</spring.boot.version>
+		<spring.data.version>1.10.0.RELEASE</spring.data.version>
+		<spring.data.mongo.version>1.8.0.RELEASE</spring.data.mongo.version>
+		<spring.data.redis.version>1.6.0.RELEASE</spring.data.redis.version>
+		<cassandra.astyanax.version>2.0.1</cassandra.astyanax.version>
+		<elasticsearch.version>1.7.0</elasticsearch.version>
+		<hibernate-validator.version>5.1.0.Final</hibernate-validator.version>
+		<javax-validaton-api.version>1.1.0.Final</javax-validaton-api.version>
+		<javax.mail.version>1.4.5</javax.mail.version>
+		<velocity.version>1.7</velocity.version>
+		<lombok.version>1.16.4</lombok.version>
+		<commons-codec.version>1.10</commons-codec.version>
+		<slf4j.version>1.6.1</slf4j.version>
+		<log4j.version>1.2.16</log4j.version>
+		<spring.swagger.version>1.0.2</spring.swagger.version>
+		<lettuce.version>2.3.3</lettuce.version>
+		<hamcrest.version>1.3.RC2</hamcrest.version>
+		<junit.version>4.8.1</junit.version>
+		<mockito.version>1.9.5</mockito.version>
+		<pink-elephant-commons.version>1.1.0</pink-elephant-commons.version>
+		<aws-java-sdk.version>1.10.3</aws-java-sdk.version>
+	</properties>
+
+	<dependencies>
+
+		<!-- Pink Elephant Dependencies -->
+		<dependency>
+			<groupId>com.boun</groupId>
+			<artifactId>pink-elephant-commons</artifactId>
+			<version>${pink-elephant-commons.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+			<version>${spring.boot.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-redis</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+
+		<!-- Cassandra Dependencies -->
+		<dependency>
+			<groupId>com.netflix.astyanax</groupId>
+			<artifactId>astyanax</artifactId>
+			<version>${cassandra.astyanax.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.netflix.astyanax</groupId>
+					<artifactId>astyanax-queue</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.netflix.astyanax</groupId>
+					<artifactId>astyanax-recipes</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.netflix.astyanax</groupId>
+					<artifactId>astyanax-test</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.netflix.astyanax</groupId>
+					<artifactId>astyanax-examples</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-client</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jersey</groupId>
+					<artifactId>jersey-bundle</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.sun.jersey.contribs</groupId>
+					<artifactId>jersey-apache-client4</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Amazon AWS dependencies -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+			<version>${aws-java-sdk.version}</version>
+		</dependency>
+
+		<!-- ElasticSearch Dependencies -->
+		<dependency>
+			<groupId>org.elasticsearch</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>${elasticsearch.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<version>${spring.boot.version}</version>
+		</dependency>
+
+		<!-- Mail Dependencies -->
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>${javax.mail.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity</artifactId>
+			<version>${velocity.version}</version>
+		</dependency>
+
+		<!-- JSR-303 Bean Validation -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate-validator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>${javax-validaton-api.version}</version>
+		</dependency>
+
+		<!-- Other Dependencies -->
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${commons-codec.version}</version>
+		</dependency>
+
+		<!-- Logging Dependencies -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>el-api</artifactId>
+			<version>2.2.1-b04</version>
+		</dependency>
+
+		<!-- Image processing libraries -->
+		<dependency>
+			<groupId>jmimemagic</groupId>
+			<artifactId>jmimemagic</artifactId>
+			<version>0.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.imgscalr</groupId>
+			<artifactId>imgscalr-lib</artifactId>
+			<version>4.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!--<plugin>-->
+			<!--<groupId>org.springframework.boot</groupId>-->
+			<!--<artifactId>spring-boot-maven-plugin</artifactId>-->
+			<!--</plugin>-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+</project>
