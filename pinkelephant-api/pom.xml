@@ -23,7 +23,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<start-class>com.boun.PinkElephantApiApplication</start-class>
-		<java.version>1.8</java.version>
+		<java.version>1.7</java.version>
 		<pinkelephant.starter.version>1.0.0</pinkelephant.starter.version>
 		<pinkelephant.services.version>1.1.0</pinkelephant.services.version>
 		<spring.security.version>4.0.0.RELEASE</spring.security.version>
