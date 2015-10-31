@@ -21,10 +21,10 @@ public class User {
     private String username;
 
     @Field("firstname")
-    private String firstNname;
+    private String firstname;
 
     @Field("lastname")
-    private String lastName;
+    private String lastname;
 
     @Field("password")
     private String password;
