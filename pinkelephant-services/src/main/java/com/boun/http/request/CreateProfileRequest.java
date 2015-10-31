@@ -1,10 +1,11 @@
 package com.boun.http.request;
 
-import com.boun.data.mongo.model.User;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
-public class CreateProfileRequest {
+@EqualsAndHashCode(callSuper=false)
+public class CreateProfileRequest extends BaseRequest{
 
     private Long userId;
 

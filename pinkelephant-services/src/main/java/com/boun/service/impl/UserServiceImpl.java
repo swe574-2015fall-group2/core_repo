@@ -1,101 +1,86 @@
 package com.boun.service.impl;
 
-import com.boun.app.client.PinkElephantHttpClient;
-import com.boun.app.exception.PinkElephantRuntimeException;
-import com.boun.app.util.ObjectUtils;
-import com.boun.data.common.Status;
-import com.boun.data.mongo.model.User;
-import com.boun.data.mongo.model.UserMetadata;
-import com.boun.data.mongo.repository.UserMetadataRepository;
-import com.boun.data.mongo.repository.UserRepository;
-import com.boun.http.request.CreateProfileRequest;
-import com.boun.service.PinkElephantService;
-import com.boun.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import com.boun.app.common.ErrorCode;
+import com.boun.app.util.KeyUtils;
+import com.boun.data.mongo.model.User;
+import com.boun.data.mongo.repository.UserRepository;
+import com.boun.data.session.PinkElephantSession;
+import com.boun.http.request.AuthenticationRequest;
+import com.boun.http.request.CreateUserRequest;
+import com.boun.http.response.ActionResponse;
+import com.boun.http.response.LoginResponse;
+import com.boun.service.PinkElephantService;
+import com.boun.service.UserService;
 
 @Service
 public class UserServiceImpl extends PinkElephantService implements UserService {
 
-    @Autowired private PinkElephantHttpClient pinkElephantHttpClient;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
-    @Autowired private UserMetadataRepository userMetadataRepository;
+	@Override
+	public ActionResponse createUser(CreateUserRequest request) {
 
+		ActionResponse response = new ActionResponse();
 
-    @Override
-    public User createProfile(CreateProfileRequest createProfile, Long userId) {
-        User user = userRepository.loadById(userId);
-        //user = createProfile.to(user);
-        user.setStatus(Status.ACTIVE);
-        userRepository.save(user);
-        save(UserMetadata.from(user));
-        return user;
-    }
+		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
+			response.setAcknowledge(false);
+			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
+			return response;
+		}
 
+		try {
+			User user = userRepository.findByUsername(request.getUser().getUsername());
+			if(user != null){
+				response.setAcknowledge(false);
+				response.setMessage(ErrorCode.DUPLICATE_USER.getMessage());
+				return response;
+			}
 
+			userRepository.save(request.getUser());
+			response.setAcknowledge(true);
+		} catch (Throwable e) {
+			response.setAcknowledge(false);
+			response.setMessage(e.getMessage());
 
-    @Override
-    public UserMetadata save(UserMetadata user) {
-        userMetadataRepository.save(user);
-        //indexService.index(user);
-        //cacheRepository.putUser(user);
-        return user;
-    }
+			logger.error("Error in createUser()", e);
+		}
 
-    @Override
-    public List<User> save(Collection<User> users) {
-        List<User> list = userRepository.save(users);
-        saveInOther(list);
-        return list;
-    }
+		return response;
+	}
 
+	@Override
+	public LoginResponse authenticate(AuthenticationRequest request) {
 
-    private void saveInOther(Collection<User> users) {
-        List<UserMetadata> userMetadataList = new ArrayList<UserMetadata>();
-        for(User user : users){
-          userMetadataList.add(UserMetadata.from(user));
-        }
-        userMetadataRepository.save(userMetadataList);
-        //indexService.bulkUpdate(userMetadataList);
-        //cacheRepository.putUsers(userMetadataList);
-    }
+		LoginResponse response = new LoginResponse();
+		try {
+			User user = userRepository.findByUsernameAndPassword(request.getUsername(), request.getPassword());
 
-    @Override
-    public UserMetadata loadUserMetadata(Long userId) {
-        UserMetadata user = null;//getUserMetadata(userId);
-        if(ObjectUtils.isNull(user)) {
-            throw new PinkElephantRuntimeException(404, "200", "Not Found","User["+userId+"] not found");
-        }
-        return user;
-    }
+			if (user == null) {
+				response.setAcknowledge(false);
+				response.setMessage(ErrorCode.USER_NOT_FOUND.getMessage());
+				return response;
+			}
 
-    @Override
-    public User findById(Long id) {
-        return userRepository.findById(id);
-    }
+			response.setAcknowledge(true);
+			response.setToken(KeyUtils.currentTimeUUID().toString());
 
-    @Override
-    public User loadById(Long id) {
-        return userRepository.loadById(id);
-    }
+			PinkElephantSession.getInstance().addToken(response.getToken(), user);
 
-    @Override
-    public Set<User> findByIdIn(Set<Long> ids) {
-        return userRepository.findByIdIn(ids);
-    }
+		} catch (Throwable e) {
+			response.setAcknowledge(false);
+			response.setMessage(e.getMessage());
 
-    @Override
-    public User save(User user) {
-        User savedUser = userRepository.save(user);
-        UserMetadata userMetadata = UserMetadata.from(savedUser);
-        userMetadataRepository.save(userMetadata);
+			logger.error("Error in authenticate()", e);
+		}
 
-        return savedUser;
-    }
-
-
+		return response;
+	}
 }

@@ -8,6 +8,8 @@ public class ActionResponse {
 
     @JsonProperty("ack")
     private boolean acknowledge;
+    
+    private String message;
 
     public ActionResponse(){}
 

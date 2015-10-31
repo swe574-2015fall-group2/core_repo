@@ -20,7 +20,7 @@ public class UserPreferences {
     private List<Long> blockedUserIds;
 
     @Transient
-    private Set<UserMetadata> blockedUsers;
+    private Set<User> blockedUsers;
 
     public UserPreferences() {
 

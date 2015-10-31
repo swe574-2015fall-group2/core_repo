@@ -1,14 +1,13 @@
 package com.boun.service.impl;
 
-import com.boun.app.exception.PinkElephantRuntimeException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.boun.data.mongo.model.User;
-import com.boun.data.mongo.model.UserMetadata;
 import com.boun.data.mongo.model.UserPreferences;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.service.UserPreferencesService;
 import com.boun.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 @Service
 public class UserPreferencesServiceImpl implements UserPreferencesService {
@@ -28,7 +27,7 @@ public class UserPreferencesServiceImpl implements UserPreferencesService {
     public UserPreferences save(Long id, UserPreferences preferences) {
         User user = userRepository.loadById(id);
         user.setPreferences(preferences);
-        userService.save(user);
+        userRepository.save(user);
 
         return preferences;
     }

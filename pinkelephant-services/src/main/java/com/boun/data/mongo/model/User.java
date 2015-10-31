@@ -17,13 +17,16 @@ public class User {
     @Id
     private String id;
 
-    @Field("uName")
+    @Field("username")
     private String username;
 
+    @Field("firstname")
     private String firstNname;
 
+    @Field("lastname")
     private String lastName;
 
+    @Field("password")
     private String password;
 
     //

@@ -1,24 +1,15 @@
 package com.boun.data.mongo.repository.impl;
 
-import com.boun.app.exception.PinkElephantRuntimeException;
-import com.boun.app.util.ObjectUtils;
-import com.boun.data.mongo.model.User;
-import com.boun.data.mongo.repository.UserRepository;
-import com.boun.data.mongo.repository.UserRepositoryCustom;
-import com.mongodb.WriteResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.boun.data.mongo.model.User;
+import com.boun.data.mongo.repository.UserRepository;
+import com.boun.data.mongo.repository.UserRepositoryCustom;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
 
@@ -32,4 +23,25 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
     public User loadById(Long id) {
         return null;
     }
+
+	@Override
+	public User findByUsernameAndPassword(String username, String password) {
+		
+		Query query = new Query();
+		query.addCriteria(Criteria.where("username").is(username).and("password").is(password));
+		
+		User user = mongoTemplate.findOne(query, User.class);
+		
+		return user;
+	}
+
+	@Override
+	public User findByUsername(String username) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("username").is(username));
+		
+		User user = mongoTemplate.findOne(query, User.class);
+		
+		return user;
+	}
 }

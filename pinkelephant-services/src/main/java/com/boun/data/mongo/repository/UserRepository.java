@@ -1,11 +1,11 @@
 package com.boun.data.mongo.repository;
 
-import com.boun.data.mongo.model.User;
+import java.util.Collection;
+import java.util.Set;
+
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import com.boun.data.mongo.model.User;
 
 public interface UserRepository extends MongoRepository<User, Long>, UserRepositoryCustom {
 
