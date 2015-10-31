@@ -33,5 +33,4 @@ public class UserController {
     	
     	return userService.authenticate(request);
     }
-
 }

@@ -30,11 +30,11 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 
 		ActionResponse response = new ActionResponse();
 
-		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
-			response.setAcknowledge(false);
-			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
-			return response;
-		}
+//		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
+//			response.setAcknowledge(false);
+//			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
+//			return response;
+//		}
 
 		try {
 			User user = userRepository.findByUsername(request.getUser().getUsername());
