@@ -65,7 +65,9 @@ public class UserController {
     	}
     }
     
+    @ApiOperation(value="Reset Password")
     @RequestMapping(value="resetPassword", method = RequestMethod.POST)
+    @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
     public @ResponseBody ActionResponse resetPassword(@RequestBody ResetPasswordRequest request){
     	
     	try{
@@ -80,17 +82,19 @@ public class UserController {
     	}
     }
     
+    @ApiOperation(value="Change Password")
     @RequestMapping(value="changePassword", method = RequestMethod.POST)
+    @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
     public @ResponseBody ActionResponse changePassword(@RequestBody ChangePasswordRequest request){
     	
     	try{
     		if(logger.isDebugEnabled()){
-    			logger.debug("resetPassword request received, oneTimeToken->" + request.getOneTimeToken());
+    			logger.debug("changePassword request received, oneTimeToken->" + request.getOneTimeToken());
     		}
     		return userService.changePassword(request);	
     	}finally{
     		if(logger.isDebugEnabled()){
-    			logger.debug("resetPassword operation finished, oneTimeToken->" + request.getOneTimeToken());
+    			logger.debug("changePassword operation finished, oneTimeToken->" + request.getOneTimeToken());
     		}
     	}
     }
