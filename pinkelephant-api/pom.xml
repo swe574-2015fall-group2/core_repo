@@ -27,7 +27,7 @@
 		<pinkelephant.starter.version>1.0.0</pinkelephant.starter.version>
 		<pinkelephant.services.version>1.1.0</pinkelephant.services.version>
 		<spring.security.version>4.0.0.RELEASE</spring.security.version>
-		<swagger.markup.version>0.7.1</swagger.markup.version>
+
 		<asciidoctor.version>1.5.2</asciidoctor.version>
 	</properties>
 
@@ -46,6 +46,12 @@
 			<version>${pinkelephant.services.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.mangofactory</groupId>
+			<artifactId>swagger-springmvc</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+
 		<!-- Spring Security
 
 		<dependency>
@@ -60,12 +66,13 @@
 			<version>${spring.security.version}</version>
 		</dependency> -->
 
-		<!-- Swagger Markup -->
 		<dependency>
-			<groupId>io.github.robwin</groupId>
-			<artifactId>swagger2markup</artifactId>
-			<version>${swagger.markup.version}</version>
+			<groupId>com.wordnik</groupId>
+			<artifactId>swagger-core</artifactId>
+			<version>1.5.3-M1</version>
 		</dependency>
+
+
 
 		<!--
 		<dependency>

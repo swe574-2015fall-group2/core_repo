@@ -1,8 +1,11 @@
 package com.boun.web.controller;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +20,7 @@ import com.boun.http.response.LoginResponse;
 import com.boun.service.UserService;
 
 @RestController
+@Api(value = "user", description = "User service")
 @RequestMapping("/v1/user")
 public class UserController {
 
@@ -25,7 +29,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @ApiOperation(value="Create User")
     @RequestMapping(value="create", method = RequestMethod.POST)
+    @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
     public @ResponseBody ActionResponse createUser(@RequestBody CreateUserRequest request) {
 
     	try{
@@ -39,8 +45,10 @@ public class UserController {
     		}
     	}
     }
-    
+
+    @ApiOperation(value="Login")
     @RequestMapping(value="login", method = RequestMethod.POST)
+    @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
     public @ResponseBody LoginResponse authenticate(@RequestBody AuthenticationRequest request){
     	
     	try{

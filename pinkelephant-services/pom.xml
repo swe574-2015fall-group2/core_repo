@@ -31,7 +31,7 @@
 		<commons-codec.version>1.10</commons-codec.version>
 		<slf4j.version>1.6.1</slf4j.version>
 		<log4j.version>1.2.16</log4j.version>
-		<spring.swagger.version>1.0.2</spring.swagger.version>
+
 		<lettuce.version>2.3.3</lettuce.version>
 		<hamcrest.version>1.3.RC2</hamcrest.version>
 		<junit.version>4.8.1</junit.version>
