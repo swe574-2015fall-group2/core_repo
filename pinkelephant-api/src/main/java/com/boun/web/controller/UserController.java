@@ -1,6 +1,8 @@
 package com.boun.web.controller;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,19 +20,40 @@ import com.boun.service.UserService;
 @RequestMapping("/v1/user")
 public class UserController {
 
+	private final static Logger logger = LoggerFactory.getLogger(UserController.class);
+	
     @Autowired
     private UserService userService;
 
     @RequestMapping(value="create", method = RequestMethod.POST)
     public @ResponseBody ActionResponse createUser(@RequestBody CreateUserRequest request) {
 
-        return userService.createUser(request);
+    	try{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("createUser request received, request->" + request.toString());
+    		}
+    		return userService.createUser(request);	
+    	}finally{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("createUser operation finished");
+    		}
+    	}
     }
-    
     
     @RequestMapping(value="login", method = RequestMethod.POST)
     public @ResponseBody LoginResponse authenticate(@RequestBody AuthenticationRequest request){
     	
-    	return userService.authenticate(request);
+    	try{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("login request received, request->" + request.toString());
+    		}
+    		return userService.authenticate(request);	
+    	}finally{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("login operation finished, username->" + request.getUsername());
+    		}
+    	}
+    	
+    	
     }
 }
