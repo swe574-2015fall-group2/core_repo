@@ -1,12 +1,15 @@
 package com.boun.data.mongo.model;
 
-import com.boun.data.common.Status;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import com.boun.data.common.Status;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import lombok.Data;
 
 @Data
 @Document(collection = "users")
@@ -29,6 +32,10 @@ public class User {
     @Field("password")
     private String password;
 
+    @JsonIgnore
+    @Field("oneTimeToken")
+    private String oneTimeToken;
+    
     //
     private UserDetail userDetail;
 

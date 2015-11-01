@@ -44,4 +44,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		
 		return user;
 	}
+	
+
+	@Override
+	public User findByOneTimeToken(String oneTimeToken) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("oneTimeToken").is(oneTimeToken));
+		
+		User user = mongoTemplate.findOne(query, User.class);
+		
+		return user;
+	}
 }

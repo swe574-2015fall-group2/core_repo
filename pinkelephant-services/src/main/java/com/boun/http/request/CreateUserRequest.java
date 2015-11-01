@@ -6,8 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
-public class CreateUserRequest extends BaseRequest{
+public class CreateUserRequest{
 
 	private User user;
 }

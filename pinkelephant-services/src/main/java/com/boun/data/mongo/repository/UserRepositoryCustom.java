@@ -9,5 +9,7 @@ public interface UserRepositoryCustom {
     User findByUsernameAndPassword(String username, String password);
     
     User findByUsername(String username);
+    
+    User findByOneTimeToken(String oneTimeToken);
 
 }

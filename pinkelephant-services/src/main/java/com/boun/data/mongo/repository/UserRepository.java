@@ -14,4 +14,5 @@ public interface UserRepository extends MongoRepository<User, Long>, UserReposit
     User findByUsername(String userName);
 
     Set<User> findByIdIn(Collection<Long> ids);
+    
 }
