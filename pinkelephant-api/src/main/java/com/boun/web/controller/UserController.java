@@ -64,7 +64,7 @@ public class UserController {
     		}
     	}
     }
-
+ 
     @ApiOperation(value="Reset Password")
     @RequestMapping(value="resetPassword", method = RequestMethod.POST)
     @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
