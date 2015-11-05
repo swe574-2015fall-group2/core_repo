@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SecurityServiceImpl extends PinkElephantService implements SecurityService {
 
@@ -44,5 +46,9 @@ public class SecurityServiceImpl extends PinkElephantService implements Security
 		}
 
 		return response;
+	}
+
+	public List<Role> findAll() {
+		return roleRepository.findAll();
 	}
 }
