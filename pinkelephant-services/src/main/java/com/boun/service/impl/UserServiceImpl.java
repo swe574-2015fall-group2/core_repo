@@ -1,5 +1,9 @@
 package com.boun.service.impl;
 
+import com.boun.data.mongo.model.Role;
+import com.boun.data.mongo.model.UserRole;
+import com.boun.data.mongo.repository.RoleRepository;
+import com.boun.http.request.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +16,13 @@ import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.data.util.MailSender;
-import com.boun.http.request.AuthenticationRequest;
-import com.boun.http.request.ChangePasswordRequest;
-import com.boun.http.request.CreateUserRequest;
-import com.boun.http.request.ResetPasswordRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.LoginResponse;
 import com.boun.service.PinkElephantService;
 import com.boun.service.UserService;
+
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl extends PinkElephantService implements UserService {
@@ -28,6 +31,9 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private RoleRepository roleRepository;
 
 	@Override
 	public ActionResponse createUser(CreateUserRequest request) {
@@ -105,10 +111,10 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 			userRepository.save(user);
 			
 			PinkElephantThreadPool.EMAIL_POOL.runTask(new Runnable() {
-				
+
 				@Override
 				public void run() {
-					MailSender.getInstance().sendMail(request.getUsername(), "Password reset request", "You token for password renewal is " + oneTimeToken);					
+					MailSender.getInstance().sendMail(request.getUsername(), "Password reset request", "You token for password renewal is " + oneTimeToken);
 				}
 			});
 			
@@ -160,5 +166,34 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		}
 		return response;
 		
+	}
+
+	@Override
+	public ActionResponse setRoles(final SetRolesRequest request) {
+
+		ActionResponse response = new ActionResponse();
+		try{
+			User user = userRepository.findById(request.getUserId());
+
+			//TODO check if there's e group by loading
+			//Group group = groupRepository.findById(request.getGroupId());
+
+			UserRole groupRoles = user.getGroupRoles(request.getGroupId());
+
+			//TODO fetch from role service
+			List<Role> roles = (List<Role>)roleRepository.findAll(request.getRoleIds());
+			groupRoles.setGroupRoles(roles);
+
+			userRepository.save(user);
+
+			response.setAcknowledge(true);
+		}catch(Throwable e){
+
+			response.setAcknowledge(false);
+			response.setMessage(e.getMessage());
+
+			logger.error("Error in resetPassword()", e);
+		}
+		return response;
 	}
 }

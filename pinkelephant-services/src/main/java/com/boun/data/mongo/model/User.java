@@ -1,5 +1,7 @@
 package com.boun.data.mongo.model;
 
+import com.boun.app.exception.PinkElephantException;
+import com.boun.app.exception.PinkElephantRuntimeException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -10,6 +12,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Document(collection = "users")
@@ -35,7 +40,9 @@ public class User {
     @JsonIgnore
     @Field("oneTimeToken")
     private String oneTimeToken;
-    
+
+    private Set<UserRole> roles;
+
     //
     private UserDetail userDetail;
 
@@ -43,5 +50,25 @@ public class User {
 
     private Status status;
     //
+
+    public UserRole getGroupRoles(String groupId) {
+        if(roles == null) {
+            roles = new HashSet<UserRole>();
+
+            UserRole role = new UserRole();
+            role.setGroupId(groupId);
+
+            roles.add(role);
+
+            return role;
+        } else {
+            for (UserRole userRole : roles) {
+                if (userRole.getGroupId().equals(groupId))
+                    return userRole;
+            }
+        }
+
+        throw new PinkElephantRuntimeException(400, "couldn't get group roles", "", "");
+    }
 
 }

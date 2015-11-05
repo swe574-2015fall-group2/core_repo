@@ -7,12 +7,12 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.boun.data.mongo.model.User;
 
-public interface UserRepository extends MongoRepository<User, Long>, UserRepositoryCustom {
+public interface UserRepository extends MongoRepository<User, String>, UserRepositoryCustom {
 
-    User findById(Long userId);
+    User findById(String userId);
 
     User findByUsername(String userName);
 
-    Set<User> findByIdIn(Collection<Long> ids);
+    Set<User> findByIdIn(Collection<String> ids);
     
 }

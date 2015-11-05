@@ -1,5 +1,6 @@
 package com.boun.web.controller;
 
+import com.boun.http.request.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.wordnik.swagger.annotations.Api;
@@ -13,10 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boun.http.request.AuthenticationRequest;
-import com.boun.http.request.ChangePasswordRequest;
-import com.boun.http.request.CreateUserRequest;
-import com.boun.http.request.ResetPasswordRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.LoginResponse;
 import com.boun.service.UserService;
@@ -47,6 +44,23 @@ public class UserController {
     		}
     	}
     }
+
+	@ApiOperation(value="Set User Roles")
+	@RequestMapping(value="roles", method = RequestMethod.POST)
+	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
+	public @ResponseBody ActionResponse setUserRoles(@RequestBody SetRolesRequest request) {
+
+		try{
+			if(logger.isDebugEnabled()){
+				logger.debug("setUserRoles request received, request->" + request.toString());
+			}
+			return userService.setRoles(request);
+		}finally{
+			if(logger.isDebugEnabled()){
+				logger.debug("setUserRoles operation finished");
+			}
+		}
+	}
 
     @ApiOperation(value="Login")
     @RequestMapping(value="login", method = RequestMethod.POST)
