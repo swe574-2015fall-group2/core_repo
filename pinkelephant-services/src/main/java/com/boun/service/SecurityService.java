@@ -11,4 +11,6 @@ public interface SecurityService {
     ActionResponse createRole(CreateRoleRequest request);
 
     List<Role> findAll();
+
+    boolean delete(String id);
 }

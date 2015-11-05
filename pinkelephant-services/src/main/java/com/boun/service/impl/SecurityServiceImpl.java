@@ -51,4 +51,13 @@ public class SecurityServiceImpl extends PinkElephantService implements Security
 	public List<Role> findAll() {
 		return roleRepository.findAll();
 	}
+
+	public boolean delete(String id) {
+
+		//TODO check if a User has this role, throw exception
+		Role role = roleRepository.findById(id);
+		roleRepository.delete(role);
+
+		return true;
+	}
 }

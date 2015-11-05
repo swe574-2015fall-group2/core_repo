@@ -53,4 +53,12 @@ public class SecurityController {
 
 		return roles;
 	}
+
+	@RequestMapping(value="/role/{id}", method = RequestMethod.DELETE)
+	@ApiOperation(value = "Delete a user role")
+	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
+	public boolean deleteComment(@PathVariable String id) {
+		//TODO add userId to log
+		return securityService.delete(id);
+	}
 }
