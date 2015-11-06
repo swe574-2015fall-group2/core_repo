@@ -15,8 +15,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
     private final static Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
 
-    @Autowired private UserRepository userRepository;
-
     @Autowired private MongoTemplate mongoTemplate;
 
     @Override
@@ -54,5 +52,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		User user = mongoTemplate.findOne(query, User.class);
 		
 		return user;
+	}
+
+	@Override
+	public boolean deleteUser(String username) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where("username").is(username));
+		
+		User user = mongoTemplate.findAndRemove(query, User.class);
+		
+		return user != null;
 	}
 }
