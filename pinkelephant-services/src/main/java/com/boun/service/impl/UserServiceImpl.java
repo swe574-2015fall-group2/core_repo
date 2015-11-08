@@ -87,7 +87,20 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 
 		//TODO only admins and profile owners should be able to updateUser
 		ActionResponse response = new ActionResponse();
+		
+		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
+			response.setAcknowledge(false);
+			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
+			return response;
+		}
 
+		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
+		if(authenticatedUser.getId().equalsIgnoreCase(request.getId())){
+			response.setAcknowledge(false);
+			response.setMessage(ErrorCode.INVALID_INPUT.format("Input userId is different than authenticated user"));
+			return response;
+		}
+		
 		User user =	findById(request.getId());
 
 		user.setFirstname(request.getFirstname());
@@ -108,7 +121,7 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 			response.setAcknowledge(false);
 			response.setMessage(e.getMessage());
 
-			logger.error("Error in createUser()", e);
+			logger.error("Error in updateUser()", e);
 		}
 
 		return response;
@@ -223,11 +236,14 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 
 		ActionResponse response = new ActionResponse();
 
+		//If user is the authenticated user, we can get it from session instead of getting userId from service.
+		//TODO check if user is null
 		User user = findById(request.getUserId());
 
 		// check if there's a group
 		Group group = groupService.findById(request.getGroupId());
 
+		//TODO check if group is null
 		//TODO check if user is in this group
 
 		UserRole groupRoles = user.getGroupRoles(group.getId());

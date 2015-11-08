@@ -36,7 +36,7 @@ public class RoleServiceImpl extends PinkElephantService implements RoleService 
 				response.setMessage(ErrorCode.DUPLICATE_ROLE.getMessage());
 				return response;
 			}
-
+			role = new Role();
 			role.setName(request.getName());
 			role.setPermissions(request.getPermissions());
 

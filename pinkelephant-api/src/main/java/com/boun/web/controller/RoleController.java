@@ -46,7 +46,7 @@ public class RoleController {
 	@RequestMapping(value = "/roles/all", method = RequestMethod.POST)
 	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
 	public List<Role> getRolesAll() {
-
+		// TODO General response template should be applied
 		List<Role> roles = roleService.findAll();
 
 		return roles;
