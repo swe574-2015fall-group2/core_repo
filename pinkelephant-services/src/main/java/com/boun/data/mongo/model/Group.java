@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.boun.data.common.GroupStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -21,6 +22,8 @@ public class Group {
     private String name;
     
     private String description;
+    
+    private GroupStatus status;
     
     @DBRef
     private User creator;

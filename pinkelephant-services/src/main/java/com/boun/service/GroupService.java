@@ -21,4 +21,6 @@ public interface GroupService {
 	public ActionResponse leaveGroup(JoinLeaveGroupRequest request);
 	
 	public ListGroupResponse getMyGroups(BaseRequest request);
+	
+	public ListGroupResponse getAllGroups(BaseRequest request);
 }

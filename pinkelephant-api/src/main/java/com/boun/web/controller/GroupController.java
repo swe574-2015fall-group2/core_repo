@@ -103,7 +103,7 @@ public class GroupController {
 	}
 	
 	@ApiOperation(value = "List my groups")
-	@RequestMapping(value = "myGroups", method = RequestMethod.POST)
+	@RequestMapping(value = "listMyGroups", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public @ResponseBody ActionResponse getMyGroups(@RequestBody BaseRequest request) {
@@ -116,6 +116,24 @@ public class GroupController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("getMyGroups operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "List all groups")
+	@RequestMapping(value = "listAll", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse getAllGroups(@RequestBody BaseRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getAllGroups request received, request->" + request.toString());
+			}
+			return groupService.getAllGroups(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getAllGroups operation finished");
 			}
 		}
 	}

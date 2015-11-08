@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
+import com.boun.data.common.GroupStatus;
 import com.boun.data.common.MemberStatus;
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.GroupMember;
@@ -62,6 +63,12 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		}
 
 		try {
+			if(request.getName() == null || "".equalsIgnoreCase(request.getName())){
+				response.setAcknowledge(false);
+				response.setMessage(ErrorCode.INVALID_INPUT.format("Group name is empty"));
+				return response;
+			}
+			
 			Group group = groupRepository.findByGroupName(request.getName());
 			if(group != null){
 				response.setAcknowledge(false);
@@ -73,6 +80,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 			group.setName(request.getName());
 			group.setDescription(request.getDescription());
 			group.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
+			group.setStatus(GroupStatus.ACTIVE);
 			
 			groupRepository.save(group);
 			
@@ -246,6 +254,42 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 			response.setMessage(e.getMessage());
 
 			logger.error("Error in getMyGroups()", e);
+		}
+
+		return response;
+	}
+
+	@Override
+	public ListGroupResponse getAllGroups(BaseRequest request) {
+		ListGroupResponse response = new ListGroupResponse();
+
+		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
+			response.setAcknowledge(false);
+			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
+			return response;
+		}
+
+		try {
+			List<Group> groupList = groupRepository.findAll();
+			if(groupList == null){
+				response.setAcknowledge(true);
+				response.setMessage(ErrorCode.GROUP_NOT_FOUND.getMessage());
+				return response;
+			}
+
+			for (Group group : groupList) {
+				if(group.getStatus() == null || group.getStatus().value() != GroupStatus.ACTIVE.value()){
+					continue;
+				}
+				response.addGroup(group.getId(), group.getName(), group.getDescription());
+			}
+			
+			response.setAcknowledge(true);
+		} catch (Throwable e) {
+			response.setAcknowledge(false);
+			response.setMessage(e.getMessage());
+
+			logger.error("Error in getAllGroups()", e);
 		}
 
 		return response;
