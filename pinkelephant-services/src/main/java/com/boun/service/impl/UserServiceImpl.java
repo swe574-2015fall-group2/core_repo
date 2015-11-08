@@ -118,26 +118,17 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 	public LoginResponse authenticate(AuthenticationRequest request) {
 
 		LoginResponse response = new LoginResponse();
-		try {
-			User user = userRepository.findByUsernameAndPassword(request.getUsername(), request.getPassword());
 
-			if (user == null) {
-				response.setAcknowledge(false);
-				response.setMessage(ErrorCode.USER_NOT_FOUND.getMessage());
-				return response;
-			}
+		// TODO password must be stored encrypted
+		User user = userRepository.findByUsernameAndPassword(request.getUsername(), request.getPassword());
 
-			response.setAcknowledge(true);
-			response.setToken(KeyUtils.currentTimeUUID().toString());
-
-			PinkElephantSession.getInstance().addToken(response.getToken(), user);
-
-		} catch (Throwable e) {
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
-
-			logger.error("Error in authenticate()", e);
+		if (user == null) {
+			throw new PinkElephantRuntimeException(400, "400", ErrorCode.USER_NOT_FOUND.getMessage(), "");
 		}
+
+		response.setToken(KeyUtils.currentTimeUUID().toString());
+
+		PinkElephantSession.getInstance().addToken(response.getToken(), user);
 
 		return response;
 	}

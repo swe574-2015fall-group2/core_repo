@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class LoginResponse extends ActionResponse{
+public class LoginResponse {
 
 	private String token;
 	
