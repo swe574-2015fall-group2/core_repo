@@ -6,4 +6,4 @@ function install {
 }
 
 install pinkelephant-commons && install pinkelephant-services &&  
-cd pinkelephant-api && mvn clean install 
+cd pinkelephant-api && mvn clean install -Djava.security.egd=file:/dev/./urandom
