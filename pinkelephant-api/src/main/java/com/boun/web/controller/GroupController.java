@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boun.http.request.CreateGroupRequest;
+import com.boun.http.request.JoinGroupRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.service.GroupService;
 import com.wordnik.swagger.annotations.Api;
@@ -60,6 +61,24 @@ public class GroupController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("updateGroup operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Join Group")
+	@RequestMapping(value = "join", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse joinGroup(@RequestBody JoinGroupRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("joinGroup request received, request->" + request.toString());
+			}
+			return groupService.joinGroup(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("joinGroup operation finished");
 			}
 		}
 	}

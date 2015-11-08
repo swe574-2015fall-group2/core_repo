@@ -27,4 +27,8 @@ public final class PinkElephantSession {
 	public void addToken(String token, User user){
 		sessionStorage.put(token, user);
 	}
+	
+	public User getUser(String token){
+		return sessionStorage.get(token);
+	}
 }

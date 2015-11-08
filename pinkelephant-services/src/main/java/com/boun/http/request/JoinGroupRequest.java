@@ -5,9 +5,8 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class CreateGroupRequest extends BaseRequest{
+public class JoinGroupRequest extends BaseRequest{
 
-	private String name;
-
-	private String description;
+	private String username;
+	private String groupId;
 }

@@ -83,7 +83,7 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		try {
 			if(request.getUsernameList() == null || request.getUsernameList().isEmpty()){
 				response.setAcknowledge(false);
-				response.setMessage(MessageFormat.format(ErrorCode.INVALID_INPUT.getMessage(), "UsernameList is empty"));
+				response.setMessage(ErrorCode.INVALID_INPUT.format("UsernameList is empty"));
 				return response;
 			}
 			
