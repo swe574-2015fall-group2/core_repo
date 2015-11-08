@@ -1,5 +1,6 @@
 package com.boun.http.request;
 
+import java.util.List;
 import java.util.Set;
 
 import lombok.Data;
@@ -11,5 +12,5 @@ public class SetRolesRequest extends BaseRequest{
 
 	private String groupId;
 
-	private Set<String> roleIds;
+	private List<String> roleIds;
 }

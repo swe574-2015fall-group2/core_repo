@@ -50,23 +50,22 @@ public class User {
     //
 
     public UserRole getGroupRoles(String groupId) {
+        UserRole role = new UserRole();
+
         if(roles == null) {
             roles = new HashSet<UserRole>();
-
-            UserRole role = new UserRole();
             role.setGroupId(groupId);
-
             roles.add(role);
-
-            return role;
         } else {
             for (UserRole userRole : roles) {
-                if (userRole.getGroupId().equals(groupId))
-                    return userRole;
+                if (userRole.getGroupId().equals(groupId)) {
+                    role = userRole;
+                    break;
+                }
             }
         }
 
-        throw new PinkElephantRuntimeException(400, "couldn't get group roles", "", "");
+        return role;
     }
 
 }

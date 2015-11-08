@@ -1,5 +1,6 @@
 package com.boun.service.impl;
 
+import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.http.request.UpdateGroupRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,17 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 
 	@Autowired
 	private GroupRepository groupRepository;
+
+	@Override
+	public Group findById(String groupId) {
+		Group group = groupRepository.findOne(groupId);
+
+		if(group == null) {
+			throw new PinkElephantRuntimeException(400, "400", "Couldn't find group", "");
+		}
+
+		return group;
+	}
 
 	@Override
 	public ActionResponse createGroup(CreateGroupRequest request) {

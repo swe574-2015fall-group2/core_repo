@@ -15,5 +15,7 @@ public interface RoleService {
 
     List<Role> findAll();
 
+    List<Role> findAll(List<String> ids);
+
     boolean delete(String id);
 }

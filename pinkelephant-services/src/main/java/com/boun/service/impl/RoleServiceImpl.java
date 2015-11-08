@@ -1,6 +1,7 @@
 package com.boun.service.impl;
 
 import com.boun.app.common.ErrorCode;
+import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.mongo.model.Role;
 import com.boun.data.mongo.repository.RoleRepository;
 import com.boun.http.request.*;
@@ -79,6 +80,16 @@ public class RoleServiceImpl extends PinkElephantService implements RoleService 
 
 	public List<Role> findAll() {
 		return roleRepository.findAll();
+	}
+
+	public List<Role> findAll(List<String> ids) {
+		List<Role> roles = (List<Role>)roleRepository.findAll(ids);
+
+		if(roles.size() != ids.size()) {
+			throw new PinkElephantRuntimeException(400, "400", "", "");
+		}
+
+		return roles;
 	}
 
 	public boolean delete(String id) {

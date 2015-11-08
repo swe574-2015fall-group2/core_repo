@@ -2,6 +2,10 @@ package com.boun.service.impl;
 
 import java.util.List;
 
+import com.boun.app.exception.PinkElephantRuntimeException;
+import com.boun.data.mongo.model.Group;
+import com.boun.service.GroupService;
+import com.boun.service.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +40,20 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 	private UserRepository userRepository;
 
 	@Autowired
-	private RoleRepository roleRepository;
+	private GroupService groupService;
+
+	@Autowired
+	private RoleService roleService;
+
+	public User findById(String id) {
+		User user = userRepository.findOne(id);
+
+		if(user == null) {
+			throw new PinkElephantRuntimeException(400, "couldn't find user", "", "");
+	 	}
+
+		return user;
+	}
 
 	@Override
 	public ActionResponse createUser(CreateUserRequest request) {
@@ -149,7 +166,9 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 			user.setPassword(request.getNewPassword());
 			
 			userRepository.save(user);
-			
+
+
+			//TODO move this to its own service if necessary
 			PinkElephantThreadPool.EMAIL_POOL.runTask(new Runnable() {
 				
 				@Override
@@ -176,15 +195,16 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 
 		ActionResponse response = new ActionResponse();
 		try{
-			User user = userRepository.findOne(request.getUserId());
+			User user = findById(request.getUserId());
 
-			//TODO check if there's e group by loading
-			//Group group = groupRepository.findById(request.getGroupId());
+			// check if there's a group
+			Group group = groupService.findById(request.getGroupId());
 
-			UserRole groupRoles = user.getGroupRoles(request.getGroupId());
+			//TODO check if user is in this group
 
-			//TODO fetch from role service
-			List<Role> roles = (List<Role>)roleRepository.findAll(request.getRoleIds());
+			UserRole groupRoles = user.getGroupRoles(group.getId());
+
+			List<Role> roles = roleService.findAll(request.getRoleIds());
 			groupRoles.setGroupRoles(roles);
 
 			userRepository.save(user);
