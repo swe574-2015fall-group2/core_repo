@@ -12,8 +12,8 @@ public enum ErrorCode {
 	MEETING_NOT_FOUND("Meeting not found"),
 	INVALID_INPUT("Invalid input-> {0}"),
 	
-	DUPLICATE_ROLE("There is already a role with given name");
-
+	DUPLICATE_ROLE("There is already a role with given name"),
+	ROLE_NOT_FOUND("Role not found");
 
 	private String message;
 	

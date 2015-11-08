@@ -10,8 +10,6 @@ import com.boun.data.mongo.repository.custom.UserRepositoryCustom;
 
 public interface UserRepository extends MongoRepository<User, String>, UserRepositoryCustom {
 
-    User findById(String userId);
-
     User findByUsername(String userName);
 
     Set<User> findByIdIn(Collection<String> ids);

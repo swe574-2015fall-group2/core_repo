@@ -1,5 +1,6 @@
 package com.boun.service.impl;
 
+import com.boun.http.request.UpdateGroupRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +34,18 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		}
 
 		try {
-			Group group = groupRepository.findByGroupName(request.getGroup().getName());
+			Group group = groupRepository.findByGroupName(request.getName());
 			if(group != null){
 				response.setAcknowledge(false);
 				response.setMessage(ErrorCode.DUPLICATE_GROUP.getMessage());
 				return response;
 			}
 
-			groupRepository.save(request.getGroup());
+			group = new Group();
+			group.setName(request.getName());
+			group.setDescription(request.getDescription());
+
+			groupRepository.save(group);
 			response.setAcknowledge(true);
 		} catch (Throwable e) {
 			response.setAcknowledge(false);
@@ -53,7 +58,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 	}
 	
 	@Override
-	public ActionResponse updateGroup(CreateGroupRequest request) {
+	public ActionResponse updateGroup(UpdateGroupRequest request) {
 		ActionResponse response = new ActionResponse();
 
 		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
@@ -63,7 +68,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		}
 
 		try {
-			Group group = groupRepository.findByGroupName(request.getGroup().getName());
+			Group group = groupRepository.findOne(request.getGroup().getId());
 			if(group == null){
 				response.setAcknowledge(false);
 				response.setMessage(ErrorCode.GROUP_NOT_FOUND.getMessage());

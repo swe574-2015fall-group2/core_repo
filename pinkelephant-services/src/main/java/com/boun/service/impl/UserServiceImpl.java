@@ -176,7 +176,7 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 
 		ActionResponse response = new ActionResponse();
 		try{
-			User user = userRepository.findById(request.getUserId());
+			User user = userRepository.findOne(request.getUserId());
 
 			//TODO check if there's e group by loading
 			//Group group = groupRepository.findById(request.getGroupId());

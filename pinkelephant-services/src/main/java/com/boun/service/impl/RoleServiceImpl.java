@@ -6,7 +6,7 @@ import com.boun.data.mongo.repository.RoleRepository;
 import com.boun.http.request.*;
 import com.boun.http.response.ActionResponse;
 import com.boun.service.PinkElephantService;
-import com.boun.service.SecurityService;
+import com.boun.service.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class SecurityServiceImpl extends PinkElephantService implements SecurityService {
+public class RoleServiceImpl extends PinkElephantService implements RoleService {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -28,11 +28,40 @@ public class SecurityServiceImpl extends PinkElephantService implements Security
 		ActionResponse response = new ActionResponse();
 
 		try {
-			Role role = roleRepository.findByName(request.getRole().getName());
+			Role role = roleRepository.findByName(request.getName());
 
 			if(role != null){
 				response.setAcknowledge(false);
 				response.setMessage(ErrorCode.DUPLICATE_ROLE.getMessage());
+				return response;
+			}
+
+			role.setName(request.getName());
+			role.setPermissions(request.getPermissions());
+
+			roleRepository.save(role);
+			response.setAcknowledge(true);
+		} catch (Throwable e) {
+			response.setAcknowledge(false);
+			response.setMessage(e.getMessage());
+
+			logger.error("Error in createRole()", e);
+		}
+
+		return response;
+	}
+
+	@Override
+	public ActionResponse updateRole(UpdateRoleRequest request) {
+
+		ActionResponse response = new ActionResponse();
+
+		try {
+			Role role = roleRepository.findOne(request.getRole().getId());
+
+			if(role == null){
+				response.setAcknowledge(false);
+				response.setMessage(ErrorCode.ROLE_NOT_FOUND.getMessage());
 				return response;
 			}
 
@@ -55,7 +84,7 @@ public class SecurityServiceImpl extends PinkElephantService implements Security
 	public boolean delete(String id) {
 
 		//TODO check if a User has this role, throw exception
-		Role role = roleRepository.findById(id);
+		Role role = roleRepository.findOne(id);
 		roleRepository.delete(role);
 
 		return true;

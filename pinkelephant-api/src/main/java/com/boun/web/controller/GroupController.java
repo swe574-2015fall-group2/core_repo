@@ -1,5 +1,6 @@
 package com.boun.web.controller;
 
+import com.boun.http.request.UpdateGroupRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class GroupController {
 	@RequestMapping(value = "update", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody ActionResponse updateGroup(@RequestBody CreateGroupRequest request) {
+	public @ResponseBody ActionResponse updateGroup(@RequestBody UpdateGroupRequest request) {
 
 		try {
 			if (logger.isDebugEnabled()) {

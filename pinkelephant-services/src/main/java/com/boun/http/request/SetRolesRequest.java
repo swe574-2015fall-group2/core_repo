@@ -5,7 +5,7 @@ import java.util.Set;
 import lombok.Data;
 
 @Data
-public class SetRolesRequest {
+public class SetRolesRequest extends BaseRequest{
 
 	private String userId;
 
