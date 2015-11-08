@@ -95,7 +95,7 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		}
 
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
-		if(authenticatedUser.getId().equalsIgnoreCase(request.getId())){
+		if(!authenticatedUser.getId().equalsIgnoreCase(request.getId())){
 			response.setAcknowledge(false);
 			response.setMessage(ErrorCode.INVALID_INPUT.format("Input userId is different than authenticated user"));
 			return response;
