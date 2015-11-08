@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.boun.service.GroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,9 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 
 	@Autowired
 	private MeetingRepository meetingRepository;
-	
+
 	@Autowired
-	private GroupRepository groupRepository;
+	private GroupService groupService;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -49,12 +50,7 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		}
 
 		try {
-			Group group = groupRepository.findByGroupName(request.getGroupName());
-			if(group == null){
-				response.setAcknowledge(false);
-				response.setMessage(ErrorCode.GROUP_NOT_FOUND.getMessage());
-				return response;
-			}
+			Group group = groupService.findById(request.getGroupId());
 			
 			Meeting meeting = mapRequestToMeeting(request);
 			meeting.setGroup(group);

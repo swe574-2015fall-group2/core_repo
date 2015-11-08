@@ -16,5 +16,5 @@ public class CreateMeetingRequest extends BaseRequest{
 	private String location;
 	private String description;
 	
-	private String groupName;
+	private String groupId;
 }
