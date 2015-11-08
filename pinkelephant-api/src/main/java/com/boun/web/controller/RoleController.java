@@ -28,7 +28,7 @@ public class RoleController {
     @ApiOperation(value="Create Role")
     @RequestMapping(value="create", method = RequestMethod.POST)
     @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
-    public @ResponseBody ActionResponse createRole(@RequestBody CreateRoleRequest request) {
+    public @ResponseBody Role createRole(@RequestBody CreateRoleRequest request) {
 
     	try{
     		if(logger.isDebugEnabled()){
@@ -41,6 +41,23 @@ public class RoleController {
     		}
     	}
     }
+
+	@ApiOperation(value="Update Role")
+	@RequestMapping(value="update", method = RequestMethod.POST)
+	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
+	public @ResponseBody Role updateRole(@RequestBody UpdateRoleRequest request) {
+
+		try{
+			if(logger.isDebugEnabled()){
+				logger.debug("updateRole request received, request->" + request.toString());
+			}
+			return roleService.updateRole(request);
+		}finally{
+			if(logger.isDebugEnabled()){
+				logger.debug("updateRole operation finished");
+			}
+		}
+	}
 
 	@ApiOperation(value = "Lists all roles")
 	@RequestMapping(value = "/roles/all", method = RequestMethod.POST)
