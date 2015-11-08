@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.mongo.model.Group;
+import com.boun.http.request.*;
 import com.boun.service.GroupService;
 import com.boun.service.RoleService;
 import org.slf4j.Logger;
@@ -21,11 +22,6 @@ import com.boun.data.mongo.repository.RoleRepository;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.data.util.MailSender;
-import com.boun.http.request.AuthenticationRequest;
-import com.boun.http.request.ChangePasswordRequest;
-import com.boun.http.request.CreateUserRequest;
-import com.boun.http.request.ResetPasswordRequest;
-import com.boun.http.request.SetRolesRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.LoginResponse;
 import com.boun.service.PinkElephantService;
@@ -75,6 +71,38 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 			}
 
 			userRepository.save(request.getUser());
+			response.setAcknowledge(true);
+		} catch (Throwable e) {
+			response.setAcknowledge(false);
+			response.setMessage(e.getMessage());
+
+			logger.error("Error in createUser()", e);
+		}
+
+		return response;
+	}
+
+	@Override
+	public ActionResponse updateUser(UpdateUserRequest request) {
+
+		//TODO only admins and profile owners should be able to updateUser
+		ActionResponse response = new ActionResponse();
+
+		User user =	findById(request.getId());
+
+		user.setFirstname(request.getFirstname());
+		user.setLastname(request.getLastname());
+		user.getUserDetail().setBirthDate(request.getBirthDate());
+		user.getUserDetail().setProfession(request.getProfession());
+		user.getUserDetail().setUniversity(request.getUniversity());
+		user.getUserDetail().setProgramme(request.getProgramme());
+		user.getUserDetail().setInterestedAreas(request.getInterestedAreas());
+		user.getUserDetail().setLinkedinProfile(request.getLinkedinProfile());
+		user.getUserDetail().setAcademiaProfile(request.getAcademiaProfile());
+		user.getUserDetail().setImagePath(request.getImagePath());
+
+		try {
+			userRepository.save(user);
 			response.setAcknowledge(true);
 		} catch (Throwable e) {
 			response.setAcknowledge(false);

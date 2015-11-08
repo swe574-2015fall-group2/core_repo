@@ -45,6 +45,23 @@ public class UserController {
     	}
     }
 
+	@ApiOperation(value="Update User")
+	@RequestMapping(value="update", method = RequestMethod.POST)
+	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
+	public @ResponseBody ActionResponse updateUser(@RequestBody UpdateUserRequest request) {
+
+		try{
+			if(logger.isDebugEnabled()){
+				logger.debug("updateUser request received, request->" + request.toString());
+			}
+			return userService.updateUser(request);
+		}finally{
+			if(logger.isDebugEnabled()){
+				logger.debug("updateUser operation finished");
+			}
+		}
+	}
+
 	@ApiOperation(value="Set User Roles")
 	@RequestMapping(value="roles", method = RequestMethod.POST)
 	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})

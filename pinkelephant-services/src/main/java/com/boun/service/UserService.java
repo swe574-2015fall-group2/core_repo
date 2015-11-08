@@ -13,7 +13,9 @@ public interface UserService {
 	LoginResponse authenticate(AuthenticationRequest request);
 	
     ActionResponse createUser(CreateUserRequest request);
-    
+
+    ActionResponse updateUser(UpdateUserRequest request);
+
     ActionResponse resetPassword(ResetPasswordRequest request);
     
     ActionResponse changePassword(ChangePasswordRequest request);
