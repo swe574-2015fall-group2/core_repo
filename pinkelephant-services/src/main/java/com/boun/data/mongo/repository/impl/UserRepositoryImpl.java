@@ -8,8 +8,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import com.boun.data.mongo.model.User;
-import com.boun.data.mongo.repository.UserRepository;
-import com.boun.data.mongo.repository.UserRepositoryCustom;
+import com.boun.data.mongo.repository.custom.UserRepositoryCustom;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
 

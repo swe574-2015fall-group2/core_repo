@@ -6,6 +6,7 @@ import java.util.Set;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import com.boun.data.mongo.model.User;
+import com.boun.data.mongo.repository.custom.UserRepositoryCustom;
 
 public interface UserRepository extends MongoRepository<User, String>, UserRepositoryCustom {
 

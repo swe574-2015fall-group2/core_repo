@@ -1,15 +1,13 @@
 package com.boun.data.mongo.model;
 
+import java.util.Date;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Date;
+import lombok.Data;
 
 @Data
 @Document(collection = "user_detail")

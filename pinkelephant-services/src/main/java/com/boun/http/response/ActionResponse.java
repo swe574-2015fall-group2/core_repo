@@ -10,6 +10,7 @@ public class ActionResponse {
     private boolean acknowledge;
     
     private String message;
+    private String entityId;
 
     public ActionResponse(){}
 

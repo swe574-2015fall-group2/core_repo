@@ -1,9 +1,8 @@
 package com.boun.http.request;
 
-import com.boun.data.mongo.model.Role;
-import lombok.Data;
-
 import java.util.Set;
+
+import lombok.Data;
 
 @Data
 public class SetRolesRequest {

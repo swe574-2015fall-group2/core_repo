@@ -1,4 +1,4 @@
-package com.boun.data.mongo.repository;
+package com.boun.data.mongo.repository.custom;
 
 import com.boun.data.mongo.model.User;
 

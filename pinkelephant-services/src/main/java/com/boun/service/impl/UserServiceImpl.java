@@ -1,9 +1,7 @@
 package com.boun.service.impl;
 
-import com.boun.data.mongo.model.Role;
-import com.boun.data.mongo.model.UserRole;
-import com.boun.data.mongo.repository.RoleRepository;
-import com.boun.http.request.*;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +10,22 @@ import org.springframework.stereotype.Service;
 import com.boun.app.common.ErrorCode;
 import com.boun.app.util.KeyUtils;
 import com.boun.data.common.pool.PinkElephantThreadPool;
+import com.boun.data.mongo.model.Role;
 import com.boun.data.mongo.model.User;
+import com.boun.data.mongo.model.UserRole;
+import com.boun.data.mongo.repository.RoleRepository;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.data.util.MailSender;
+import com.boun.http.request.AuthenticationRequest;
+import com.boun.http.request.ChangePasswordRequest;
+import com.boun.http.request.CreateUserRequest;
+import com.boun.http.request.ResetPasswordRequest;
+import com.boun.http.request.SetRolesRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.LoginResponse;
 import com.boun.service.PinkElephantService;
 import com.boun.service.UserService;
-
-import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserServiceImpl extends PinkElephantService implements UserService {

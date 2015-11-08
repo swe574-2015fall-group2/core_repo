@@ -1,20 +1,19 @@
 package com.boun.data.mongo.model;
 
-import com.boun.app.exception.PinkElephantException;
-import com.boun.app.exception.PinkElephantRuntimeException;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @Document(collection = "users")
@@ -43,7 +42,6 @@ public class User {
 
     private Set<UserRole> roles;
 
-    //
     private UserDetail userDetail;
 
     private UserPreferences preferences;

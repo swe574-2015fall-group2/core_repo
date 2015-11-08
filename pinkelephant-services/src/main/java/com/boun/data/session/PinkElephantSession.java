@@ -18,6 +18,9 @@ public final class PinkElephantSession {
 	}
 	
 	public boolean validateToken(String token){
+		if(token == null){
+			return false;
+		}
 		return sessionStorage.get(token) != null;
 	}
 	
