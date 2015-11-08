@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Api(value = "security", description = "Security service")
-@RequestMapping("/v1/security")
-public class SecurityController {
+@Api(value = "role", description = "Role service")
+@RequestMapping("/v1/role")
+public class RoleController {
 
-	private final static Logger logger = LoggerFactory.getLogger(SecurityController.class);
+	private final static Logger logger = LoggerFactory.getLogger(RoleController.class);
 	
     @Autowired
-    private RoleService securityService;
+    private RoleService roleService;
 
     @ApiOperation(value="Create Role")
     @RequestMapping(value="create", method = RequestMethod.POST)
@@ -34,7 +34,7 @@ public class SecurityController {
     		if(logger.isDebugEnabled()){
     			logger.debug("createRole request received, request->" + request.toString());
     		}
-    		return securityService.createRole(request);
+    		return roleService.createRole(request);
     	}finally{
     		if(logger.isDebugEnabled()){
     			logger.debug("createRole operation finished");
@@ -47,7 +47,7 @@ public class SecurityController {
 	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
 	public List<Role> getRolesAll() {
 
-		List<Role> roles = securityService.findAll();
+		List<Role> roles = roleService.findAll();
 
 		return roles;
 	}
@@ -57,6 +57,6 @@ public class SecurityController {
 	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
 	public boolean deleteRole(@PathVariable String id) {
 		//TODO add userId to log
-		return securityService.delete(id);
+		return roleService.delete(id);
 	}
 }
