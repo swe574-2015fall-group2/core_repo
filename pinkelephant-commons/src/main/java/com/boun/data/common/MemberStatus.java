@@ -2,10 +2,8 @@ package com.boun.data.common;
 
 public enum MemberStatus {
 
-    SUSPENDED(0),
     ACTIVE(1),
-    PASSIVE(2),
-    BLOCKED(3);
+    BLOCKED(2);
 
     private int value;
 

@@ -1,6 +1,7 @@
 package com.boun.data.mongo.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,4 +21,7 @@ public class Group {
     private String name;
     
     private String description;
+    
+    @DBRef
+    private User creator;
 }

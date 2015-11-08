@@ -1,10 +1,8 @@
 package com.boun.service.impl;
 
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.boun.service.GroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import com.boun.app.common.ErrorCode;
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Meeting;
 import com.boun.data.mongo.model.User;
-import com.boun.data.mongo.repository.GroupRepository;
 import com.boun.data.mongo.repository.MeetingRepository;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
@@ -22,6 +19,8 @@ import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
+import com.boun.http.response.CreateResponse;
+import com.boun.service.GroupService;
 import com.boun.service.MeetingService;
 import com.boun.service.PinkElephantService;
 
@@ -40,8 +39,8 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 	private UserRepository userRepository;
 	
 	@Override
-	public ActionResponse createMeeting(CreateMeetingRequest request) {
-		ActionResponse response = new ActionResponse();
+	public CreateResponse createMeeting(CreateMeetingRequest request) {
+		CreateResponse response = new CreateResponse();
 
 		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
 			response.setAcknowledge(false);
@@ -173,7 +172,6 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 			meetingRepository.save(meeting);
 			
 			response.setAcknowledge(true);
-			response.setEntityId(meeting.getId());
 			
 		} catch (Throwable e) {
 			response.setAcknowledge(false);

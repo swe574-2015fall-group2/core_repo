@@ -26,4 +26,5 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
 		
 		return group;
 	}
+	
 }

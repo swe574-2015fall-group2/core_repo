@@ -13,6 +13,7 @@ import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
+import com.boun.http.response.CreateResponse;
 import com.boun.service.MeetingService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -32,7 +33,7 @@ public class MeetingController {
 	@ApiOperation(value = "Create Meeting")
 	@RequestMapping(value = "create", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody ActionResponse createMeeting(@RequestBody CreateMeetingRequest request) {
+	public @ResponseBody CreateResponse createMeeting(@RequestBody CreateMeetingRequest request) {
 
 		try {
 			if (logger.isDebugEnabled()) {

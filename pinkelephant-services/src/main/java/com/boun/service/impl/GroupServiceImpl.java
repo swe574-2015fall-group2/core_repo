@@ -1,5 +1,7 @@
 package com.boun.service.impl;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +17,12 @@ import com.boun.data.mongo.repository.GroupMemberRepository;
 import com.boun.data.mongo.repository.GroupRepository;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
-import com.boun.http.request.CreateGroupRequest;
-import com.boun.http.request.JoinGroupRequest;
-import com.boun.http.request.UpdateGroupRequest;
+import com.boun.http.request.BaseRequest;
+import com.boun.http.request.CreateUpdateGroupRequest;
+import com.boun.http.request.JoinLeaveGroupRequest;
 import com.boun.http.response.ActionResponse;
+import com.boun.http.response.CreateResponse;
+import com.boun.http.response.ListGroupResponse;
 import com.boun.service.GroupService;
 import com.boun.service.PinkElephantService;
 
@@ -48,8 +52,8 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 	}
 
 	@Override
-	public ActionResponse createGroup(CreateGroupRequest request) {
-		ActionResponse response = new ActionResponse();
+	public CreateResponse createGroup(CreateUpdateGroupRequest request) {
+		CreateResponse response = new CreateResponse();
 
 		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
 			response.setAcknowledge(false);
@@ -68,9 +72,12 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 			group = new Group();
 			group.setName(request.getName());
 			group.setDescription(request.getDescription());
-
+			group.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
+			
 			groupRepository.save(group);
+			
 			response.setAcknowledge(true);
+			response.setEntityId(group.getId());
 		} catch (Throwable e) {
 			response.setAcknowledge(false);
 			response.setMessage(e.getMessage());
@@ -82,7 +89,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 	}
 	
 	@Override
-	public ActionResponse updateGroup(UpdateGroupRequest request) {
+	public ActionResponse updateGroup(CreateUpdateGroupRequest request) {
 		ActionResponse response = new ActionResponse();
 
 		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
@@ -92,15 +99,15 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		}
 
 		try {
-			Group group = groupRepository.findOne(request.getGroup().getId());
+			Group group = groupRepository.findByGroupName(request.getName());
 			if(group == null){
 				response.setAcknowledge(false);
 				response.setMessage(ErrorCode.GROUP_NOT_FOUND.getMessage());
 				return response;
 			}
-
-			request.getGroup().setId(group.getId());
-			groupRepository.save(request.getGroup());
+			group.setDescription(request.getDescription());
+			
+			groupRepository.save(group);
 			response.setAcknowledge(true);
 		} catch (Throwable e) {
 			response.setAcknowledge(false);
@@ -113,7 +120,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 	}
 	
 	@Override
-	public ActionResponse joinGroup(JoinGroupRequest request) {
+	public ActionResponse joinGroup(JoinLeaveGroupRequest request) {
 		ActionResponse response = new ActionResponse();
 
 		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
@@ -123,12 +130,6 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		}
 
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
-		if(!authenticatedUser.getUsername().equalsIgnoreCase(request.getUsername())){
-			response.setAcknowledge(false);
-			response.setMessage(ErrorCode.AUTHTOKEN_AND_AUTHENTICATED_USER_NOT_MATCH.getMessage());
-			return response;
-		}
-
 		try {
 			Group group = groupRepository.findOne(request.getGroupId());
 			if(group == null){
@@ -137,7 +138,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 				return response;
 			}
 
-			User user = userRepository.findByUsername(request.getUsername());
+			User user = userRepository.findOne(authenticatedUser.getId());
 			if(user == null){
 				response.setAcknowledge(false);
 				response.setMessage(ErrorCode.USER_NOT_FOUND.getMessage());
@@ -174,6 +175,77 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 			response.setMessage(e.getMessage());
 
 			logger.error("Error in joinGroup()", e);
+		}
+
+		return response;
+	}
+	
+	@Override
+	public ActionResponse leaveGroup(JoinLeaveGroupRequest request) {
+		ActionResponse response = new ActionResponse();
+
+		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
+			response.setAcknowledge(false);
+			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
+			return response;
+		}
+
+		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
+		try {
+			Group group = groupRepository.findOne(request.getGroupId());
+			if(group == null){
+				response.setAcknowledge(false);
+				response.setMessage(ErrorCode.GROUP_NOT_FOUND.getMessage());
+				return response;
+			}
+
+			GroupMember groupMember = groupMemberRepository.findGroupMember(authenticatedUser.getId(), request.getGroupId());
+			if(groupMember == null){
+				response.setAcknowledge(true);
+				return response;
+			}
+			
+			groupMemberRepository.delete(groupMember);
+			response.setAcknowledge(true);
+		} catch (Throwable e) {
+			response.setAcknowledge(false);
+			response.setMessage(e.getMessage());
+
+			logger.error("Error in joinGroup()", e);
+		}
+
+		return response;
+	}
+	
+	@Override
+	public ListGroupResponse getMyGroups(BaseRequest request) {
+		ListGroupResponse response = new ListGroupResponse();
+
+		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
+			response.setAcknowledge(false);
+			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
+			return response;
+		}
+
+		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
+		try {
+			List<Group> groupList = groupMemberRepository.findGroupsOfUser(authenticatedUser.getId());
+			if(groupList == null){
+				response.setAcknowledge(true);
+				response.setMessage(ErrorCode.GROUP_NOT_FOUND.getMessage());
+				return response;
+			}
+
+			for (Group group : groupList) {
+				response.addGroup(group.getId(), group.getName(), group.getDescription());
+			}
+			
+			response.setAcknowledge(true);
+		} catch (Throwable e) {
+			response.setAcknowledge(false);
+			response.setMessage(e.getMessage());
+
+			logger.error("Error in getMyGroups()", e);
 		}
 
 		return response;

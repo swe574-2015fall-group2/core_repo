@@ -7,7 +7,6 @@ public enum ErrorCode {
 	USER_NOT_FOUND("User not found"),
 	DUPLICATE_USER("There is already a user with given username"),
 	OPERATION_NOT_ALLOWED("Operation is not allowed for not authenticated users"),
-	AUTHTOKEN_AND_AUTHENTICATED_USER_NOT_MATCH("Authtoken and authenticated user does not match"),
 
 	DUPLICATE_GROUP("There is already a group with given name"),
 	GROUP_NOT_FOUND("Group not found"),

@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class CreateGroupRequest extends BaseRequest{
+public class CreateUpdateGroupRequest extends BaseRequest{
 
 	private String name;
 
