@@ -12,6 +12,8 @@ public interface GroupService {
 
 	public Group findById(String groupId);
 
+	public Group findByName(String groupName);
+
 	public CreateResponse createGroup(CreateUpdateGroupRequest request);
 	
 	public ActionResponse updateGroup(CreateUpdateGroupRequest request);

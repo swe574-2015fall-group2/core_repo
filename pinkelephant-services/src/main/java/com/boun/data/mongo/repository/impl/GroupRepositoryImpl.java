@@ -17,14 +17,4 @@ public class GroupRepositoryImpl implements GroupRepositoryCustom{
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	@Override
-	public Group findByGroupName(String name) {
-		Query query = new Query();
-		query.addCriteria(Criteria.where("name").is(name));
-		
-		Group group = mongoTemplate.findOne(query, Group.class);
-		
-		return group;
-	}
-	
 }

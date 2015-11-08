@@ -53,6 +53,17 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 	}
 
 	@Override
+	public Group findByName(String groupName) {
+		Group group = groupRepository.findByName(groupName);
+
+		if(group == null) {
+			throw new PinkElephantRuntimeException(400, "400", "Couldn't find group", "");
+		}
+
+		return group;
+	}
+
+	@Override
 	public CreateResponse createGroup(CreateUpdateGroupRequest request) {
 		CreateResponse response = new CreateResponse();
 
@@ -69,7 +80,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 				return response;
 			}
 			
-			Group group = groupRepository.findByGroupName(request.getName());
+			Group group = groupRepository.findByName(request.getName());
 			if(group != null){
 				response.setAcknowledge(false);
 				response.setMessage(ErrorCode.DUPLICATE_GROUP.getMessage());
@@ -107,7 +118,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		}
 
 		try {
-			Group group = groupRepository.findByGroupName(request.getName());
+			Group group = groupRepository.findByName(request.getName());
 			if(group == null){
 				response.setAcknowledge(false);
 				response.setMessage(ErrorCode.GROUP_NOT_FOUND.getMessage());

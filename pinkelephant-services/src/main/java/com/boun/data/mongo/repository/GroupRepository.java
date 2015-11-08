@@ -7,4 +7,5 @@ import com.boun.data.mongo.repository.custom.GroupRepositoryCustom;
 
 public interface GroupRepository extends MongoRepository<Group, String>, GroupRepositoryCustom{
 
+    Group findByName(String name);
 }
