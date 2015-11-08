@@ -221,8 +221,6 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 	@Override
 	public User setRoles(final SetRolesRequest request) {
 
-		ActionResponse response = new ActionResponse();
-
 		User user = findById(request.getUserId());
 
 		// check if there's a group
@@ -236,8 +234,6 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		groupRoles.setGroupRoles(roles);
 
 		user = userRepository.save(user);
-
-		response.setAcknowledge(true);
 
 		return user;
 	}

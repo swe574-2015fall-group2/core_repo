@@ -24,58 +24,38 @@ public class RoleServiceImpl extends PinkElephantService implements RoleService 
 	private RoleRepository roleRepository;
 
 	@Override
-	public ActionResponse createRole(CreateRoleRequest request) {
+	public Role findById(String id) {
+		Role role = roleRepository.findOne(id);
 
-		ActionResponse response = new ActionResponse();
-
-		try {
-			Role role = roleRepository.findByName(request.getName());
-
-			if(role != null){
-				response.setAcknowledge(false);
-				response.setMessage(ErrorCode.DUPLICATE_ROLE.getMessage());
-				return response;
-			}
-
-			role.setName(request.getName());
-			role.setPermissions(request.getPermissions());
-
-			roleRepository.save(role);
-			response.setAcknowledge(true);
-		} catch (Throwable e) {
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
-
-			logger.error("Error in createRole()", e);
+		if(role == null) {
+			throw new PinkElephantRuntimeException(400, "400", ErrorCode.ROLE_NOT_FOUND.getMessage(), "todo dev message");
 		}
 
-		return response;
+		return role;
 	}
 
 	@Override
-	public ActionResponse updateRole(UpdateRoleRequest request) {
+	public Role createRole(CreateRoleRequest request) {
+		Role role = roleRepository.findByName(request.getName());
 
-		ActionResponse response = new ActionResponse();
-
-		try {
-			Role role = roleRepository.findOne(request.getRole().getId());
-
-			if(role == null){
-				response.setAcknowledge(false);
-				response.setMessage(ErrorCode.ROLE_NOT_FOUND.getMessage());
-				return response;
-			}
-
-			roleRepository.save(request.getRole());
-			response.setAcknowledge(true);
-		} catch (Throwable e) {
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
-
-			logger.error("Error in createRole()", e);
+		if(role != null){
+			throw new PinkElephantRuntimeException(400, "400", ErrorCode.DUPLICATE_ROLE.getMessage(), "todo dev message");
 		}
 
-		return response;
+		role.setName(request.getName());
+		role.setPermissions(request.getPermissions());
+		role = roleRepository.save(role);
+
+		return role;
+	}
+
+	@Override
+	public Role updateRole(UpdateRoleRequest request) {
+
+		Role role = findById(request.getRole().getId());
+		role = roleRepository.save(request.getRole());
+
+		return role;
 	}
 
 	public List<Role> findAll() {
@@ -86,7 +66,7 @@ public class RoleServiceImpl extends PinkElephantService implements RoleService 
 		List<Role> roles = (List<Role>)roleRepository.findAll(ids);
 
 		if(roles.size() != ids.size()) {
-			throw new PinkElephantRuntimeException(400, "400", "", "");
+			throw new PinkElephantRuntimeException(400, "400", "some roles couldn't be found", "");
 		}
 
 		return roles;

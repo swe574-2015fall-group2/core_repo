@@ -9,9 +9,11 @@ import java.util.List;
 
 public interface RoleService {
 
-    ActionResponse createRole(CreateRoleRequest request);
+    Role findById(String id);
 
-    ActionResponse updateRole(UpdateRoleRequest request);
+    Role createRole(CreateRoleRequest request);
+
+    Role updateRole(UpdateRoleRequest request);
 
     List<Role> findAll();
 
