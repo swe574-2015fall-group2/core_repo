@@ -1,5 +1,6 @@
 package com.boun.web.controller;
 
+import com.boun.data.mongo.model.User;
 import com.boun.http.request.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,7 +66,7 @@ public class UserController {
 	@ApiOperation(value="Set User Roles")
 	@RequestMapping(value="roles", method = RequestMethod.POST)
 	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
-	public @ResponseBody ActionResponse setUserRoles(@RequestBody SetRolesRequest request) {
+	public @ResponseBody User setUserRoles(@RequestBody SetRolesRequest request) {
 
 		try{
 			if(logger.isDebugEnabled()){

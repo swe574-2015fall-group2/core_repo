@@ -219,32 +219,26 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 	}
 
 	@Override
-	public ActionResponse setRoles(final SetRolesRequest request) {
+	public User setRoles(final SetRolesRequest request) {
 
 		ActionResponse response = new ActionResponse();
-		try{
-			User user = findById(request.getUserId());
 
-			// check if there's a group
-			Group group = groupService.findById(request.getGroupId());
+		User user = findById(request.getUserId());
 
-			//TODO check if user is in this group
+		// check if there's a group
+		Group group = groupService.findById(request.getGroupId());
 
-			UserRole groupRoles = user.getGroupRoles(group.getId());
+		//TODO check if user is in this group
 
-			List<Role> roles = roleService.findAll(request.getRoleIds());
-			groupRoles.setGroupRoles(roles);
+		UserRole groupRoles = user.getGroupRoles(group.getId());
 
-			userRepository.save(user);
+		List<Role> roles = roleService.findAll(request.getRoleIds());
+		groupRoles.setGroupRoles(roles);
 
-			response.setAcknowledge(true);
-		}catch(Throwable e){
+		user = userRepository.save(user);
 
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
+		response.setAcknowledge(true);
 
-			logger.error("Error in resetPassword()", e);
-		}
-		return response;
+		return user;
 	}
 }

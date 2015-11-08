@@ -20,5 +20,5 @@ public interface UserService {
     
     ActionResponse changePassword(ChangePasswordRequest request);
 
-    ActionResponse setRoles(SetRolesRequest request);
+    User setRoles(SetRolesRequest request);
 }
