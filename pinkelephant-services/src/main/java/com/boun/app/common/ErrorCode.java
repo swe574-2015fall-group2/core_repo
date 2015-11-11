@@ -22,6 +22,12 @@ public enum ErrorCode {
 	ROLE_NOT_FOUND("Role not found", "111"),
 	SOME_ROLES_NOT_FOUND("Some roles could not be found", "112"),
 	
+	THERE_IS_NO_INVITED_PERSON("There is no invited person to the meeting", "113"),
+	NOT_INVITED_TO_MEETING("You are not invited to the meeting", "114"),
+	ALREADY_ACCEPTED_INVITATION("You have accepted meeting invitation already", "115"),
+	ALREADY_REJECTED_INVITATION("You have rejected meeting invitation already", "116"),
+	ALREADY_MARKED_AS_TENTATIVE_INVITATION("You have marked meeting invitation as tentative already", "117"),
+	
 	INTERNAL_SERVER_ERROR("Internal Server Error", "900")
 	;
 

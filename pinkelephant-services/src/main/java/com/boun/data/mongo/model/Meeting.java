@@ -35,6 +35,9 @@ public class Meeting {
 	private MeetingType type;
 
 	@DBRef
+	private User creator;
+	
+	@DBRef
 	private Group group;
 
 	@DBRef
@@ -42,4 +45,10 @@ public class Meeting {
 
 	@DBRef
 	private Set<User> attendedUserSet;
+	
+	@DBRef
+	private Set<User> rejectedUserSet;
+	
+	@DBRef
+	private Set<User> tentativeUserSet;
 }

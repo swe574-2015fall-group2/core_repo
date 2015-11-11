@@ -30,10 +30,11 @@ public abstract class PinkElephantService {
     
     protected void validate(BaseRequest request) throws PinkElephantRuntimeException{
     	
+    	if(request.getAuthToken() == null || "".equalsIgnoreCase(request.getAuthToken())){
+    		throw new PinkElephantRuntimeException(400, ErrorCode.INVALID_INPUT, "Authentication token field is empty", "");
+    	}
     	if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
     		throw new PinkElephantRuntimeException(400, ErrorCode.OPERATION_NOT_ALLOWED, "");
 		}
-    	
-    	
     }
 }

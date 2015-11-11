@@ -2,6 +2,7 @@ package com.boun.service;
 
 import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
+import com.boun.http.request.MeetingInvitationReplyRequest;
 import com.boun.http.request.QueryMeetingRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
@@ -17,4 +18,6 @@ public interface MeetingService {
 	public ActionResponse inviteUser(InviteUserToMeetingRequest request);
 	
 	public ListMeetingResponse queryMeetingsOfGroup(QueryMeetingRequest request);
+	
+	public ActionResponse invitationReply(MeetingInvitationReplyRequest request);
 }
