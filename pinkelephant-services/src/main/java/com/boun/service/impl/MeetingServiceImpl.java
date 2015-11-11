@@ -159,6 +159,8 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		
 		validate(request);
 		
+		//TODO sort response according to date 
+		
 		ListMeetingResponse response = new ListMeetingResponse();
 		
 		List<Meeting> meetingList = meetingRepository.findMeetings(request.getGroupId());

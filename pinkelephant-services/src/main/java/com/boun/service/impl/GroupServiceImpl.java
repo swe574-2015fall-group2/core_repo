@@ -205,6 +205,8 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		
 		validate(request);
 		
+		//TODO group all groups as popular, my groups, others etc..
+		
 		ListGroupResponse response = new ListGroupResponse();
 		List<Group> groupList = groupRepository.findAll();
 		if(groupList == null){
