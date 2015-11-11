@@ -1,5 +1,6 @@
 package com.boun.app.util;
 
+import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.app.exception.PinkElephantValidationException;
 import net.sf.jmimemagic.Magic;
@@ -73,7 +74,7 @@ public class PhotoUtils {
             ImageIO.write(image, "jpg", baos);
             return new ByteArrayInputStream(baos.toByteArray());
         } catch (Exception e) {
-            throw new PinkElephantRuntimeException(400, "", "Internal Server Error", "");
+            throw new PinkElephantRuntimeException(400, ErrorCode.INTERNAL_SERVER_ERROR, "");
         }
     }
 

@@ -21,7 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.boun.PinkElephantApiApplication;
-import com.boun.data.common.Status;
+import com.boun.data.common.enums.Status;
 import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.model.UserDetail;
 import com.boun.data.mongo.repository.UserRepository;

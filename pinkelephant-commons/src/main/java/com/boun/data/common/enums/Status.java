@@ -1,4 +1,4 @@
-package com.boun.data.common;
+package com.boun.data.common.enums;
 
 public enum Status {
 

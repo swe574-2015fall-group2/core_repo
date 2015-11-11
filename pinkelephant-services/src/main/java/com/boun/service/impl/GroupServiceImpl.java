@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
-import com.boun.data.common.GroupStatus;
-import com.boun.data.common.MemberStatus;
+import com.boun.data.common.enums.GroupStatus;
+import com.boun.data.common.enums.MemberStatus;
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.GroupMember;
 import com.boun.data.mongo.model.User;
@@ -46,7 +46,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		Group group = groupRepository.findOne(groupId);
 
 		if(group == null) {
-			throw new PinkElephantRuntimeException(400, "400", "Couldn't find group", "");
+			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
 		}
 
 		return group;
@@ -57,7 +57,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		Group group = groupRepository.findByName(groupName);
 
 		if(group == null) {
-			throw new PinkElephantRuntimeException(400, "400", "Couldn't find group", "");
+			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
 		}
 
 		return group;
@@ -65,243 +65,160 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 
 	@Override
 	public CreateResponse createGroup(CreateUpdateGroupRequest request) {
+		
+		validate(request);
+		
 		CreateResponse response = new CreateResponse();
-
-		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
-			response.setAcknowledge(false);
-			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
-			return response;
+		if(request.getName() == null || "".equalsIgnoreCase(request.getName())){
+			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "Group name is empty", "");
+		}
+		
+		Group group = groupRepository.findByName(request.getName());
+		if(group != null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.DUPLICATE_GROUP, "");
 		}
 
-		try {
-			if(request.getName() == null || "".equalsIgnoreCase(request.getName())){
-				response.setAcknowledge(false);
-				response.setMessage(ErrorCode.INVALID_INPUT.format("Group name is empty"));
-				return response;
-			}
-			
-			Group group = groupRepository.findByName(request.getName());
-			if(group != null){
-				response.setAcknowledge(false);
-				response.setMessage(ErrorCode.DUPLICATE_GROUP.getMessage());
-				return response;
-			}
-
-			group = new Group();
-			group.setName(request.getName());
-			group.setDescription(request.getDescription());
-			group.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
-			group.setStatus(GroupStatus.ACTIVE);
-			
-			groupRepository.save(group);
-			
-			response.setAcknowledge(true);
-			response.setEntityId(group.getId());
-		} catch (Throwable e) {
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
-
-			logger.error("Error in createGroup()", e);
-		}
+		group = new Group();
+		group.setName(request.getName());
+		group.setDescription(request.getDescription());
+		group.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
+		group.setStatus(GroupStatus.ACTIVE);
+		
+		groupRepository.save(group);
+		
+		response.setAcknowledge(true);
+		response.setEntityId(group.getId());
 
 		return response;
 	}
 	
 	@Override
 	public ActionResponse updateGroup(CreateUpdateGroupRequest request) {
+
+		validate(request);
+
 		ActionResponse response = new ActionResponse();
-
-		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
-			response.setAcknowledge(false);
-			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
-			return response;
+		Group group = groupRepository.findByName(request.getName());
+		if(group == null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
 		}
-
-		try {
-			Group group = groupRepository.findByName(request.getName());
-			if(group == null){
-				response.setAcknowledge(false);
-				response.setMessage(ErrorCode.GROUP_NOT_FOUND.getMessage());
-				return response;
-			}
-			group.setDescription(request.getDescription());
-			
-			groupRepository.save(group);
-			response.setAcknowledge(true);
-		} catch (Throwable e) {
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
-
-			logger.error("Error in updateGroup()", e);
-		}
+		group.setDescription(request.getDescription());
+		
+		groupRepository.save(group);
+		
+		response.setAcknowledge(true);
 
 		return response;
 	}
 	
 	@Override
 	public ActionResponse joinGroup(JoinLeaveGroupRequest request) {
-		ActionResponse response = new ActionResponse();
 
-		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
-			response.setAcknowledge(false);
-			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
-			return response;
+		validate(request);
+
+		ActionResponse response = new ActionResponse();
+		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
+		
+		Group group = groupRepository.findOne(request.getGroupId());
+		if(group == null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
 		}
 
-		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
-		try {
-			Group group = groupRepository.findOne(request.getGroupId());
-			if(group == null){
-				response.setAcknowledge(false);
-				response.setMessage(ErrorCode.GROUP_NOT_FOUND.getMessage());
-				return response;
-			}
+		User user = userRepository.findOne(authenticatedUser.getId());
+		if(user == null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.USER_NOT_FOUND, "");
+		}
 
-			User user = userRepository.findOne(authenticatedUser.getId());
-			if(user == null){
-				response.setAcknowledge(false);
-				response.setMessage(ErrorCode.USER_NOT_FOUND.getMessage());
-				return response;
-			}
-
-			GroupMember groupMember = groupMemberRepository.findGroupMember(user.getId(), group.getId());
-			if(groupMember != null){
-				
-				if(groupMember.getStatus().value() == MemberStatus.ACTIVE.value()){
-					response.setAcknowledge(false);
-					response.setMessage(ErrorCode.USER_IS_ALREADY_A_MEMBER.getMessage());
-					return response;	
-				}
-				
-				if(groupMember.getStatus().value() == MemberStatus.BLOCKED.value()){
-					response.setAcknowledge(false);
-					response.setMessage(ErrorCode.USER_IS_BLOCKED.getMessage());
-					return response;	
-				}
-				
-				groupMember.setStatus(MemberStatus.ACTIVE);
-			}else{
-				groupMember = new GroupMember();
-				groupMember.setGroup(group);
-				groupMember.setUser(user);
-				groupMember.setStatus(MemberStatus.ACTIVE);
+		GroupMember groupMember = groupMemberRepository.findGroupMember(user.getId(), group.getId());
+		if(groupMember != null){
+			
+			if(groupMember.getStatus().value() == MemberStatus.ACTIVE.value()){
+				throw new PinkElephantRuntimeException(400, ErrorCode.USER_IS_ALREADY_A_MEMBER, "");
 			}
 			
-			groupMemberRepository.save(groupMember);
-			response.setAcknowledge(true);
-		} catch (Throwable e) {
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
-
-			logger.error("Error in joinGroup()", e);
+			if(groupMember.getStatus().value() == MemberStatus.BLOCKED.value()){
+				throw new PinkElephantRuntimeException(400, ErrorCode.USER_IS_BLOCKED, "");
+			}
+			
+			groupMember.setStatus(MemberStatus.ACTIVE);
+		}else{
+			groupMember = new GroupMember();
+			groupMember.setGroup(group);
+			groupMember.setUser(user);
+			groupMember.setStatus(MemberStatus.ACTIVE);
 		}
+		
+		groupMemberRepository.save(groupMember);
+		response.setAcknowledge(true);
 
 		return response;
 	}
 	
 	@Override
 	public ActionResponse leaveGroup(JoinLeaveGroupRequest request) {
+
+		validate(request);
+
 		ActionResponse response = new ActionResponse();
-
-		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
-			response.setAcknowledge(false);
-			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
-			return response;
-		}
-
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
-		try {
-			Group group = groupRepository.findOne(request.getGroupId());
-			if(group == null){
-				response.setAcknowledge(false);
-				response.setMessage(ErrorCode.GROUP_NOT_FOUND.getMessage());
-				return response;
-			}
 
-			GroupMember groupMember = groupMemberRepository.findGroupMember(authenticatedUser.getId(), request.getGroupId());
-			if(groupMember == null){
-				response.setAcknowledge(true);
-				return response;
-			}
-			
-			groupMemberRepository.delete(groupMember);
-			response.setAcknowledge(true);
-		} catch (Throwable e) {
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
-
-			logger.error("Error in joinGroup()", e);
+		Group group = groupRepository.findOne(request.getGroupId());
+		if(group == null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
 		}
+
+		GroupMember groupMember = groupMemberRepository.findGroupMember(authenticatedUser.getId(), request.getGroupId());
+		if(groupMember == null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.USER_IS_NOT_A_MEMBER, "");
+		}
+		
+		groupMemberRepository.delete(groupMember);
+		response.setAcknowledge(true);
 
 		return response;
 	}
 	
 	@Override
 	public ListGroupResponse getMyGroups(BaseRequest request) {
+		
+		validate(request);
+		
 		ListGroupResponse response = new ListGroupResponse();
-
-		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
-			response.setAcknowledge(false);
-			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
-			return response;
-		}
-
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
-		try {
-			List<Group> groupList = groupMemberRepository.findGroupsOfUser(authenticatedUser.getId());
-			if(groupList == null){
-				response.setAcknowledge(true);
-				response.setMessage(ErrorCode.GROUP_NOT_FOUND.getMessage());
-				return response;
-			}
 
-			for (Group group : groupList) {
-				response.addGroup(group.getId(), group.getName(), group.getDescription());
-			}
-			
-			response.setAcknowledge(true);
-		} catch (Throwable e) {
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
-
-			logger.error("Error in getMyGroups()", e);
+		List<Group> groupList = groupMemberRepository.findGroupsOfUser(authenticatedUser.getId());
+		if(groupList == null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
 		}
+
+		for (Group group : groupList) {
+			response.addGroup(group.getId(), group.getName(), group.getDescription());
+		}
+		
+		response.setAcknowledge(true);
 
 		return response;
 	}
 
 	@Override
 	public ListGroupResponse getAllGroups(BaseRequest request) {
+		
+		validate(request);
+		
 		ListGroupResponse response = new ListGroupResponse();
-
-		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
-			response.setAcknowledge(false);
-			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
-			return response;
+		List<Group> groupList = groupRepository.findAll();
+		if(groupList == null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
 		}
 
-		try {
-			List<Group> groupList = groupRepository.findAll();
-			if(groupList == null){
-				response.setAcknowledge(true);
-				response.setMessage(ErrorCode.GROUP_NOT_FOUND.getMessage());
-				return response;
+		for (Group group : groupList) {
+			if(group.getStatus() == null || group.getStatus().value() != GroupStatus.ACTIVE.value()){
+				continue;
 			}
-
-			for (Group group : groupList) {
-				if(group.getStatus() == null || group.getStatus().value() != GroupStatus.ACTIVE.value()){
-					continue;
-				}
-				response.addGroup(group.getId(), group.getName(), group.getDescription());
-			}
-			
-			response.setAcknowledge(true);
-		} catch (Throwable e) {
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
-
-			logger.error("Error in getAllGroups()", e);
+			response.addGroup(group.getId(), group.getName(), group.getDescription());
 		}
+		
+		response.setAcknowledge(true);
 
 		return response;
 	}

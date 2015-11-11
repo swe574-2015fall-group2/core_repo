@@ -7,7 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.boun.data.common.MeetingStatus;
+import com.boun.data.common.enums.MeetingStatus;
+import com.boun.data.common.enums.MeetingType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -24,12 +25,14 @@ public class Meeting {
 
 	private Date datetime;
 	private Set<String> agendaSet;
+	private Set<String> todoSet;
 	private Integer estimatedDuration;
 	private Integer actualDuration;
 	private String location;
 	private String description;
 
 	private MeetingStatus status;
+	private MeetingType type;
 
 	@DBRef
 	private Group group;

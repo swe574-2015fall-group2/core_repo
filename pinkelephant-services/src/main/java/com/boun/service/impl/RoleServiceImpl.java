@@ -1,19 +1,20 @@
 package com.boun.service.impl;
 
-import com.boun.app.common.ErrorCode;
-import com.boun.app.exception.PinkElephantRuntimeException;
-import com.boun.data.mongo.model.Role;
-import com.boun.data.mongo.repository.RoleRepository;
-import com.boun.http.request.*;
-import com.boun.http.response.ActionResponse;
-import com.boun.service.PinkElephantService;
-import com.boun.service.RoleService;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.boun.app.common.ErrorCode;
+import com.boun.app.exception.PinkElephantRuntimeException;
+import com.boun.data.mongo.model.Role;
+import com.boun.data.mongo.repository.RoleRepository;
+import com.boun.http.request.CreateRoleRequest;
+import com.boun.http.request.UpdateRoleRequest;
+import com.boun.service.PinkElephantService;
+import com.boun.service.RoleService;
 
 @Service
 public class RoleServiceImpl extends PinkElephantService implements RoleService {
@@ -28,7 +29,7 @@ public class RoleServiceImpl extends PinkElephantService implements RoleService 
 		Role role = roleRepository.findOne(id);
 
 		if(role == null) {
-			throw new PinkElephantRuntimeException(400, "400", ErrorCode.ROLE_NOT_FOUND.getMessage(), "todo dev message");
+			throw new PinkElephantRuntimeException(400, ErrorCode.ROLE_NOT_FOUND, "todo dev message");
 		}
 
 		return role;
@@ -39,9 +40,10 @@ public class RoleServiceImpl extends PinkElephantService implements RoleService 
 		Role role = roleRepository.findByName(request.getName());
 
 		if(role != null){
-			throw new PinkElephantRuntimeException(400, "400", ErrorCode.DUPLICATE_ROLE.getMessage(), "todo dev message");
+			throw new PinkElephantRuntimeException(400, ErrorCode.DUPLICATE_ROLE, "todo dev message");
 		}
-
+		
+		role = new Role();
 		role.setName(request.getName());
 		role.setPermissions(request.getPermissions());
 		role = roleRepository.save(role);
@@ -66,7 +68,7 @@ public class RoleServiceImpl extends PinkElephantService implements RoleService 
 		List<Role> roles = (List<Role>)roleRepository.findAll(ids);
 
 		if(roles.size() != ids.size()) {
-			throw new PinkElephantRuntimeException(400, "400", "some roles couldn't be found", "");
+			throw new PinkElephantRuntimeException(400, ErrorCode.SOME_ROLES_NOT_FOUND, "");
 		}
 
 		return roles;

@@ -1,18 +1,34 @@
 package com.boun.app.exception;
 
+import com.boun.app.common.ErrorCode;
 import com.boun.app.response.ErrorResponse;
 
 public class PinkElephantRuntimeException extends RuntimeException {
 
-    private int status;
+	private static final long serialVersionUID = 2423713819038648809L;
+	
+	private int status;
     private String errorCode;
     private String errorMessage;
     private String developerMessage;
 
-    public PinkElephantRuntimeException(int httpStatus, String errorCode, String errorMessage, String developerMessage) {
+    public PinkElephantRuntimeException(int httpStatus, ErrorCode errorCode, String additionalInfo, String developerMessage) {
         this.status = httpStatus;
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
+        this.errorCode = errorCode.getCode();
+        
+        if(additionalInfo != null){
+        	this.errorMessage = errorCode.format(additionalInfo);
+        }else{
+        	this.errorMessage = errorCode.getMessage();	
+        }
+        
+        this.developerMessage = developerMessage;
+    }
+    
+    public PinkElephantRuntimeException(int httpStatus, ErrorCode errorCode, String developerMessage) {
+        this.status = httpStatus;
+        this.errorCode = errorCode.getCode();
+    	this.errorMessage = errorCode.getMessage();	
         this.developerMessage = developerMessage;
     }
 

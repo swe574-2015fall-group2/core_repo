@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
+import com.boun.http.request.QueryMeetingRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
@@ -77,6 +78,23 @@ public class MeetingController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("inviteUser operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Query Meetings by group ID")
+	@RequestMapping(value = "queryMeetingByGroup", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse queryMeetingByGroupId(@RequestBody QueryMeetingRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("queryMeetingByGroupId request received, request->" + request.toString());
+			}
+			return meetingService.queryMeetingsOfGroup(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("queryMeetingByGroupId operation finished");
 			}
 		}
 	}

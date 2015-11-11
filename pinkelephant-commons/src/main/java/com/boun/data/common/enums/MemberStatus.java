@@ -1,13 +1,13 @@
-package com.boun.data.common;
+package com.boun.data.common.enums;
 
-public enum GroupStatus {
+public enum MemberStatus {
 
     ACTIVE(1),
-    DELETED(2);
+    BLOCKED(2);
 
     private int value;
 
-    private GroupStatus(int value) {
+    private MemberStatus(int value) {
         this.value = value;
     }
 

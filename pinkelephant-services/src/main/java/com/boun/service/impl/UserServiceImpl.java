@@ -2,29 +2,32 @@ package com.boun.service.impl;
 
 import java.util.List;
 
-import com.boun.app.exception.PinkElephantRuntimeException;
-import com.boun.data.mongo.model.Group;
-import com.boun.http.request.*;
-import com.boun.service.GroupService;
-import com.boun.service.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boun.app.common.ErrorCode;
+import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.app.util.KeyUtils;
-import com.boun.data.common.pool.PinkElephantThreadPool;
+import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Role;
 import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.model.UserRole;
-import com.boun.data.mongo.repository.RoleRepository;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
-import com.boun.data.util.MailSender;
+import com.boun.http.request.AuthenticationRequest;
+import com.boun.http.request.ChangePasswordRequest;
+import com.boun.http.request.CreateUserRequest;
+import com.boun.http.request.ResetPasswordRequest;
+import com.boun.http.request.SetRolesRequest;
+import com.boun.http.request.UpdateUserRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.LoginResponse;
+import com.boun.service.GroupService;
+import com.boun.service.MailService;
 import com.boun.service.PinkElephantService;
+import com.boun.service.RoleService;
 import com.boun.service.UserService;
 
 @Service
@@ -37,6 +40,9 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 
 	@Autowired
 	private GroupService groupService;
+	
+	@Autowired
+	private MailService mailService;
 
 	@Autowired
 	private RoleService roleService;
@@ -45,7 +51,7 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		User user = userRepository.findOne(id);
 
 		if(user == null) {
-			throw new PinkElephantRuntimeException(400, "couldn't find user", "", "");
+			throw new PinkElephantRuntimeException(400, ErrorCode.USER_NOT_FOUND, "");
 	 	}
 
 		return user;
@@ -55,29 +61,14 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 	public ActionResponse createUser(CreateUserRequest request) {
 
 		ActionResponse response = new ActionResponse();
-
-//		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
-//			response.setAcknowledge(false);
-//			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
-//			return response;
-//		}
-
-		try {
-			User user = userRepository.findByUsername(request.getUser().getUsername());
-			if(user != null){
-				response.setAcknowledge(false);
-				response.setMessage(ErrorCode.DUPLICATE_USER.getMessage());
-				return response;
-			}
-
-			userRepository.save(request.getUser());
-			response.setAcknowledge(true);
-		} catch (Throwable e) {
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
-
-			logger.error("Error in createUser()", e);
+		
+		User user = userRepository.findByUsername(request.getUser().getUsername());
+		if(user != null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.DUPLICATE_USER, "");
 		}
+
+		userRepository.save(request.getUser());
+		response.setAcknowledge(true);
 
 		return response;
 	}
@@ -85,20 +76,14 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 	@Override
 	public ActionResponse updateUser(UpdateUserRequest request) {
 
+		validate(request);
+		
 		//TODO only admins and profile owners should be able to updateUser
 		ActionResponse response = new ActionResponse();
-		
-		if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
-			response.setAcknowledge(false);
-			response.setMessage(ErrorCode.OPERATION_NOT_ALLOWED.getMessage());
-			return response;
-		}
 
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
 		if(!authenticatedUser.getId().equalsIgnoreCase(request.getId())){
-			response.setAcknowledge(false);
-			response.setMessage(ErrorCode.INVALID_INPUT.format("Input userId is different than authenticated user"));
-			return response;
+			throw new PinkElephantRuntimeException(400, ErrorCode.INVALID_INPUT, "Input userId is different than authenticated user", "");
 		}
 		
 		User user =	findById(request.getId());
@@ -114,15 +99,8 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		user.getUserDetail().setAcademiaProfile(request.getAcademiaProfile());
 		user.getUserDetail().setImagePath(request.getImagePath());
 
-		try {
-			userRepository.save(user);
-			response.setAcknowledge(true);
-		} catch (Throwable e) {
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
-
-			logger.error("Error in updateUser()", e);
-		}
+		userRepository.save(user);
+		response.setAcknowledge(true);
 
 		return response;
 	}
@@ -136,7 +114,7 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		User user = userRepository.findByUsernameAndPassword(request.getUsername(), request.getPassword());
 
 		if (user == null) {
-			throw new PinkElephantRuntimeException(400, "400", ErrorCode.USER_NOT_FOUND.getMessage(), "");
+			throw new PinkElephantRuntimeException(400, ErrorCode.USER_NOT_FOUND, "");
 		}
 
 		response.setToken(KeyUtils.currentTimeUUID().toString());
@@ -150,35 +128,20 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 	public ActionResponse resetPassword(final ResetPasswordRequest request) {
 		
 		ActionResponse response = new ActionResponse();
-		try{
-			User user = userRepository.findByUsername(request.getUsername());
-			if(user == null){
-				response.setAcknowledge(false);
-				response.setMessage(ErrorCode.USER_NOT_FOUND.getMessage());
-				return response;
-			}
-			
-			final String oneTimeToken = KeyUtils.currentTimeUUID().toString();
-			user.setOneTimeToken(oneTimeToken);
-			userRepository.save(user);
-			
-			PinkElephantThreadPool.EMAIL_POOL.runTask(new Runnable() {
-
-				@Override
-				public void run() {
-					MailSender.getInstance().sendMail(request.getUsername(), "Password reset request", "You token for password renewal is " + oneTimeToken);
-				}
-			});
-			
-			
-			response.setAcknowledge(true);
-		}catch(Throwable e){
-			
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
-			
-			logger.error("Error in resetPassword()", e);
+		
+		User user = userRepository.findByUsername(request.getUsername());
+		if(user == null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.USER_NOT_FOUND, "");
 		}
+		
+		final String oneTimeToken = KeyUtils.currentTimeUUID().toString();
+		user.setOneTimeToken(oneTimeToken);
+		userRepository.save(user);
+		
+		mailService.sendMail(request.getUsername(), "Password reset request", "You token for password renewal is " + oneTimeToken);
+		
+		response.setAcknowledge(true);
+
 		return response;
 	}
 
@@ -186,38 +149,20 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 	public ActionResponse changePassword(ChangePasswordRequest request) {
 		
 		ActionResponse response = new ActionResponse();
-		try{
-			final User user = userRepository.findByOneTimeToken(request.getOneTimeToken());
-			if(user == null){
-				response.setAcknowledge(false);
-				response.setMessage(ErrorCode.USER_NOT_FOUND.getMessage());
-				return response;
-			}
-			
-			user.setOneTimeToken(null);
-			user.setPassword(request.getNewPassword());
-			
-			userRepository.save(user);
-
-
-			//TODO move this to its own service if necessary
-			PinkElephantThreadPool.EMAIL_POOL.runTask(new Runnable() {
-				
-				@Override
-				public void run() {
-					MailSender.getInstance().sendMail(user.getUsername(), "Password change request", "You password is updated successfully");					
-				}
-			});
-			
-			
-			response.setAcknowledge(true);
-		}catch(Throwable e){
-			
-			response.setAcknowledge(false);
-			response.setMessage(e.getMessage());
-			
-			logger.error("Error in changePassword()", e);
+		
+		final User user = userRepository.findByOneTimeToken(request.getOneTimeToken());
+		if(user == null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.USER_NOT_FOUND, "");
 		}
+		
+		user.setOneTimeToken(null);
+		user.setPassword(request.getNewPassword());
+		
+		userRepository.save(user);
+
+		mailService.sendMail(user.getUsername(), "Password change request", "You password is updated successfully");
+		
+		response.setAcknowledge(true);
 		return response;
 		
 	}
