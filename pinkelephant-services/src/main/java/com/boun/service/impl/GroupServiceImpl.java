@@ -26,6 +26,7 @@ import com.boun.http.response.CreateResponse;
 import com.boun.http.response.ListGroupResponse;
 import com.boun.service.GroupService;
 import com.boun.service.PinkElephantService;
+import com.boun.service.TagService;
 
 @Service
 public class GroupServiceImpl extends PinkElephantService implements GroupService{
@@ -41,6 +42,9 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private TagService tagService;
+	
 	@Override
 	public Group findById(String groupId) {
 		Group group = groupRepository.findOne(groupId);
@@ -89,6 +93,8 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		response.setAcknowledge(true);
 		response.setEntityId(group.getId());
 
+		tagService.tag("test", group);
+		
 		return response;
 	}
 	

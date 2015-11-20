@@ -22,8 +22,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.boun.PinkElephantApiApplication;
 import com.boun.data.common.enums.Status;
-import com.boun.data.mongo.model.User;
-import com.boun.data.mongo.model.UserDetail;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.http.request.AuthenticationRequest;
 import com.boun.http.request.CreateUserRequest;
@@ -57,8 +55,8 @@ public class UserControllerTest {
 	public void test2_login(){
 		
 		AuthenticationRequest request = new AuthenticationRequest();
-		request.setUsername(createUserRequest.getUser().getUsername());
-		request.setPassword(createUserRequest.getUser().getPassword());
+		request.setUsername(createUserRequest.getUsername());
+		request.setPassword(createUserRequest.getPassword());
 		
 		ResponseEntity<LoginResponse> entity = new TestRestTemplate().postForEntity(getServiceUrl("login"), request, LoginResponse.class);
 		
@@ -71,7 +69,7 @@ public class UserControllerTest {
 	public void test3_resetPassword(){
 		
 		ResetPasswordRequest request = new ResetPasswordRequest();
-		request.setUsername(createUserRequest.getUser().getUsername());
+		request.setUsername(createUserRequest.getUsername());
 		
 		ResponseEntity<ActionResponse> entity = new TestRestTemplate().postForEntity(getServiceUrl("resetPassword"), request, ActionResponse.class);
 		
@@ -98,21 +96,16 @@ public class UserControllerTest {
 	
 	private static CreateUserRequest getDummyUser(){
 		
-		User user = new User();
+		CreateUserRequest user = new CreateUserRequest();
+		
 		user.setFirstname("TestFirstUsername");
 		user.setLastname("TestLastName");
 		user.setPassword("TestPassword");
 		user.setStatus(Status.ACTIVE);
 		user.setUsername(new UsernameGenerator().nextUsername() + "@gmail.com");
+		user.setBirthDate(new Date());
 		
-		UserDetail detail = new UserDetail();
-		detail.setBirthDate(new Date());
-		
-		user.setUserDetail(detail);
-		CreateUserRequest request = new CreateUserRequest();
-		request.setUser(user);
-		
-		return request;
+		return user;
 	}
 	
 	private static final class UsernameGenerator {

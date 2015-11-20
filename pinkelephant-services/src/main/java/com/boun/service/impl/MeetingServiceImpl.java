@@ -30,6 +30,7 @@ import com.boun.http.response.ListMeetingResponse;
 import com.boun.service.GroupService;
 import com.boun.service.MeetingService;
 import com.boun.service.PinkElephantService;
+import com.boun.service.TagService;
 
 @Service
 public class MeetingServiceImpl extends PinkElephantService implements MeetingService{
@@ -44,6 +45,9 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private TagService tagService;
 	
 	@Override
 	public CreateResponse createMeeting(CreateMeetingRequest request) {
@@ -66,6 +70,8 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		response.setAcknowledge(true);
 		response.setEntityId(meeting.getId());
 			
+		tagService.tag("test", meeting);
+		
 		return response;
 	}
 	

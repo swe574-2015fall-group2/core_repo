@@ -13,6 +13,7 @@ import com.boun.app.util.KeyUtils;
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Role;
 import com.boun.data.mongo.model.User;
+import com.boun.data.mongo.model.UserDetail;
 import com.boun.data.mongo.model.UserRole;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
@@ -62,12 +63,12 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 
 		ActionResponse response = new ActionResponse();
 		
-		User user = userRepository.findByUsername(request.getUser().getUsername());
+		User user = userRepository.findByUsername(request.getUsername());
 		if(user != null){
 			throw new PinkElephantRuntimeException(400, ErrorCode.DUPLICATE_USER, "");
 		}
 
-		userRepository.save(request.getUser());
+		userRepository.save(mapUser(request));
 		response.setAcknowledge(true);
 
 		return response;
@@ -190,5 +191,29 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		user = userRepository.save(user);
 
 		return user;
+	}
+	
+	private User mapUser(CreateUserRequest request){
+		User user = new User();
+		
+		user.setFirstname(request.getFirstname());
+		user.setLastname(request.getLastname());
+		user.setPassword(request.getPassword());
+		user.setStatus(request.getStatus());
+		user.setUsername(request.getUsername());
+		
+		UserDetail detail = new UserDetail();
+		detail.setAcademiaProfile(request.getAcademiaProfile());
+		detail.setBirthDate(request.getBirthDate());
+		detail.setInterestedAreas(request.getInterestedAreas());
+		detail.setLinkedinProfile(request.getLinkedinProfile());
+		detail.setProfession(request.getProfession());
+		detail.setProgramme(request.getProgramme());
+		detail.setUniversity(request.getUniversity());
+		
+		user.setUserDetail(detail);
+		
+		return user;
+		
 	}
 }

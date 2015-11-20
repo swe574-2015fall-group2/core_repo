@@ -1,12 +1,24 @@
 package com.boun.http.request;
 
-import com.boun.data.mongo.model.User;
+import java.util.Date;
+
+import com.boun.data.common.enums.Status;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
 public class CreateUserRequest{
 
-	private User user;
+    private String username;
+    private String firstname;
+    private String lastname;
+    private String password;
+    private Status status;
+    private Date birthDate;
+    private String profession;
+    private String university;
+    private String programme;
+    private String interestedAreas;
+    private String linkedinProfile;
+    private String academiaProfile;
 }
