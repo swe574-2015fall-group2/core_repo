@@ -1,9 +1,11 @@
 package com.boun.service;
 
-import com.boun.http.response.CreateResourceResponse;
+import com.boun.data.mongo.model.Resource;
 
 public interface ResourceService {
 
-    public CreateResourceResponse uploadResource(byte[] bytes, String name);
+    Resource uploadResource(byte[] bytes, String name);
+
+    boolean delete(String id);
     
 }

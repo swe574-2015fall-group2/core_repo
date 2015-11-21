@@ -83,7 +83,7 @@ public class MeetingController {
 		}
 	}
 	
-	@ApiOperation(value = "Reply Invication")
+	@ApiOperation(value = "Reply Invitation")
 	@RequestMapping(value = "replyInvitation", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
 	public @ResponseBody ActionResponse invitationReply(@RequestBody MeetingInvitationReplyRequest request) {

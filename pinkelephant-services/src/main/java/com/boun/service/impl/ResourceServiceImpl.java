@@ -1,30 +1,23 @@
 package com.boun.service.impl;
 
-import com.boun.app.common.ErrorCode;
-import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.mongo.model.Resource;
 import com.boun.data.mongo.model.Role;
 import com.boun.data.mongo.repository.ResourceRepository;
-import com.boun.data.mongo.repository.RoleRepository;
-import com.boun.http.request.CreateRoleRequest;
-import com.boun.http.request.UpdateRoleRequest;
-import com.boun.http.response.CreateResourceResponse;
 import com.boun.service.PinkElephantService;
 import com.boun.service.ResourceService;
-import com.boun.service.RoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.List;
 
 @Service
 public class ResourceServiceImpl extends PinkElephantService implements ResourceService {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	//TODO add this to a property file
 	private final String RESOURCE_FILES_PATH = "resourcefiles/";
 
 	@Autowired
@@ -32,7 +25,7 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 
 
 	@Override
-	public CreateResourceResponse uploadResource(byte[] bytes, String name) {
+	public Resource uploadResource(byte[] bytes, String name) {
 
 		Resource resource = new Resource();
 		resource.setName(name);
@@ -52,8 +45,21 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-		e.printStackTrace();
+			e.printStackTrace();
+		}
+		return resource;
 	}
-		return null;
+
+	public boolean delete(String id) {
+
+		//TODO check if this resource is related to an object, then throw exception
+		Resource resource = resourceRepository.findOne(id);
+
+		File file = new File(RESOURCE_FILES_PATH + resource.getId());
+		file.delete();
+
+		resourceRepository.delete(resource);
+
+		return true;
 	}
 }
