@@ -2,6 +2,7 @@ package com.boun.web.controller;
 
 import com.boun.app.exception.PinkElephantValidationException;
 import com.boun.data.mongo.model.Resource;
+import com.boun.http.request.CreateResourceRequest;
 import com.boun.http.request.DeleteResourceRequest;
 import com.boun.service.ResourceService;
 import com.wordnik.swagger.annotations.Api;
@@ -25,10 +26,28 @@ public class ResourceController {
     @Autowired
     private ResourceService resourceService;
 
-	@ApiOperation(value = "Upload external resource")
+	@ApiOperation(value="Create External Resource")
+	@RequestMapping(value="create", method = RequestMethod.POST)
+	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
+	public @ResponseBody
+	Resource createInternalResource(@RequestBody CreateResourceRequest request) {
+
+		try{
+			if(logger.isDebugEnabled()){
+				logger.debug("createInternalResource request received, request->" + request.toString());
+			}
+			return resourceService.createExternalResource(request);
+		}finally{
+			if(logger.isDebugEnabled()){
+				logger.debug("createInternalResource operation finished");
+			}
+		}
+	}
+
+	@ApiOperation(value = "Create Internal Resource")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
 	@RequestMapping(value="/upload", method=RequestMethod.POST)
-	public Resource uploadExternalResource(@RequestParam("file") MultipartFile file, @RequestParam("authToken")String authToken) {
+	public Resource uploadInternalResource(@RequestParam("file") MultipartFile file, @RequestParam("authToken")String authToken) {
 		try {
 			try {
 				if (logger.isDebugEnabled()) {

@@ -2,8 +2,10 @@ package com.boun.service.impl;
 
 import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
+import com.boun.data.common.enums.ResourceType;
 import com.boun.data.mongo.model.Resource;
 import com.boun.data.mongo.repository.ResourceRepository;
+import com.boun.http.request.CreateResourceRequest;
 import com.boun.http.request.DeleteResourceRequest;
 import com.boun.service.PinkElephantService;
 import com.boun.service.ResourceService;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
+import java.util.Date;
 
 @Service
 public class ResourceServiceImpl extends PinkElephantService implements ResourceService {
@@ -37,12 +40,32 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 	}
 
 	@Override
+	public Resource createExternalResource(CreateResourceRequest request) {
+
+		validate(request);
+
+		Resource resource = new Resource();
+		resource.setName(request.getName());
+		resource.setLink(request.getLink());
+		resource.setType(ResourceType.EXTERNAL);
+		resource.setAtCreated(new Date());
+
+		resource = resourceRepository.save(resource);
+
+		return  resource;
+
+	}
+
+	@Override
 	public Resource uploadResource(byte[] bytes, String name, String authToken) {
 
 		validate(authToken);
 
 		Resource resource = new Resource();
 		resource.setName(name);
+		resource.setType(ResourceType.INTERNAL);
+		//TODO resource.setLink(request.getLink());
+		resource.setAtCreated(new Date());
 
 		resource = resourceRepository.save(resource);
 

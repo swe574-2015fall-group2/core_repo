@@ -1,9 +1,12 @@
 package com.boun.data.mongo.model;
 
+import com.boun.data.common.enums.ResourceType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.util.Date;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
@@ -12,5 +15,11 @@ import lombok.EqualsAndHashCode;
 public class Resource extends BaseEntity{
 
     String name;
+
+    String link;
+
+    ResourceType type;
+
+    private Date atCreated;
 
 }
