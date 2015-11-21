@@ -37,4 +37,12 @@ public abstract class PinkElephantService {
     		throw new PinkElephantRuntimeException(400, ErrorCode.OPERATION_NOT_ALLOWED, "");
 		}
     }
+
+    protected void validate(String authToken) throws PinkElephantRuntimeException{
+
+        BaseRequest request = new BaseRequest();
+        request.setAuthToken(authToken);
+
+        validate(request);
+    }
 }

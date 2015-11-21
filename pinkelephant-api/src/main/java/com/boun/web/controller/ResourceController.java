@@ -2,6 +2,7 @@ package com.boun.web.controller;
 
 import com.boun.app.exception.PinkElephantValidationException;
 import com.boun.data.mongo.model.Resource;
+import com.boun.http.request.DeleteResourceRequest;
 import com.boun.service.ResourceService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -27,13 +28,13 @@ public class ResourceController {
 	@ApiOperation(value = "Upload external resource")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
 	@RequestMapping(value="/upload", method=RequestMethod.POST)
-	public Resource uploadExternalResource(@RequestParam("file") MultipartFile file) {
+	public Resource uploadExternalResource(@RequestParam("file") MultipartFile file, @RequestParam("authToken")String authToken) {
 		try {
 			try {
 				if (logger.isDebugEnabled()) {
 					logger.debug("uploadResource request received, request->" + file.toString());
 				}
-				return resourceService.uploadResource(file.getBytes(), file.getOriginalFilename());
+				return resourceService.uploadResource(file.getBytes(), file.getOriginalFilename(), authToken);
 			} finally {
 				if (logger.isDebugEnabled()) {
 					logger.debug("uploadResource operation finished");
@@ -47,9 +48,10 @@ public class ResourceController {
 	@ApiOperation(value = "Delete an external resource")
 	@RequestMapping(value="/{id}", method = RequestMethod.DELETE)
 	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
-	public boolean deleteResource(@PathVariable String id) {
+	public boolean deleteResource(@RequestBody DeleteResourceRequest request) {
 		//TODO add userId to log
-		return resourceService.delete(id);
+
+		return resourceService.delete(request);
 	}
 
 

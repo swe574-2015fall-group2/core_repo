@@ -27,7 +27,9 @@ public enum ErrorCode {
 	ALREADY_ACCEPTED_INVITATION("You have accepted meeting invitation already", "115"),
 	ALREADY_REJECTED_INVITATION("You have rejected meeting invitation already", "116"),
 	ALREADY_MARKED_AS_TENTATIVE_INVITATION("You have marked meeting invitation as tentative already", "117"),
-	
+
+	RESOURCE_NOT_FOUND("Resource not found", "118"),
+
 	INTERNAL_SERVER_ERROR("Internal Server Error", "900")
 	;
 

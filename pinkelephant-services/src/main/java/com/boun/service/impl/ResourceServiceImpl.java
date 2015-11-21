@@ -1,8 +1,10 @@
 package com.boun.service.impl;
 
+import com.boun.app.common.ErrorCode;
+import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.mongo.model.Resource;
-import com.boun.data.mongo.model.Role;
 import com.boun.data.mongo.repository.ResourceRepository;
+import com.boun.http.request.DeleteResourceRequest;
 import com.boun.service.PinkElephantService;
 import com.boun.service.ResourceService;
 import org.slf4j.Logger;
@@ -23,9 +25,21 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 	@Autowired
 	private ResourceRepository resourceRepository;
 
+	@Override
+	public Resource findById(String resourceId) {
+		Resource resource = resourceRepository.findOne(resourceId);
+
+		if(resource == null) {
+			throw new PinkElephantRuntimeException(400, ErrorCode.RESOURCE_NOT_FOUND, "");
+		}
+
+		return resource;
+	}
 
 	@Override
-	public Resource uploadResource(byte[] bytes, String name) {
+	public Resource uploadResource(byte[] bytes, String name, String authToken) {
+
+		validate(authToken);
 
 		Resource resource = new Resource();
 		resource.setName(name);
@@ -50,11 +64,14 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 		return resource;
 	}
 
-	public boolean delete(String id) {
+	public boolean delete(DeleteResourceRequest request) {
+
+		validate(request);
 
 		//TODO check if this resource is related to an object, then throw exception
-		Resource resource = resourceRepository.findOne(id);
+		Resource resource = findById(request.getId());
 
+		//TODO seperate service or function for files?
 		File file = new File(RESOURCE_FILES_PATH + resource.getId());
 		file.delete();
 
