@@ -96,16 +96,16 @@ public class UserControllerTest {
 	
 	private static CreateUserRequest getDummyUser(){
 		
-		CreateUserRequest user = new CreateUserRequest();
+		CreateUserRequest request = new CreateUserRequest();
+
+		request.setFirstname("TestFirstUsername");
+		request.setLastname("TestLastName");
+		request.setPassword("TestPassword");
+		request.setUsername(new UsernameGenerator().nextUsername() + "@gmail.com");
+		request.setBirthDate(new Date());
 		
-		user.setFirstname("TestFirstUsername");
-		user.setLastname("TestLastName");
-		user.setPassword("TestPassword");
-		user.setStatus(Status.ACTIVE);
-		user.setUsername(new UsernameGenerator().nextUsername() + "@gmail.com");
-		user.setBirthDate(new Date());
-		
-		return user;
+		return request;
+
 	}
 	
 	private static final class UsernameGenerator {

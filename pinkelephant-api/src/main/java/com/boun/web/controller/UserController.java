@@ -32,7 +32,7 @@ public class UserController {
     @ApiOperation(value="Create User")
     @RequestMapping(value="create", method = RequestMethod.POST)
     @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
-    public @ResponseBody ActionResponse createUser(@RequestBody CreateUserRequest request) {
+    public @ResponseBody User createUser(@RequestBody CreateUserRequest request) {
 
     	try{
     		if(logger.isDebugEnabled()){

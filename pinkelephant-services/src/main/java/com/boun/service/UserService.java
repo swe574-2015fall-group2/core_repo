@@ -12,7 +12,7 @@ public interface UserService {
 
 	LoginResponse authenticate(AuthenticationRequest request);
 	
-    ActionResponse createUser(CreateUserRequest request);
+    User createUser(CreateUserRequest request);
 
     ActionResponse updateUser(UpdateUserRequest request);
 

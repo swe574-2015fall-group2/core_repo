@@ -44,7 +44,6 @@ public class User extends BaseEntity{
     private UserPreferences preferences;
 
     private Status status;
-    //
 
     public UserRole getGroupRoles(String groupId) {
         UserRole role = new UserRole();

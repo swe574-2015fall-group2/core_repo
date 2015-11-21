@@ -2,6 +2,8 @@ package com.boun.service.impl;
 
 import java.util.List;
 
+import com.boun.data.common.enums.Status;
+import com.boun.data.mongo.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +12,6 @@ import org.springframework.stereotype.Service;
 import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.app.util.KeyUtils;
-import com.boun.data.mongo.model.Group;
-import com.boun.data.mongo.model.Role;
-import com.boun.data.mongo.model.User;
-import com.boun.data.mongo.model.UserDetail;
-import com.boun.data.mongo.model.UserRole;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.AuthenticationRequest;
@@ -59,19 +56,16 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 	}
 
 	@Override
-	public ActionResponse createUser(CreateUserRequest request) {
+	public User createUser(CreateUserRequest request) {
 
-		ActionResponse response = new ActionResponse();
-		
 		User user = userRepository.findByUsername(request.getUsername());
 		if(user != null){
 			throw new PinkElephantRuntimeException(400, ErrorCode.DUPLICATE_USER, "");
 		}
 
-		userRepository.save(mapUser(request));
-		response.setAcknowledge(true);
+		user = userRepository.save(mapUser(request));
 
-		return response;
+		return user;
 	}
 
 	@Override
@@ -170,9 +164,6 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 
 	@Override
 	public User setRoles(final SetRolesRequest request) {
-
-		ActionResponse response = new ActionResponse();
-
 		//If user is the authenticated user, we can get it from session instead of getting userId from service.
 		//TODO check if user is null
 		User user = findById(request.getUserId());
@@ -199,7 +190,7 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		user.setFirstname(request.getFirstname());
 		user.setLastname(request.getLastname());
 		user.setPassword(request.getPassword());
-		user.setStatus(request.getStatus());
+		user.setStatus(Status.ACTIVE);
 		user.setUsername(request.getUsername());
 		
 		UserDetail detail = new UserDetail();
