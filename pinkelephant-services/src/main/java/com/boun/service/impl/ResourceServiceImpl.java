@@ -53,6 +53,19 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 	}
 
 	@Override
+	public List<Resource> findByIds(List<String> resourceIds) {
+		List<Resource> resources = (List<Resource>)resourceRepository.findAll(resourceIds);
+
+		/*TODO temporarily commented.
+		if(resources == null || resources.isEmpty() || resources.size() != resourceIds.size()) {
+			throw new PinkElephantRuntimeException(400, ErrorCode.RESOURCE_NOT_FOUND, "");
+		}
+		*/
+		return resources;
+	}
+
+
+	@Override
 	public Resource createExternalResource(CreateResourceRequest request) {
 
 		validate(request);

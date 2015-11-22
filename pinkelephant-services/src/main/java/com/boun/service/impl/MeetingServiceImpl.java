@@ -48,7 +48,18 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 	
 	@Autowired
 	private TagService tagService;
-	
+
+	@Override
+	public Meeting findById(String groupId) {
+		Meeting meeting = meetingRepository.findOne(groupId);
+
+		if(meeting == null) {
+			throw new PinkElephantRuntimeException(400, ErrorCode.MEETING_NOT_FOUND, "");
+		}
+
+		return meeting;
+	}
+
 	@Override
 	public CreateResponse createMeeting(CreateMeetingRequest request) {
 
@@ -88,10 +99,7 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 			throw new PinkElephantRuntimeException(400, ErrorCode.INVALID_INPUT, "UsernameList is empty", "");
 		}
 		
-		Meeting meeting = meetingRepository.findOne(request.getMeetingId());
-		if(meeting == null){
-			throw new PinkElephantRuntimeException(400, ErrorCode.MEETING_NOT_FOUND, "");
-		}
+		Meeting meeting = findById(request.getMeetingId());
 
 		Set<User> invitedList = meeting.getInvitedUserSet();
 		if(invitedList == null){
@@ -126,10 +134,7 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
 		
-		Meeting meeting = meetingRepository.findOne(request.getMeetingId());
-		if(meeting == null){
-			throw new PinkElephantRuntimeException(400, ErrorCode.MEETING_NOT_FOUND, "");
-		}
+		Meeting meeting = findById(request.getMeetingId());
 
 		Set<User> invitedList = meeting.getInvitedUserSet();
 		if(invitedList == null || invitedList.isEmpty()){
