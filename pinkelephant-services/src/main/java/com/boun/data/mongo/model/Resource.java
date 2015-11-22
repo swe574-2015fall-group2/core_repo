@@ -17,11 +17,14 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Resource extends BaseEntity{
 
-    String name;
+    private String name;
 
-    String link;
+    private String link;
 
-    ResourceType type;
+    private ResourceType type;
+
+    @DBRef
+    private Group group;
 
     private Date createdAt;
 

@@ -47,13 +47,13 @@ public class ResourceController {
 	@ApiOperation(value = "Create Internal Resource")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
 	@RequestMapping(value="/upload", method=RequestMethod.POST)
-	public Resource uploadInternalResource(@RequestParam("file") MultipartFile file, @RequestParam("authToken")String authToken) {
+	public Resource uploadInternalResource(@RequestParam("file") MultipartFile file, @RequestParam("groupId")String groupId, @RequestParam("authToken")String authToken) {
 		try {
 			try {
 				if (logger.isDebugEnabled()) {
 					logger.debug("uploadResource request received, request->" + file.toString());
 				}
-				return resourceService.uploadResource(file.getBytes(), file.getOriginalFilename(), authToken);
+				return resourceService.uploadResource(file.getBytes(), file.getOriginalFilename(), groupId, authToken);
 			} finally {
 				if (logger.isDebugEnabled()) {
 					logger.debug("uploadResource operation finished");

@@ -3,11 +3,13 @@ package com.boun.service.impl;
 import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.ResourceType;
+import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Resource;
 import com.boun.data.mongo.repository.ResourceRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.CreateResourceRequest;
 import com.boun.http.request.DeleteResourceRequest;
+import com.boun.service.GroupService;
 import com.boun.service.PinkElephantService;
 import com.boun.service.ResourceService;
 import org.slf4j.Logger;
@@ -29,6 +31,9 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 	@Autowired
 	private ResourceRepository resourceRepository;
 
+	@Autowired
+	private GroupService groupService;
+
 	@Override
 	public Resource findById(String resourceId) {
 		Resource resource = resourceRepository.findOne(resourceId);
@@ -45,10 +50,13 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 
 		validate(request);
 
+		Group group = groupService.findById(request.getGroupId());
+
 		Resource resource = new Resource();
 		resource.setName(request.getName());
 		resource.setLink(request.getLink());
 		resource.setType(ResourceType.EXTERNAL);
+		resource.setGroup(group);
 		resource.setCreatedAt(new Date());
 		resource.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
 
@@ -59,14 +67,17 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 	}
 
 	@Override
-	public Resource uploadResource(byte[] bytes, String name, String authToken) {
+	public Resource uploadResource(byte[] bytes, String name, String groupId, String authToken) {
 
 		validate(authToken);
+
+		Group group = groupService.findById(groupId);
 
 		Resource resource = new Resource();
 		resource.setName(name);
 		resource.setType(ResourceType.INTERNAL);
 		//TODO resource.setLink(request.getLink());
+		resource.setGroup(group);
 		resource.setCreatedAt(new Date());
 		resource.setCreator(PinkElephantSession.getInstance().getUser(authToken));
 		resource = resourceRepository.save(resource);

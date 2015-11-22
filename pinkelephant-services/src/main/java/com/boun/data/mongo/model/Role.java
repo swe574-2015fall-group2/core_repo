@@ -16,9 +16,9 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Role extends BaseEntity{
 
-    String name;
+    private String name;
 
-    List<Permission> permissions;
+    private List<Permission> permissions;
 
     public Role() {
        permissions = new ArrayList<>();

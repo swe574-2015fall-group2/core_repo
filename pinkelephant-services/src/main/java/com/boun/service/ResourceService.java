@@ -10,7 +10,7 @@ public interface ResourceService {
 
     Resource createExternalResource(CreateResourceRequest request);
 
-    Resource uploadResource(byte[] bytes, String name, String authToken);
+    Resource uploadResource(byte[] bytes, String name, String groupId, String authToken);
 
     boolean delete(DeleteResourceRequest id);
     
