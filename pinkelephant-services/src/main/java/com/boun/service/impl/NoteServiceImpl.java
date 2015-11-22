@@ -9,6 +9,7 @@ import com.boun.data.mongo.repository.RoleRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.CreateNoteRequest;
 import com.boun.http.request.CreateRoleRequest;
+import com.boun.http.request.UpdateNoteRequest;
 import com.boun.http.request.UpdateRoleRequest;
 import com.boun.service.*;
 import org.slf4j.Logger;
@@ -53,6 +54,8 @@ public class NoteServiceImpl extends PinkElephantService implements NoteService 
 		validate(request);
 
 		Group group = groupService.findById(request.getGroupId());
+		//TODO check if user is in this group
+
 		Meeting meeting = meetingService.findById(request.getMeetingId());
 		List<Resource> resources = resourceService.findByIds(request.getResourceIds());
 
@@ -63,6 +66,35 @@ public class NoteServiceImpl extends PinkElephantService implements NoteService 
 		note.setGroup(group);
 		note.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
 		note.setCreatedAt(new Date());
+		note.setMeeting(meeting);
+		note.setResources(resources);
+
+		note = noteRepository.save(note);
+
+		return note;
+
+	}
+
+	@Override
+	public Note updateNote(UpdateNoteRequest request) {
+
+		validate(request);
+
+		Note note = findById(request.getId());
+
+		Group group = groupService.findById(request.getGroupId());
+		//TODO check if user is in this group
+
+		Meeting meeting = meetingService.findById(request.getMeetingId());
+		List<Resource> resources = resourceService.findByIds(request.getResourceIds());
+
+		note.setTitle(request.getTitle());
+		note.setText(request.getText());
+		note.setGroup(group);
+		//note.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
+		//note.setCreatedAt(new Date());
+		//TODO modifiedDate, modifiedBy
+
 		note.setMeeting(meeting);
 		note.setResources(resources);
 
