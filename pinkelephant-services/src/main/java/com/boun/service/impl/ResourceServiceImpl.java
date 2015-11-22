@@ -1,5 +1,18 @@
 package com.boun.service.impl;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.ResourceType;
@@ -7,20 +20,12 @@ import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Resource;
 import com.boun.data.mongo.repository.ResourceRepository;
 import com.boun.data.session.PinkElephantSession;
+import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateResourceRequest;
-import com.boun.http.request.DeleteResourceRequest;
-import com.boun.http.request.QueryResourceRequest;
+import com.boun.http.request.BasicDeleteRequest;
 import com.boun.service.GroupService;
 import com.boun.service.PinkElephantService;
 import com.boun.service.ResourceService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.io.*;
-import java.util.Date;
-import java.util.List;
 
 @Service
 public class ResourceServiceImpl extends PinkElephantService implements ResourceService {
@@ -102,7 +107,7 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 		return resource;
 	}
 
-	public boolean delete(DeleteResourceRequest request) {
+	public boolean delete(BasicDeleteRequest request) {
 
 		validate(request);
 
@@ -118,8 +123,8 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 		return true;
 	}
 
-	public List<Resource> queryResourcesOfGroup(QueryResourceRequest request) {
-		Group group = groupService.findById(request.getGroupId());
+	public List<Resource> queryResourcesOfGroup(BasicQueryRequest request) {
+		Group group = groupService.findById(request.getId());
 		return resourceRepository.findResources(group.getId());
 	}
 }

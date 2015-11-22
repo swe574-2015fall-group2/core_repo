@@ -10,12 +10,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boun.http.request.CreateMeetingRequest;
+import com.boun.http.request.BasicDeleteRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
-import com.boun.http.request.QueryMeetingRequest;
+import com.boun.http.request.MeetingProposalInvitationReplyRequest;
+import com.boun.http.request.BasicQueryRequest;
+import com.boun.http.request.CreateMeetingProposalRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
+import com.boun.service.MeetingProposalService;
 import com.boun.service.MeetingService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -31,6 +35,9 @@ public class MeetingController {
 
     @Autowired
     private MeetingService meetingService;
+    
+    @Autowired
+    private MeetingProposalService meetingProposalService;
     
 	@ApiOperation(value = "Create Meeting")
 	@RequestMapping(value = "create", method = RequestMethod.POST)
@@ -103,7 +110,7 @@ public class MeetingController {
 	@ApiOperation(value = "Query Meetings by group ID")
 	@RequestMapping(value = "queryMeetingByGroup", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody ActionResponse queryMeetingByGroupId(@RequestBody QueryMeetingRequest request) {
+	public @ResponseBody ActionResponse queryMeetingByGroupId(@RequestBody BasicQueryRequest request) {
 
 		try {
 			if (logger.isDebugEnabled()) {
@@ -113,6 +120,74 @@ public class MeetingController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("queryMeetingByGroupId operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Create Meeting Proposal")
+	@RequestMapping(value = "createMeetingProposal", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse createMeetingProposal(@RequestBody CreateMeetingProposalRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("createMeetingProposal request received, request->" + request.toString());
+			}
+			return meetingProposalService.createMeetingProposal(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("createMeetingProposal operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Delete Meeting Proposal")
+	@RequestMapping(value = "deleteMeetingProposal", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse deleteMeetingProposal(@RequestBody BasicDeleteRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("deleteMeetingProposal request received, request->" + request.toString());
+			}
+			return meetingProposalService.deleteMeetingProposal(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("deleteMeetingProposal operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Query Meeting Proposal")
+	@RequestMapping(value = "getMeetingProposal", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse getMeetingProposal(@RequestBody BasicQueryRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getMeetingProposal request received, request->" + request.toString());
+			}
+			return meetingProposalService.getMeetingProposal(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getMeetingProposal operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Reply to Meeting Proposal Invitation")
+	@RequestMapping(value = "replyInvitation", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse replyInvitation(@RequestBody MeetingProposalInvitationReplyRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("replyInvitation request received, request->" + request.toString());
+			}
+			return meetingProposalService.replyInvitation(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("replyInvitation operation finished");
 			}
 		}
 	}

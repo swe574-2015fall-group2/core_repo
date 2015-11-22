@@ -29,6 +29,10 @@ public enum ErrorCode {
 	ALREADY_MARKED_AS_TENTATIVE_INVITATION("You have marked meeting invitation as tentative already", "117"),
 
 	RESOURCE_NOT_FOUND("Resource not found", "118"),
+	
+	DISCUSSION_NOT_FOUND("Discussion not found", "130"),
+	
+	MEETING_PROPOSAL_NOT_FOUND("Discussion not found", "140"),
 
 	INTERNAL_SERVER_ERROR("Internal Server Error", "900")
 	;

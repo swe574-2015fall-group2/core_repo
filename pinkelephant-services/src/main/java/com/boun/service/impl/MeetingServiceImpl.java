@@ -22,7 +22,7 @@ import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
-import com.boun.http.request.QueryMeetingRequest;
+import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
@@ -255,19 +255,15 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 	}
 
 	@Override
-	public ListMeetingResponse queryMeetingsOfGroup(QueryMeetingRequest request) {
+	public ListMeetingResponse queryMeetingsOfGroup(BasicQueryRequest request) {
 		
 		validate(request);
 		
-		//TODO sort response according to date 
-
-		//TODO this line should be added
-		// Group group = groupService.findById(request.getGroupId());
-		// it throws "No group found exception"
+		Group group = groupService.findById(request.getId());
 
 		ListMeetingResponse response = new ListMeetingResponse();
 		
-		List<Meeting> meetingList = meetingRepository.findMeetings(request.getGroupId());
+		List<Meeting> meetingList = meetingRepository.findMeetings(group.getId());
 		if(meetingList == null || meetingList.isEmpty()){
 			throw new PinkElephantRuntimeException(400, ErrorCode.MEETING_NOT_FOUND, "");
 		}

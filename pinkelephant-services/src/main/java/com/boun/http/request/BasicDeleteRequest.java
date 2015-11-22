@@ -3,7 +3,7 @@ package com.boun.http.request;
 import lombok.Data;
 
 @Data
-public class DeleteResourceRequest extends BaseRequest{
+public class BasicDeleteRequest extends BaseRequest{
 
 	private String id;
 

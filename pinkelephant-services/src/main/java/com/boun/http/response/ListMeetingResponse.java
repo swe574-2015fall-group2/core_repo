@@ -1,6 +1,8 @@
 package com.boun.http.response;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +29,11 @@ public class ListMeetingResponse extends ActionResponse{
 			meetingList = new ArrayList<MeetingObj>();
 		}
 		meetingList.add(new MeetingObj(meeting));
+	}
+	
+	public List<MeetingObj> getMeetingList(){
+		Collections.sort(meetingList, new MeetingObjSort());
+		return meetingList;
 	}
 	
 	@Data
@@ -72,6 +79,15 @@ public class ListMeetingResponse extends ActionResponse{
 			}
 			return nameSet;
 		}
+	}
+	
+	private static class MeetingObjSort implements Comparator<MeetingObj> {
+
+	    @Override
+	    public int compare(MeetingObj o1, MeetingObj o2) {
+	    	
+	    	return (o1.getDatetime().before(o2.getDatetime())) ? -1 : 1;
+	    }
 	}
 }
 

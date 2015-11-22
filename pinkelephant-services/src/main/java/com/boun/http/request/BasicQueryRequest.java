@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class QueryResourceRequest extends BaseRequest{
+public class BasicQueryRequest extends BaseRequest{
 
-	private String groupId;
+	private String id;
 }

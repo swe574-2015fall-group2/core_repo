@@ -5,7 +5,8 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class QueryMeetingRequest extends BaseRequest{
+public class MeetingProposalInvitationReplyRequest extends BaseRequest{
 
-	private String groupId;
+	private String meetingProposalId;
+	private boolean reponse;
 }

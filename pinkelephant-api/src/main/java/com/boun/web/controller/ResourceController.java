@@ -1,24 +1,29 @@
 package com.boun.web.controller;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.boun.app.exception.PinkElephantValidationException;
 import com.boun.data.mongo.model.Resource;
+import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateResourceRequest;
-import com.boun.http.request.DeleteResourceRequest;
-import com.boun.http.request.QueryMeetingRequest;
-import com.boun.http.request.QueryResourceRequest;
-import com.boun.http.response.ActionResponse;
+import com.boun.http.request.BasicDeleteRequest;
 import com.boun.service.ResourceService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.util.List;
 
 @RestController
 @Api(value = "resource", description = "Resource service")
@@ -71,7 +76,7 @@ public class ResourceController {
 	@ApiOperation(value = "Delete an external resource")
 	@RequestMapping(value="/{id}", method = RequestMethod.DELETE)
 	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
-	public boolean deleteResource(@RequestBody DeleteResourceRequest request) {
+	public boolean deleteResource(@RequestBody BasicDeleteRequest request) {
 		//TODO add userId to log
 
 		return resourceService.delete(request);
@@ -81,7 +86,7 @@ public class ResourceController {
 	@RequestMapping(value = "queryResourcesByGroup", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
 	public @ResponseBody
-	List<Resource> queryMeetingByGroupId(@RequestBody QueryResourceRequest request) {
+	List<Resource> queryMeetingByGroupId(@RequestBody BasicQueryRequest request) {
 
 		try {
 			if (logger.isDebugEnabled()) {
