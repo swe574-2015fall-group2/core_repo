@@ -108,7 +108,7 @@ public class MeetingController {
 	}
 	
 	@ApiOperation(value = "Query Meetings by group ID")
-	@RequestMapping(value = "queryMeetingByGroup", method = RequestMethod.POST)
+	@RequestMapping(value = "queryByGroup", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
 	public @ResponseBody ActionResponse queryMeetingByGroupId(@RequestBody BasicQueryRequest request) {
 
@@ -125,7 +125,7 @@ public class MeetingController {
 	}
 	
 	@ApiOperation(value = "Create Meeting Proposal")
-	@RequestMapping(value = "createMeetingProposal", method = RequestMethod.POST)
+	@RequestMapping(value = "createProposal", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
 	public @ResponseBody ActionResponse createMeetingProposal(@RequestBody CreateMeetingProposalRequest request) {
 
@@ -142,7 +142,7 @@ public class MeetingController {
 	}
 	
 	@ApiOperation(value = "Delete Meeting Proposal")
-	@RequestMapping(value = "deleteMeetingProposal", method = RequestMethod.POST)
+	@RequestMapping(value = "deleteProposal", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
 	public @ResponseBody ActionResponse deleteMeetingProposal(@RequestBody BasicDeleteRequest request) {
 
@@ -159,7 +159,7 @@ public class MeetingController {
 	}
 	
 	@ApiOperation(value = "Query Meeting Proposal")
-	@RequestMapping(value = "getMeetingProposal", method = RequestMethod.POST)
+	@RequestMapping(value = "getProposal", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
 	public @ResponseBody ActionResponse getMeetingProposal(@RequestBody BasicQueryRequest request) {
 
@@ -176,7 +176,7 @@ public class MeetingController {
 	}
 	
 	@ApiOperation(value = "Reply to Meeting Proposal Invitation")
-	@RequestMapping(value = "replyMeetingProposalInvitation", method = RequestMethod.POST)
+	@RequestMapping(value = "replyProposalInvitation", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
 	public @ResponseBody ActionResponse replyInvitation(@RequestBody MeetingProposalInvitationReplyRequest request) {
 
