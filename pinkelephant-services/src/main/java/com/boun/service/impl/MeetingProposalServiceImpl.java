@@ -18,6 +18,7 @@ import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateMeetingProposalRequest;
 import com.boun.http.request.BasicDeleteRequest;
 import com.boun.http.request.MeetingProposalInvitationReplyRequest;
+import com.boun.http.request.UpdateMeetingProposalRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.ListMeetingProposalResponse;
 import com.boun.service.DiscussionService;
@@ -49,6 +50,37 @@ public class MeetingProposalServiceImpl extends PinkElephantService implements M
 		proposal.setDatetime(request.getDatetime());
 		proposal.setMessage(request.getMessage());
 		proposal.setStatus(true);
+		
+		meetingProposalRepository.save(proposal);
+		
+		response.setAcknowledge(true);
+
+		return response;
+	}
+	
+	@Override
+	public ActionResponse updateMeetingProposal(UpdateMeetingProposalRequest request){
+		
+		ActionResponse response = new ActionResponse();
+		
+		validate(request);
+		
+		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
+		MeetingProposal proposal = findById(request.getId());
+		
+		if(!authenticatedUser.isEqual(proposal.getCreator())){
+			throw new PinkElephantRuntimeException(400, ErrorCode.INVALID_INPUT, "Input userId is different than authenticated user", "");
+		}
+		
+		if(request.getDatetime() != null){
+			proposal.setDatetime(request.getDatetime());	
+		}
+		
+		if(request.getMessage() != null){
+			proposal.setMessage(request.getMessage());	
+		}
+		
+		proposal.setStatus(request.isStatus());
 		
 		meetingProposalRepository.save(proposal);
 		

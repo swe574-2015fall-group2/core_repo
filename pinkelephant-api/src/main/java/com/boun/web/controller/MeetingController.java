@@ -14,11 +14,13 @@ import com.boun.http.request.BasicDeleteRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
 import com.boun.http.request.MeetingProposalInvitationReplyRequest;
+import com.boun.http.request.UpdateMeetingProposalRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateMeetingProposalRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
+import com.boun.http.response.ListMeetingResponse;
 import com.boun.service.MeetingProposalService;
 import com.boun.service.MeetingService;
 import com.wordnik.swagger.annotations.Api;
@@ -110,7 +112,7 @@ public class MeetingController {
 	@ApiOperation(value = "Query Meetings by group ID")
 	@RequestMapping(value = "queryByGroup", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody ActionResponse queryMeetingByGroupId(@RequestBody BasicQueryRequest request) {
+	public @ResponseBody ListMeetingResponse queryMeetingByGroupId(@RequestBody BasicQueryRequest request) {
 
 		try {
 			if (logger.isDebugEnabled()) {
@@ -137,6 +139,23 @@ public class MeetingController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("createMeetingProposal operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Update Meeting Proposal")
+	@RequestMapping(value = "updateProposal", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse updateMeetingProposal(@RequestBody UpdateMeetingProposalRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("updateMeetingProposal request received, request->" + request.toString());
+			}
+			return meetingProposalService.updateMeetingProposal(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("updateMeetingProposal operation finished");
 			}
 		}
 	}
