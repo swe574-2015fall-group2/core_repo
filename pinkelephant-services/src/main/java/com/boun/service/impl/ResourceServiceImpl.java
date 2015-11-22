@@ -5,6 +5,7 @@ import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.ResourceType;
 import com.boun.data.mongo.model.Resource;
 import com.boun.data.mongo.repository.ResourceRepository;
+import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.CreateResourceRequest;
 import com.boun.http.request.DeleteResourceRequest;
 import com.boun.service.PinkElephantService;
@@ -48,7 +49,8 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 		resource.setName(request.getName());
 		resource.setLink(request.getLink());
 		resource.setType(ResourceType.EXTERNAL);
-		resource.setAtCreated(new Date());
+		resource.setCreatedAt(new Date());
+		resource.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
 
 		resource = resourceRepository.save(resource);
 
@@ -65,8 +67,8 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 		resource.setName(name);
 		resource.setType(ResourceType.INTERNAL);
 		//TODO resource.setLink(request.getLink());
-		resource.setAtCreated(new Date());
-
+		resource.setCreatedAt(new Date());
+		resource.setCreator(PinkElephantSession.getInstance().getUser(authToken));
 		resource = resourceRepository.save(resource);
 
 		BufferedOutputStream stream = null;
