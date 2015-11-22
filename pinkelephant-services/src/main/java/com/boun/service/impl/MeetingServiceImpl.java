@@ -260,7 +260,11 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		validate(request);
 		
 		//TODO sort response according to date 
-		
+
+		//TODO this line should be added
+		// Group group = groupService.findById(request.getGroupId());
+		// it throws "No group found exception"
+
 		ListMeetingResponse response = new ListMeetingResponse();
 		
 		List<Meeting> meetingList = meetingRepository.findMeetings(request.getGroupId());

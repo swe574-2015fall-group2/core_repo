@@ -9,6 +9,7 @@ import com.boun.data.mongo.repository.ResourceRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.CreateResourceRequest;
 import com.boun.http.request.DeleteResourceRequest;
+import com.boun.http.request.QueryResourceRequest;
 import com.boun.service.GroupService;
 import com.boun.service.PinkElephantService;
 import com.boun.service.ResourceService;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ResourceServiceImpl extends PinkElephantService implements ResourceService {
@@ -114,5 +116,10 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 		resourceRepository.delete(resource);
 
 		return true;
+	}
+
+	public List<Resource> queryResourcesOfGroup(QueryResourceRequest request) {
+		Group group = groupService.findById(request.getGroupId());
+		return resourceRepository.findResources(group.getId());
 	}
 }

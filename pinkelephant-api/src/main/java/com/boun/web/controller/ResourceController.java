@@ -4,6 +4,9 @@ import com.boun.app.exception.PinkElephantValidationException;
 import com.boun.data.mongo.model.Resource;
 import com.boun.http.request.CreateResourceRequest;
 import com.boun.http.request.DeleteResourceRequest;
+import com.boun.http.request.QueryMeetingRequest;
+import com.boun.http.request.QueryResourceRequest;
+import com.boun.http.response.ActionResponse;
 import com.boun.service.ResourceService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @Api(value = "resource", description = "Resource service")
@@ -73,5 +77,21 @@ public class ResourceController {
 		return resourceService.delete(request);
 	}
 
+	@ApiOperation(value = "Query Resources by group ID")
+	@RequestMapping(value = "queryResourcesByGroup", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody
+	List<Resource> queryMeetingByGroupId(@RequestBody QueryResourceRequest request) {
 
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("queryResourceByGroupId request received, request->" + request.toString());
+			}
+			return resourceService.queryResourcesOfGroup(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("queryResourceByGroupId operation finished");
+			}
+		}
+	}
 }

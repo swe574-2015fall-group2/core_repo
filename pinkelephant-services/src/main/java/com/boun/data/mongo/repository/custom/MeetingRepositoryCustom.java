@@ -6,5 +6,5 @@ import com.boun.data.mongo.model.Meeting;
 
 public interface MeetingRepositoryCustom {
 
-	public List<Meeting> findMeetings(String groupId);
+	List<Meeting> findMeetings(String groupId);
 }
