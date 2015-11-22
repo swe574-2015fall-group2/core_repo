@@ -30,6 +30,8 @@ public enum ErrorCode {
 
 	RESOURCE_NOT_FOUND("Resource not found", "118"),
 
+	NOTE_NOT_FOUND("Resource not found", "119"),
+
 	INTERNAL_SERVER_ERROR("Internal Server Error", "900")
 	;
 

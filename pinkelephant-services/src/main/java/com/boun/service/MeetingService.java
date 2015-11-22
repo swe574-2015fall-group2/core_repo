@@ -1,5 +1,6 @@
 package com.boun.service;
 
+import com.boun.data.mongo.model.Meeting;
 import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
@@ -11,13 +12,15 @@ import com.boun.http.response.ListMeetingResponse;
 
 public interface MeetingService {
 
-	public CreateResponse createMeeting(CreateMeetingRequest request);
+	Meeting findById(String groupId);
+
+	CreateResponse createMeeting(CreateMeetingRequest request);
 	
-	public ActionResponse updateMeeting(UpdateMeetingRequest request);
+	ActionResponse updateMeeting(UpdateMeetingRequest request);
 	
-	public ActionResponse inviteUser(InviteUserToMeetingRequest request);
+	ActionResponse inviteUser(InviteUserToMeetingRequest request);
 	
-	public ListMeetingResponse queryMeetingsOfGroup(QueryMeetingRequest request);
+	ListMeetingResponse queryMeetingsOfGroup(QueryMeetingRequest request);
 	
-	public ActionResponse invitationReply(MeetingInvitationReplyRequest request);
+	ActionResponse invitationReply(MeetingInvitationReplyRequest request);
 }

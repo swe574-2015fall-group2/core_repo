@@ -11,6 +11,8 @@ public interface ResourceService {
 
     Resource findById(String resourceId);
 
+    List<Resource> findByIds(List<String> resourceIds);
+
     Resource createExternalResource(CreateResourceRequest request);
 
     Resource uploadResource(byte[] bytes, String name, String groupId, String authToken);
