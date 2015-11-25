@@ -33,6 +33,8 @@ public enum ErrorCode {
 	DISCUSSION_NOT_FOUND("Discussion not found", "130"),
 	
 	MEETING_PROPOSAL_NOT_FOUND("Discussion not found", "140"),
+	
+	ERROR_WHILE_SAVING_IMAGE("Error occured while saving image {0}", "150"),
 
 	NOTE_NOT_FOUND("Resource not found", "119"),
 

@@ -2,10 +2,13 @@ package com.boun.service;
 
 import com.boun.data.mongo.model.Group;
 import com.boun.http.request.BaseRequest;
+import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateUpdateGroupRequest;
 import com.boun.http.request.JoinLeaveGroupRequest;
+import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
+import com.boun.http.response.GetGroupResponse;
 import com.boun.http.response.ListGroupResponse;
 
 public interface GroupService {
@@ -25,4 +28,8 @@ public interface GroupService {
 	public ListGroupResponse getMyGroups(BaseRequest request);
 	
 	public ListGroupResponse getAllGroups(BaseRequest request);
+	
+	public ActionResponse uploadImage(UploadImageRequest request);
+	
+	public GetGroupResponse queryGroup(BasicQueryRequest request);
 }

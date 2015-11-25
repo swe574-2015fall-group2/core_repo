@@ -19,14 +19,18 @@ import com.boun.data.mongo.repository.GroupRepository;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.BaseRequest;
+import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateUpdateGroupRequest;
 import com.boun.http.request.JoinLeaveGroupRequest;
+import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
+import com.boun.http.response.GetGroupResponse;
 import com.boun.http.response.ListGroupResponse;
 import com.boun.service.GroupService;
 import com.boun.service.PinkElephantService;
 import com.boun.service.TagService;
+import com.boun.util.ImageUtil;
 
 @Service
 public class GroupServiceImpl extends PinkElephantService implements GroupService{
@@ -95,6 +99,22 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 
 		tagService.tag("test", group);
 		
+		return response;
+	}
+	
+	public ActionResponse uploadImage(UploadImageRequest request){
+		
+		validate(request);
+		
+		Group group = findById(request.getEntityId());
+		
+		String imagePath = ImageUtil.saveImage("Group", request);
+
+		group.setImagePath(imagePath);
+		groupRepository.save(group);
+		
+		ActionResponse response = new ActionResponse();
+		response.setAcknowledge(true);
 		return response;
 	}
 	
@@ -205,6 +225,24 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 
 		return response;
 	}
+	
+	@Override
+	public GetGroupResponse queryGroup(BasicQueryRequest request) {
+		
+		validate(request);
+		
+		Group group = findById(request.getId());
+		
+		GetGroupResponse response = new GetGroupResponse();
+		response.setDescription(group.getDescription());
+		response.setId(group.getId());
+		response.setName(group.getName());
+		response.setImage(ImageUtil.getImage(group.getImagePath()));
+		
+		response.setAcknowledge(true);
+
+		return response;
+	}
 
 	@Override
 	public ListGroupResponse getAllGroups(BaseRequest request) {
@@ -230,4 +268,6 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 
 		return response;
 	}
+	
+
 }

@@ -20,6 +20,7 @@ public class Group extends BaseEntity{
     private String name;
     
     private String description;
+    private String imagePath;
     
     private GroupStatus status;
     

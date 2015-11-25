@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boun.http.request.BaseRequest;
+import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateUpdateGroupRequest;
 import com.boun.http.request.JoinLeaveGroupRequest;
+import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
 import com.boun.service.GroupService;
@@ -134,6 +136,42 @@ public class GroupController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("getAllGroups operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Upload image to group")
+	@RequestMapping(value = "uploadImage", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse uploadImage(@RequestBody UploadImageRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("uploadImage request received, request->" + request.toString());
+			}
+			return groupService.uploadImage(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("uploadImage operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Query Group")
+	@RequestMapping(value = "query", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse queryGroup(@RequestBody BasicQueryRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("queryGroup request received, request->" + request.toString());
+			}
+			return groupService.queryGroup(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("queryGroup operation finished");
 			}
 		}
 	}
