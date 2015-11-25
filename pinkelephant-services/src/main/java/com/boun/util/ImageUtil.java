@@ -30,6 +30,7 @@ public final class ImageUtil {
 			IOUtils.write(image, output);
 			
 		}catch(Throwable e){
+			e.printStackTrace();
 			throw new PinkElephantRuntimeException(400, ErrorCode.ERROR_WHILE_SAVING_IMAGE, e.getMessage(), "");
 		}finally{
 			if(output != null){
@@ -56,7 +57,8 @@ public final class ImageUtil {
 		    return Base64.encodeBase64String(image);
 		    
 		}catch(Throwable e){
-			
+			e.printStackTrace();
+			throw new PinkElephantRuntimeException(400, ErrorCode.ERROR_WHILE_READING_IMAGE, e.getMessage(), "");
 		} finally {
 			if(inputStream != null){
 				try{
@@ -64,7 +66,6 @@ public final class ImageUtil {
 				}catch(Throwable e){}
 			}
 		}
-		return null;
 	}
 	
 	private static String getImageFolder(String entityName){
