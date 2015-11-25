@@ -37,6 +37,7 @@ public class User extends BaseEntity{
     @Field("oneTimeToken")
     private String oneTimeToken;
 
+    private String ImagePath;
     private Set<UserRole> roles;
 
     private UserDetail userDetail;

@@ -15,18 +15,22 @@ import com.boun.app.util.KeyUtils;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.AuthenticationRequest;
+import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.ChangePasswordRequest;
 import com.boun.http.request.CreateUserRequest;
 import com.boun.http.request.ResetPasswordRequest;
 import com.boun.http.request.SetRolesRequest;
 import com.boun.http.request.UpdateUserRequest;
+import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
+import com.boun.http.response.GetUserResponse;
 import com.boun.http.response.LoginResponse;
 import com.boun.service.GroupService;
 import com.boun.service.MailService;
 import com.boun.service.PinkElephantService;
 import com.boun.service.RoleService;
 import com.boun.service.UserService;
+import com.boun.util.ImageUtil;
 
 @Service
 public class UserServiceImpl extends PinkElephantService implements UserService {
@@ -68,6 +72,24 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		return user;
 	}
 
+	@Override
+	public GetUserResponse queryUser(BasicQueryRequest request){
+		
+		validate(request);
+		
+		User user = findById(request.getId());
+		
+		GetUserResponse response = new GetUserResponse();
+		response.setUsername(user.getUsername());
+		response.setFirstname(user.getFirstname());
+		response.setLastname(user.getLastname());
+		response.setStatus(user.getStatus());
+		response.setUserDetail(user.getUserDetail());
+		response.setImage(ImageUtil.getImage(user.getImagePath()));
+		response.setAcknowledge(true);
+		
+		return response;
+	}
 	@Override
 	public ActionResponse updateUser(UpdateUserRequest request) {
 
@@ -182,6 +204,23 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		user = userRepository.save(user);
 
 		return user;
+	}
+	
+	@Override
+	public ActionResponse uploadImage(UploadImageRequest request){
+		
+		validate(request);
+		
+		User user = findById(request.getEntityId());
+		
+		String imagePath = ImageUtil.saveImage("Group", request);
+
+		user.setImagePath(imagePath);
+		userRepository.save(user);
+		
+		ActionResponse response = new ActionResponse();
+		response.setAcknowledge(true);
+		return response;
 	}
 	
 	private User mapUser(CreateUserRequest request){

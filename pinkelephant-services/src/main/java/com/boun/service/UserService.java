@@ -3,6 +3,7 @@ package com.boun.service;
 import com.boun.data.mongo.model.User;
 import com.boun.http.request.*;
 import com.boun.http.response.ActionResponse;
+import com.boun.http.response.GetUserResponse;
 import com.boun.http.response.LoginResponse;
 
 
@@ -21,4 +22,8 @@ public interface UserService {
     ActionResponse changePassword(ChangePasswordRequest request);
 
     User setRoles(SetRolesRequest request);
+    
+    ActionResponse uploadImage(UploadImageRequest request);
+    
+    GetUserResponse queryUser(BasicQueryRequest request);
 }

@@ -102,13 +102,14 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		return response;
 	}
 	
+	@Override
 	public ActionResponse uploadImage(UploadImageRequest request){
 		
 		validate(request);
 		
 		Group group = findById(request.getEntityId());
 		
-		String imagePath = ImageUtil.saveImage("Group", request);
+		String imagePath = ImageUtil.saveImage("User", request);
 
 		group.setImagePath(imagePath);
 		groupRepository.save(group);

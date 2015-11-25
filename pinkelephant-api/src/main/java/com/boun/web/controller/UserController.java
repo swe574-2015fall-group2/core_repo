@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boun.http.response.ActionResponse;
+import com.boun.http.response.GetUserResponse;
 import com.boun.http.response.LoginResponse;
 import com.boun.service.UserService;
 
@@ -127,6 +128,40 @@ public class UserController {
     	}finally{
     		if(logger.isDebugEnabled()){
     			logger.debug("changePassword operation finished, oneTimeToken->" + request.getOneTimeToken());
+    		}
+    	}
+    }
+    
+    @ApiOperation(value="Upload Image")
+    @RequestMapping(value="uploadImage", method = RequestMethod.POST)
+    @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
+    public @ResponseBody ActionResponse uploadImage(@RequestBody UploadImageRequest request){
+    	
+    	try{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("uploadImage request received");
+    		}
+    		return userService.uploadImage(request);	
+    	}finally{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("uploadImage operation finished");
+    		}
+    	}
+    }
+    
+    @ApiOperation(value="Query User")
+    @RequestMapping(value="query", method = RequestMethod.POST)
+    @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
+    public @ResponseBody GetUserResponse queryUser(@RequestBody BasicQueryRequest request){
+    	
+    	try{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("queryUser request received");
+    		}
+    		return userService.queryUser(request);	
+    	}finally{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("queryUser operation finished");
     		}
     	}
     }
