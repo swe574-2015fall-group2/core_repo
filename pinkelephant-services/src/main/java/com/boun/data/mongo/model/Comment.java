@@ -13,19 +13,18 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-@Document(collection = "meeting")
+@Document(collection = "comment")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Discussion extends BaseEntity{
+public class Comment extends BaseEntity{
 
 	@DBRef
-	private Group group;
-	
+	private User user;
+
 	@DBRef
-	private User creator;
+	private Discussion discussion;
 	
-	private String name;
-	private String description;
+	private String comment;
 	private Date creationTime;
-	private Date updateTime;
+	
 }

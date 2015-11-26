@@ -35,8 +35,10 @@ public enum ErrorCode {
 	MEETING_PROPOSAL_NOT_FOUND("Discussion not found", "140"),
 	
 	ERROR_WHILE_SAVING_IMAGE("Error occured while saving image {0}", "150"),
-	ERROR_WHILE_READING_IMAGE("Error occured while reading image {0}", "150"),
+	ERROR_WHILE_READING_IMAGE("Error occured while reading image {0}", "151"),
 
+	COMMENT_NOT_FOUND("Discussion not found", "160"),
+	
 	NOTE_NOT_FOUND("Resource not found", "119"),
 
 	INTERNAL_SERVER_ERROR("Internal Server Error", "900")

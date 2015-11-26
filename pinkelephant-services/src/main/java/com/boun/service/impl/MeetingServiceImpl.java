@@ -19,10 +19,10 @@ import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.MeetingRepository;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
+import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
-import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
@@ -68,9 +68,6 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		CreateResponse response = new CreateResponse();
 
 		Group group = groupService.findById(request.getGroupId());
-		if(group == null){
-			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
-		}
 			
 		Meeting meeting = mapRequestToMeeting(request);
 		meeting.setGroup(group);
