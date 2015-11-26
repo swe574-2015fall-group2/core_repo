@@ -85,7 +85,7 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		response.setLastname(user.getLastname());
 		response.setStatus(user.getStatus());
 		response.setUserDetail(user.getUserDetail());
-		response.setImage(ImageUtil.getImage(user.getImagePath()));
+		response.setImage(ImageUtil.getImage(user.getImage()));
 		response.setAcknowledge(true);
 		
 		return response;
@@ -215,7 +215,11 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		
 		String imagePath = ImageUtil.saveImage("Group", request);
 
-		user.setImagePath(imagePath);
+		ImageInfo image = new ImageInfo();
+		image.setImagePath(imagePath);
+		image.setType(request.getFileType());
+		
+		user.setImage(image);
 		userRepository.save(user);
 		
 		ActionResponse response = new ActionResponse();

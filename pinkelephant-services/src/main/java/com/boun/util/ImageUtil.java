@@ -11,7 +11,9 @@ import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.Constants;
 import com.boun.data.common.enums.FileType;
+import com.boun.data.mongo.model.ImageInfo;
 import com.boun.http.request.UploadImageRequest;
+import com.boun.http.response.ImageData;
 
 public final class ImageUtil {
 	
@@ -43,19 +45,24 @@ public final class ImageUtil {
 		return file.getAbsolutePath();
 	}
 	
-	public static String getImage(String imagePath){
-		if(imagePath == null){
+	public static ImageData getImage(ImageInfo imageInfo){
+		if(imageInfo == null){
 			return null;
 		}
 		
 		FileInputStream inputStream = null;
 		try {
-			inputStream = new FileInputStream(imagePath);
+			inputStream = new FileInputStream(imageInfo.getImagePath());
 			
-		    byte[] image = IOUtils.toByteArray(inputStream);
+		    byte[] imageByteArray = IOUtils.toByteArray(inputStream);
 		    
-		    return Base64.encodeBase64String(image);
+		    String base64 = Base64.encodeBase64String(imageByteArray);
 		    
+		    ImageData image = new ImageData();
+		    image.setBase64Image(base64);
+		    image.setType(imageInfo.getType());
+		    
+		    return image;
 		}catch(Throwable e){
 			e.printStackTrace();
 			throw new PinkElephantRuntimeException(400, ErrorCode.ERROR_WHILE_READING_IMAGE, e.getMessage(), "");

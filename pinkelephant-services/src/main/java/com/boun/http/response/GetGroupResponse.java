@@ -13,7 +13,7 @@ public class GetGroupResponse extends ActionResponse{
 	private String id;
 	private String name;
 	private String description;
-	private String image;
+	private ImageData image;
 	
 }
 

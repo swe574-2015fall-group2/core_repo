@@ -16,7 +16,7 @@ public class GetUserResponse extends ActionResponse {
 	private String firstname;
 	private String lastname;
 	private UserDetail userDetail;
-	private String image;
+	private ImageData image;
 	private Status status;
 
 }

@@ -13,6 +13,7 @@ import com.boun.data.common.enums.GroupStatus;
 import com.boun.data.common.enums.MemberStatus;
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.GroupMember;
+import com.boun.data.mongo.model.ImageInfo;
 import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.GroupMemberRepository;
 import com.boun.data.mongo.repository.GroupRepository;
@@ -26,6 +27,7 @@ import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
 import com.boun.http.response.GetGroupResponse;
+import com.boun.http.response.ImageData;
 import com.boun.http.response.ListGroupResponse;
 import com.boun.service.GroupService;
 import com.boun.service.PinkElephantService;
@@ -111,7 +113,11 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		
 		String imagePath = ImageUtil.saveImage("User", request);
 
-		group.setImagePath(imagePath);
+		ImageInfo imageInfo = new ImageInfo();
+		imageInfo.setImagePath(imagePath);
+		imageInfo.setType(request.getFileType());
+		
+		group.setImage(imageInfo);
 		groupRepository.save(group);
 		
 		ActionResponse response = new ActionResponse();
@@ -238,7 +244,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		response.setDescription(group.getDescription());
 		response.setId(group.getId());
 		response.setName(group.getName());
-		response.setImage(ImageUtil.getImage(group.getImagePath()));
+		response.setImage(ImageUtil.getImage(group.getImage()));			
 		
 		response.setAcknowledge(true);
 
