@@ -94,12 +94,18 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		group.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
 		group.setStatus(GroupStatus.ACTIVE);
 		
-		groupRepository.save(group);
+		group = groupRepository.save(group);
 		
 		response.setAcknowledge(true);
 		response.setEntityId(group.getId());
 
 		tagService.tag("test", group);
+
+		JoinLeaveGroupRequest joinLeaveGroupRequest = new JoinLeaveGroupRequest();
+		joinLeaveGroupRequest.setAuthToken(request.getAuthToken());
+		joinLeaveGroupRequest.setGroupId(group.getId());
+		
+		joinGroup(joinLeaveGroupRequest);
 		
 		return response;
 	}
@@ -275,6 +281,5 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 
 		return response;
 	}
-	
 
 }
