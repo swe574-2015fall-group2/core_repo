@@ -231,7 +231,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		}
 
 		for (Group group : groupList) {
-			response.addGroup(group.getId(), group.getName(), group.getDescription());
+			response.addGroup(group.getId(), group.getName(), group.getDescription(), true);
 		}
 		
 		response.setAcknowledge(true);
@@ -270,16 +270,29 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
 		}
 
+		ListGroupResponse myGroupsResponse = getMyGroups(request);
+		List<ListGroupResponse.GroupObj> myGroupList = myGroupsResponse.getGroupList();
+
 		for (Group group : groupList) {
 			if(group.getStatus() == null || group.getStatus().value() != GroupStatus.ACTIVE.value()){
 				continue;
 			}
-			response.addGroup(group.getId(), group.getName(), group.getDescription());
+			response.addGroup(group.getId(), group.getName(), group.getDescription(), checkIfJoined(myGroupList, group));
 		}
+
 		
 		response.setAcknowledge(true);
 
 		return response;
 	}
 
+	private Boolean checkIfJoined(List<ListGroupResponse.GroupObj> myGroups, Group group) {
+
+		for(ListGroupResponse.GroupObj myGroup: myGroups)
+		{
+			if(myGroup.getId().equals(group.getId()))
+				return true;
+		}
+		return false;
+	}
 }
