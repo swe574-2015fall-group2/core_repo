@@ -1,5 +1,6 @@
 package com.boun.web.controller;
 
+import com.boun.http.response.ListGroupResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,7 +109,8 @@ public class GroupController {
 	@RequestMapping(value = "listMyGroups", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody ActionResponse getMyGroups(@RequestBody BaseRequest request) {
+	public @ResponseBody
+	ListGroupResponse getMyGroups(@RequestBody BaseRequest request) {
 
 		try {
 			if (logger.isDebugEnabled()) {
@@ -126,7 +128,7 @@ public class GroupController {
 	@RequestMapping(value = "listAll", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody ActionResponse getAllGroups(@RequestBody BaseRequest request) {
+	public @ResponseBody ListGroupResponse getAllGroups(@RequestBody BaseRequest request) {
 
 		try {
 			if (logger.isDebugEnabled()) {
@@ -139,7 +141,25 @@ public class GroupController {
 			}
 		}
 	}
-	
+
+	@ApiOperation(value = "List popular groups")
+	@RequestMapping(value = "listPopularGroups", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse getPopularGroups(@RequestBody BaseRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getAllGroups request received, request->" + request.toString());
+			}
+			return groupService.getAllGroups(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getAllGroups operation finished");
+			}
+		}
+	}
+
 	@ApiOperation(value = "Upload image to group")
 	@RequestMapping(value = "uploadImage", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
