@@ -31,5 +31,4 @@ public class UserDetail {
 
     private String academiaProfile;
 
-    private String imagePath;
 }

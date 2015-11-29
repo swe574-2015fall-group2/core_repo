@@ -2,8 +2,6 @@ package com.boun.service.impl;
 
 import java.util.List;
 
-import com.boun.data.common.enums.Status;
-import com.boun.data.mongo.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +10,13 @@ import org.springframework.stereotype.Service;
 import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.app.util.KeyUtils;
+import com.boun.data.common.enums.Status;
+import com.boun.data.mongo.model.Group;
+import com.boun.data.mongo.model.ImageInfo;
+import com.boun.data.mongo.model.Role;
+import com.boun.data.mongo.model.User;
+import com.boun.data.mongo.model.UserDetail;
+import com.boun.data.mongo.model.UserRole;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.AuthenticationRequest;
@@ -114,7 +119,6 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		user.getUserDetail().setInterestedAreas(request.getInterestedAreas());
 		user.getUserDetail().setLinkedinProfile(request.getLinkedinProfile());
 		user.getUserDetail().setAcademiaProfile(request.getAcademiaProfile());
-		user.getUserDetail().setImagePath(request.getImagePath());
 
 		userRepository.save(user);
 		response.setAcknowledge(true);
