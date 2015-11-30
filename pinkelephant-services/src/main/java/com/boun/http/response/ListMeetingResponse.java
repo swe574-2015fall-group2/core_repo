@@ -85,6 +85,9 @@ public class ListMeetingResponse extends ActionResponse{
 
 	    @Override
 	    public int compare(MeetingObj o1, MeetingObj o2) {
+	    	if(o1.getDatetime() == null || o2.getDatetime() == null){
+	    		return 1;
+	    	}
 	    	
 	    	return (o1.getDatetime().before(o2.getDatetime())) ? -1 : 1;
 	    }
