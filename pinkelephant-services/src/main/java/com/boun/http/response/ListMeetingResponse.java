@@ -37,7 +37,7 @@ public class ListMeetingResponse extends ActionResponse{
 	}
 	
 	@Data
-	private static class MeetingObj{
+	public static class MeetingObj{
 		private String id;
 		private Date datetime;
 		private Set<String> agendaSet;

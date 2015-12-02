@@ -8,6 +8,7 @@ import com.boun.http.request.MeetingInvitationReplyRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
+import com.boun.http.response.GetMeetingResponse;
 import com.boun.http.response.ListMeetingResponse;
 
 public interface MeetingService {
@@ -23,4 +24,6 @@ public interface MeetingService {
 	ListMeetingResponse queryMeetingsOfGroup(BasicQueryRequest request);
 	
 	ActionResponse invitationReply(MeetingInvitationReplyRequest request);
+	
+	GetMeetingResponse getMeeting(BasicQueryRequest request);
 }

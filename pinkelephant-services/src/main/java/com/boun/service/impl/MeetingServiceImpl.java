@@ -26,6 +26,7 @@ import com.boun.http.request.MeetingInvitationReplyRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
+import com.boun.http.response.GetMeetingResponse;
 import com.boun.http.response.ListMeetingResponse;
 import com.boun.service.GroupService;
 import com.boun.service.MeetingService;
@@ -273,6 +274,21 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		for (Meeting meeting : meetingList) {
 			response.addMeeting(meeting);
 		}
+		response.setAcknowledge(true);
+			
+		return response;
+	}
+	
+	@Override
+	public GetMeetingResponse getMeeting(BasicQueryRequest request) {
+		
+		validate(request);
+		
+		Meeting meeting = findById(request.getId());
+
+		GetMeetingResponse response = new GetMeetingResponse();
+		
+		response.setMeeting(new ListMeetingResponse.MeetingObj(meeting));
 		response.setAcknowledge(true);
 			
 		return response;

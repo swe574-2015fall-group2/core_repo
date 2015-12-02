@@ -20,6 +20,7 @@ import com.boun.http.request.CreateMeetingProposalRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
+import com.boun.http.response.GetMeetingResponse;
 import com.boun.http.response.ListMeetingResponse;
 import com.boun.service.MeetingProposalService;
 import com.boun.service.MeetingService;
@@ -207,6 +208,23 @@ public class MeetingController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("replyInvitation operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Query Meeting with ID")
+	@RequestMapping(value = "get", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody GetMeetingResponse getMeeting(@RequestBody BasicQueryRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getMeeting request received, request->" + request.toString());
+			}
+			return meetingService.getMeeting(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getMeeting operation finished");
 			}
 		}
 	}
