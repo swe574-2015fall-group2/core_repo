@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.GetUserResponse;
 import com.boun.http.response.LoginResponse;
+import com.boun.http.response.SearchUserResponse;
 import com.boun.service.UserService;
 
 @RestController
@@ -149,19 +150,36 @@ public class UserController {
     	}
     }
     
-    @ApiOperation(value="Query User")
-    @RequestMapping(value="query", method = RequestMethod.POST)
+    @ApiOperation(value="Get User with ID")
+    @RequestMapping(value="get", method = RequestMethod.POST)
     @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
-    public @ResponseBody GetUserResponse queryUser(@RequestBody BasicQueryRequest request){
+    public @ResponseBody GetUserResponse getUser(@RequestBody BasicQueryRequest request){
     	
     	try{
     		if(logger.isDebugEnabled()){
-    			logger.debug("queryUser request received");
+    			logger.debug("getUser request received");
     		}
-    		return userService.queryUser(request);	
+    		return userService.getUser(request);	
     	}finally{
     		if(logger.isDebugEnabled()){
-    			logger.debug("queryUser operation finished");
+    			logger.debug("getUser operation finished");
+    		}
+    	}
+    }
+    
+    @ApiOperation(value="Query User")
+    @RequestMapping(value="query", method = RequestMethod.POST)
+    @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
+    public @ResponseBody SearchUserResponse searchUser(@RequestBody BasicSearchRequest request){
+    	
+    	try{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("searchUser request received");
+    		}
+    		return userService.searchUser(request);	
+    	}finally{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("searchUser operation finished");
     		}
     	}
     }

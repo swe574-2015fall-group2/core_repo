@@ -1,5 +1,9 @@
 package com.boun.data.mongo.repository.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +13,11 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.custom.UserRepositoryCustom;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.DBObject;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
 
@@ -61,5 +70,41 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		User user = mongoTemplate.findAndRemove(query, User.class);
 		
 		return user != null;
+	}
+
+	@Override
+	public List<User> searchUser(String queryString) {
+		
+		Pattern regex = Pattern.compile(queryString); 
+		
+		DBObject clause1 = new BasicDBObject("firstname", regex);  
+		DBObject clause2 = new BasicDBObject("lastname", regex);    
+		BasicDBList or = new BasicDBList();
+		or.add(clause1);
+		or.add(clause2);
+		DBObject query = new BasicDBObject("$or", or);
+		
+		DBCollection userCollection = mongoTemplate.getCollection("users");
+		DBCursor cursor = userCollection.find(query);
+		
+		List<User> userList = new ArrayList<User>();
+		while (cursor.hasNext()) {
+			BasicDBObject user = (BasicDBObject)cursor.next();
+			String firstname = user.getString("firstname");
+			String lastname = user.getString("lastname");
+			String userId = user.getString("id");
+			String username = user.getString("username");
+			
+			User u = new User();
+			u.setFirstname(firstname);
+			u.setId(userId);
+			u.setLastname(lastname);
+			u.setUsername(username);
+			
+			userList.add(u);
+		}
+		cursor.close();
+		
+		return userList;
 	}
 }

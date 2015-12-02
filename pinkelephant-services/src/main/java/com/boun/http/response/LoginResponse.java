@@ -11,5 +11,6 @@ import lombok.EqualsAndHashCode;
 public class LoginResponse {
 
 	private String token;
+	private String id;
 	
 }

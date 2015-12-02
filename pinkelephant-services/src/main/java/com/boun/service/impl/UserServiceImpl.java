@@ -21,6 +21,7 @@ import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.AuthenticationRequest;
 import com.boun.http.request.BasicQueryRequest;
+import com.boun.http.request.BasicSearchRequest;
 import com.boun.http.request.ChangePasswordRequest;
 import com.boun.http.request.CreateUserRequest;
 import com.boun.http.request.ResetPasswordRequest;
@@ -30,6 +31,7 @@ import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.GetUserResponse;
 import com.boun.http.response.LoginResponse;
+import com.boun.http.response.SearchUserResponse;
 import com.boun.service.GroupService;
 import com.boun.service.MailService;
 import com.boun.service.PinkElephantService;
@@ -78,7 +80,7 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 	}
 
 	@Override
-	public GetUserResponse queryUser(BasicQueryRequest request){
+	public GetUserResponse getUser(BasicQueryRequest request){
 		
 		validate(request);
 		
@@ -95,6 +97,27 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		
 		return response;
 	}
+	
+	@Override
+	public SearchUserResponse searchUser(BasicSearchRequest request){
+		
+		validate(request);
+		
+		List<User> userlist = userRepository.searchUser(request.getQueryString());
+		if(userlist == null || userlist.isEmpty()){
+			throw new PinkElephantRuntimeException(400, ErrorCode.USER_NOT_FOUND, "");
+		}
+		
+		SearchUserResponse response = new SearchUserResponse();
+		for (User user : userlist) {
+			response.addUser(user.getId(), user.getUsername(), user.getFirstname(), user.getLastname());
+		}
+		
+		response.setAcknowledge(true);		
+		
+		return response;
+	}
+	
 	@Override
 	public ActionResponse updateUser(UpdateUserRequest request) {
 
@@ -139,7 +162,8 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		}
 
 		response.setToken(KeyUtils.currentTimeUUID().toString());
-
+		response.setId(user.getId());
+		
 		PinkElephantSession.getInstance().addToken(response.getToken(), user);
 
 		return response;
