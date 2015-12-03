@@ -39,6 +39,8 @@ public class ListMeetingResponse extends ActionResponse{
 	@Data
 	public static class MeetingObj{
 		private String id;
+		private String creatorId;
+		private String groupId;
 		private String name;
 		private Date datetime;
 		private String timezone;
@@ -75,6 +77,8 @@ public class ListMeetingResponse extends ActionResponse{
 			this.status = meeting.getStatus();
 			this.todoSet = meeting.getTodoSet();
 			this.type = meeting.getType();
+			this.creatorId = meeting.getCreator().getId();
+			this.groupId = meeting.getGroup().getId();
 		}
 		
 		private Set<String> getUsernameSet(Set<User> userSet){
