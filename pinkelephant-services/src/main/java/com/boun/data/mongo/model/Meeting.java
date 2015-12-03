@@ -21,10 +21,13 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Meeting extends BaseEntity{
 
+	private String name;
 	private Date datetime;
+	private String timezone;
 	private Set<String> agendaSet;
 	private Set<String> todoSet;
-	private Integer estimatedDuration;
+	private String startHour;
+	private String endHour;
 	private Integer actualDuration;
 	private String location;
 	private String description;

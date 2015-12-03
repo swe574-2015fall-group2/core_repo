@@ -93,8 +93,8 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		//TODO check role of user
 		//TODO send message/mail to invited user
 
-		if(request.getUsernameList() == null || request.getUsernameList().isEmpty()){
-			throw new PinkElephantRuntimeException(400, ErrorCode.INVALID_INPUT, "UsernameList is empty", "");
+		if(request.getUserIdList() == null || request.getUserIdList().isEmpty()){
+			throw new PinkElephantRuntimeException(400, ErrorCode.INVALID_INPUT, "UserIdList is empty", "");
 		}
 		
 		Meeting meeting = findById(request.getMeetingId());
@@ -104,9 +104,9 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 			invitedList = new HashSet<User>();
 		}
 		
-		for (String username : request.getUsernameList()) {
+		for (String id : request.getUserIdList()) {
 			
-			User user = userRepository.findByUsername(username);
+			User user = userRepository.findOne(id);
 			if(user == null){
 				throw new PinkElephantRuntimeException(400, ErrorCode.USER_NOT_FOUND, "");
 			}
@@ -217,11 +217,11 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		validate(request);
 
 		ActionResponse response = new ActionResponse();
-		Meeting meeting = meetingRepository.findOne(request.getMeetingId());
-		if(meeting == null){
-			throw new PinkElephantRuntimeException(400, ErrorCode.MEETING_NOT_FOUND, "");
-		}
+		Meeting meeting = findById(request.getMeetingId());
 		
+		if(request.getName() != null){
+			meeting.setName(request.getName());
+		}
 		if(request.getActualDuration() != null){
 			meeting.setActualDuration(request.getActualDuration());
 		}
@@ -231,11 +231,17 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		if(request.getDatetime() != null){
 			meeting.setDatetime(request.getDatetime());
 		}
+		if(request.getTimezone() != null){
+			meeting.setTimezone(request.getTimezone());
+		}
 		if(request.getDescription()!=null && !request.getDescription().equalsIgnoreCase("")){
 			meeting.setDescription(request.getDescription());
 		}
-		if(request.getEstimatedDuration() != null){
-			meeting.setEstimatedDuration(request.getEstimatedDuration());
+		if(request.getEndHour() != null){
+			meeting.setEndHour(request.getEndHour());
+		}
+		if(request.getStartHour() != null){
+			meeting.setStartHour(request.getStartHour());
 		}
 		if(request.getLocation() != null && !request.getLocation().equalsIgnoreCase("")){
 			meeting.setLocation(request.getLocation());
@@ -298,14 +304,35 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		
 		Meeting meeting = new Meeting();
 		
+		meeting.setName(request.getName());
 		meeting.setAgendaSet(meeting.getAgendaSet());
 		meeting.setDatetime(request.getDatetime());
+		meeting.setStartHour(request.getStartHour());
+		meeting.setEndHour(request.getEndHour());
 		meeting.setDescription(request.getDescription());
-		meeting.setEstimatedDuration(request.getEstimatedDuration());
 		meeting.setLocation(request.getLocation());
 		meeting.setType(request.getType());
 		meeting.setStatus(MeetingStatus.NOT_STARTED);
+		meeting.setTimezone(request.getTimezone());
 		
+		if(request.getInvitedUserIdList() == null || request.getInvitedUserIdList().isEmpty()){
+			return meeting;
+		}
+		
+		Set<User> invitedList = new HashSet<User>();
+		for (String id : request.getInvitedUserIdList()) {
+			
+			User user = userRepository.findOne(id);
+			if(user == null){
+				throw new PinkElephantRuntimeException(400, ErrorCode.USER_NOT_FOUND, "");
+			}
+			
+			if(!invitedList.contains(user)){
+				invitedList.add(user);
+			}
+		}
+		meeting.setInvitedUserSet(invitedList);
+
 		return meeting;
 	}
 }

@@ -39,10 +39,13 @@ public class ListMeetingResponse extends ActionResponse{
 	@Data
 	public static class MeetingObj{
 		private String id;
+		private String name;
 		private Date datetime;
+		private String timezone;
 		private Set<String> agendaSet;
 		private Set<String> todoSet;
-		private Integer estimatedDuration;
+		private String startHour;
+		private String endHour;
 		private Integer actualDuration;
 		private String location;
 		private String description;
@@ -51,16 +54,23 @@ public class ListMeetingResponse extends ActionResponse{
 		
 		private Set<String> invitedUserSet;
 		private Set<String> attandedUserSet;
+		private Set<String> rejectedUserSet;
+		private Set<String> tentativeUserSet;
 		
 		public MeetingObj(Meeting meeting){
 			this.id = meeting.getId();
+			this.name = meeting.getName();
 			this.description = meeting.getDescription();
 			this.actualDuration = meeting.getActualDuration();
 			this.agendaSet = meeting.getAgendaSet();
 			this.attandedUserSet = getUsernameSet(meeting.getAttendedUserSet());
 			this.datetime = meeting.getDatetime();
-			this.estimatedDuration = meeting.getEstimatedDuration();
+			this.timezone = meeting.getTimezone();
+			this.startHour = meeting.getStartHour();
+			this.endHour = meeting.getEndHour();
 			this.invitedUserSet = getUsernameSet(meeting.getInvitedUserSet());
+			this.rejectedUserSet = getUsernameSet(meeting.getRejectedUserSet());
+			this.tentativeUserSet = getUsernameSet(meeting.getTentativeUserSet());
 			this.location = meeting.getLocation();
 			this.status = meeting.getStatus();
 			this.todoSet = meeting.getTodoSet();

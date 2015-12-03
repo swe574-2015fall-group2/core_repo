@@ -10,5 +10,5 @@ import lombok.EqualsAndHashCode;
 public class InviteUserToMeetingRequest extends BaseRequest{
 
 	private String meetingId;
-	private List<String> usernameList;
+	private List<String> userIdList;
 }
