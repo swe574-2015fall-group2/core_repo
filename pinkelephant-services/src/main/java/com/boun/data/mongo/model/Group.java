@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Date;
+
 @Data
 @EqualsAndHashCode(callSuper=false)
 @Document(collection = "groups")
@@ -24,6 +26,8 @@ public class Group extends BaseEntity{
     private GroupStatus status;
     
     private ImageInfo image;
+
+    private Date createdAt;
     
     @DBRef
     private User creator;

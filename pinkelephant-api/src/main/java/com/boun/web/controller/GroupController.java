@@ -1,5 +1,7 @@
 package com.boun.web.controller;
 
+import com.boun.data.mongo.model.Group;
+import com.boun.data.mongo.model.GroupCount;
 import com.boun.http.response.ListGroupResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,8 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
+
+import java.util.List;
 
 @RestController
 @Api(value = "group", description = "Group service")
@@ -143,40 +147,40 @@ public class GroupController {
 		}
 	}
 
-	@ApiOperation(value = "List popular groups")
-	@RequestMapping(value = "listPopularGroups", method = RequestMethod.POST)
+	@ApiOperation(value = "List latest groups")
+	@RequestMapping(value = "listLatest", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody ListGroupResponse getPopularGroups(@RequestBody BaseRequest request) {
+	public @ResponseBody List<Group> getLatestGroups(@RequestBody BaseRequest request) {
 
-		//TODO implement method for popular groups
 		try {
 			if (logger.isDebugEnabled()) {
-				logger.debug("getAllGroups request received, request->" + request.toString());
+				logger.debug("getLatestGroups request received, request->" + request.toString());
 			}
-			return groupService.getAllGroups(request);
+			return groupService.getLatestGroups(request);
 		} finally {
 			if (logger.isDebugEnabled()) {
-				logger.debug("getAllGroups operation finished");
+				logger.debug("getLatestGroups operation finished");
 			}
 		}
 	}
 
 	@ApiOperation(value = "List popular groups")
-	@RequestMapping(value = "listRecommended", method = RequestMethod.POST)
+	@RequestMapping(value = "listPopularGroups", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody ListGroupResponse getRecommendedGroups(@RequestBody BaseRequest request) {
+	public @ResponseBody
+	List<GroupCount> getPopularGroups(@RequestBody BaseRequest request) {
 
-		//TODO implement method for recommended groups
 		try {
 			if (logger.isDebugEnabled()) {
-				logger.debug("getRecommendedGroups request received, request->" + request.toString());
+				logger.debug("getPopularGroups request received, request->" + request.toString());
 			}
-			return groupService.getAllGroups(request);
+
+			return groupService.getPopularGroups(request);
 		} finally {
 			if (logger.isDebugEnabled()) {
-				logger.debug("getRecommendedGroups operation finished");
+				logger.debug("getPopularGroups operation finished");
 			}
 		}
 	}
