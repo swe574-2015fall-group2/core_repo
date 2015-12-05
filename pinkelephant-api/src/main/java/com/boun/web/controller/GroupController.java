@@ -152,7 +152,7 @@ public class GroupController {
 			@ApiResponse(code = 500, message = "Internal Server Error") })
 	public @ResponseBody
 	List<GroupCount> getPopularGroups(@RequestBody BaseRequest request) {
-		
+
 		try {
 			if (logger.isDebugEnabled()) {
 				logger.debug("getPopularGroups request received, request->" + request.toString());
@@ -162,25 +162,6 @@ public class GroupController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("getPopularGroups operation finished");
-			}
-		}
-	}
-
-	@ApiOperation(value = "List popular groups")
-	@RequestMapping(value = "listRecommended", method = RequestMethod.POST)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
-			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody ListGroupResponse getRecommendedGroups(@RequestBody BaseRequest request) {
-
-		//TODO implement method for recommended groups
-		try {
-			if (logger.isDebugEnabled()) {
-				logger.debug("getRecommendedGroups request received, request->" + request.toString());
-			}
-			return groupService.getAllGroups(request);
-		} finally {
-			if (logger.isDebugEnabled()) {
-				logger.debug("getRecommendedGroups operation finished");
 			}
 		}
 	}
