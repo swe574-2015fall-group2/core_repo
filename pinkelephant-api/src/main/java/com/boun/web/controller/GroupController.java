@@ -1,5 +1,6 @@
 package com.boun.web.controller;
 
+import com.boun.data.mongo.model.GroupCount;
 import com.boun.http.response.ListGroupResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,8 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
+
+import java.util.List;
 
 @RestController
 @Api(value = "group", description = "Group service")
@@ -147,17 +150,18 @@ public class GroupController {
 	@RequestMapping(value = "listPopularGroups", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody ListGroupResponse getPopularGroups(@RequestBody BaseRequest request) {
-
-		//TODO implement method for popular groups
+	public @ResponseBody
+	List<GroupCount> getPopularGroups(@RequestBody BaseRequest request) {
+		
 		try {
 			if (logger.isDebugEnabled()) {
-				logger.debug("getAllGroups request received, request->" + request.toString());
+				logger.debug("getPopularGroups request received, request->" + request.toString());
 			}
-			return groupService.getAllGroups(request);
+
+			return groupService.getPopularGroups(request);
 		} finally {
 			if (logger.isDebugEnabled()) {
-				logger.debug("getAllGroups operation finished");
+				logger.debug("getPopularGroups operation finished");
 			}
 		}
 	}

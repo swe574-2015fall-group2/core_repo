@@ -2,6 +2,7 @@ package com.boun.service.impl;
 
 import java.util.List;
 
+import com.boun.data.mongo.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +12,6 @@ import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.GroupStatus;
 import com.boun.data.common.enums.MemberStatus;
-import com.boun.data.mongo.model.Group;
-import com.boun.data.mongo.model.GroupMember;
-import com.boun.data.mongo.model.ImageInfo;
-import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.GroupMemberRepository;
 import com.boun.data.mongo.repository.GroupRepository;
 import com.boun.data.mongo.repository.UserRepository;
@@ -104,7 +101,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		JoinLeaveGroupRequest joinLeaveGroupRequest = new JoinLeaveGroupRequest();
 		joinLeaveGroupRequest.setAuthToken(request.getAuthToken());
 		joinLeaveGroupRequest.setGroupId(group.getId());
-		
+
 		joinGroup(joinLeaveGroupRequest);
 		
 		return response;
@@ -284,6 +281,16 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		response.setAcknowledge(true);
 
 		return response;
+	}
+
+	@Override
+	public List<GroupCount> getPopularGroups(BaseRequest request) {
+
+		validate(request);
+
+		List<GroupCount> groups = groupMemberRepository.findPopularGroups();
+
+		return groups;
 	}
 
 	private Boolean checkIfJoined(List<ListGroupResponse.GroupObj> myGroups, Group group) {
