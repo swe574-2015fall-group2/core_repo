@@ -1,5 +1,7 @@
 package com.boun.http.request;
 
+import java.util.List;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -8,8 +10,8 @@ import lombok.EqualsAndHashCode;
 public class CreateResourceRequest extends BaseRequest{
 
 	private String name;
-
 	private String link;
-
 	private String groupId;
+	
+	private List<String> tagList;
 }

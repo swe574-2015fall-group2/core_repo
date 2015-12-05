@@ -10,13 +10,10 @@ import java.util.List;
 public class CreateNoteRequest extends BaseRequest{
 
 	private String title;
-
 	private String text;
-
 	private List<String> resourceIds;
-
 	private String groupId;
-
 	private String meetingId;
 
+	private List<String> tagList;
 }

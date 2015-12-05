@@ -1,5 +1,7 @@
 package com.boun.http.request;
 
+import java.util.List;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,4 +13,5 @@ public class CreateDiscussionRequest extends BaseRequest{
 	private String name;
 	private String description;
 	
+	private List<String> tagList;
 }
