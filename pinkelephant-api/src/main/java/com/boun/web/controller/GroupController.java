@@ -1,5 +1,6 @@
 package com.boun.web.controller;
 
+import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.GroupCount;
 import com.boun.http.response.ListGroupResponse;
 import org.slf4j.Logger;
@@ -142,6 +143,24 @@ public class GroupController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("getAllGroups operation finished");
+			}
+		}
+	}
+
+	@ApiOperation(value = "List latest groups")
+	@RequestMapping(value = "listLatest", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody List<Group> getLatestGroups(@RequestBody BaseRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getLatestGroups request received, request->" + request.toString());
+			}
+			return groupService.getLatestGroups(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getLatestGroups operation finished");
 			}
 		}
 	}

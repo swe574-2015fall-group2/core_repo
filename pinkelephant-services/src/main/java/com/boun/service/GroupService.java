@@ -33,6 +33,8 @@ public interface GroupService {
 	public ListGroupResponse getAllGroups(BaseRequest request);
 
 	public List<GroupCount> getPopularGroups(BaseRequest request);
+
+	public List<Group> getLatestGroups(BaseRequest request);
 	
 	public ActionResponse uploadImage(UploadImageRequest request);
 	
