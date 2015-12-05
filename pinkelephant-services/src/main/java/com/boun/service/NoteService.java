@@ -1,10 +1,10 @@
 package com.boun.service;
 
 import com.boun.data.mongo.model.Note;
-import com.boun.data.mongo.model.Resource;
-import com.boun.http.request.*;
-
-import java.util.List;
+import com.boun.http.request.CreateNoteRequest;
+import com.boun.http.request.TagRequest;
+import com.boun.http.request.UpdateNoteRequest;
+import com.boun.http.response.ActionResponse;
 
 public interface NoteService {
 
@@ -13,5 +13,7 @@ public interface NoteService {
     Note createNote(CreateNoteRequest request);
 
     Note updateNote(UpdateNoteRequest request);
+    
+    public ActionResponse tag(TagRequest request);;
     
 }

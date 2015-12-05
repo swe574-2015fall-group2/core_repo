@@ -21,6 +21,7 @@ public class GetDiscussionResponse extends ActionResponse{
 	private String groupId;
 	
 	private List<Comment> commentList;
+	private List<String> tagList;
 	
 	public void addComment(String id, String comment, Date creationTime, String creatorId){
 		if(commentList == null){

@@ -18,6 +18,10 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Comment extends BaseEntity{
 
+	public Comment(){
+		super(EntityType.COMMENT);
+	}
+	
 	@DBRef
 	private User user;
 

@@ -6,6 +6,7 @@ import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateUpdateGroupRequest;
 import com.boun.http.request.JoinLeaveGroupRequest;
+import com.boun.http.request.TagRequest;
 import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
@@ -39,4 +40,6 @@ public interface GroupService {
 	public ActionResponse uploadImage(UploadImageRequest request);
 	
 	public GetGroupResponse queryGroup(BasicQueryRequest request);
+	
+	public ActionResponse tag(TagRequest request);
 }

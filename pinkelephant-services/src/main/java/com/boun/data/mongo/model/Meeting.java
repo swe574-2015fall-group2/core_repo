@@ -19,7 +19,7 @@ import lombok.EqualsAndHashCode;
 @Document(collection = "meeting")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Meeting extends BaseEntity{
+public class Meeting extends TaggedEntity{
 
 	private String name;
 	private Date datetime;
@@ -35,6 +35,10 @@ public class Meeting extends BaseEntity{
 	private MeetingStatus status;
 	private MeetingType type;
 
+	public Meeting(){
+		super(EntityType.MEETING);
+	}
+	
 	@DBRef
 	private User creator;
 	

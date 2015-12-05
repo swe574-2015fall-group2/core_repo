@@ -1,27 +1,34 @@
 package com.boun.service.impl;
 
-import com.boun.app.common.ErrorCode;
-import com.boun.app.exception.PinkElephantRuntimeException;
-import com.boun.data.common.enums.ResourceType;
-import com.boun.data.mongo.model.*;
-import com.boun.data.mongo.repository.NoteRepository;
-import com.boun.data.mongo.repository.RoleRepository;
-import com.boun.data.session.PinkElephantSession;
-import com.boun.http.request.CreateNoteRequest;
-import com.boun.http.request.CreateRoleRequest;
-import com.boun.http.request.UpdateNoteRequest;
-import com.boun.http.request.UpdateRoleRequest;
-import com.boun.service.*;
+import java.util.Date;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import com.boun.app.common.ErrorCode;
+import com.boun.app.exception.PinkElephantRuntimeException;
+import com.boun.data.mongo.model.Group;
+import com.boun.data.mongo.model.Meeting;
+import com.boun.data.mongo.model.Note;
+import com.boun.data.mongo.model.Resource;
+import com.boun.data.mongo.repository.NoteRepository;
+import com.boun.data.session.PinkElephantSession;
+import com.boun.http.request.CreateNoteRequest;
+import com.boun.http.request.TagRequest;
+import com.boun.http.request.UpdateNoteRequest;
+import com.boun.http.response.ActionResponse;
+import com.boun.service.GroupService;
+import com.boun.service.MeetingService;
+import com.boun.service.NoteService;
+import com.boun.service.PinkElephantTaggedService;
+import com.boun.service.ResourceService;
+import com.boun.service.TagService;
 
 @Service
-public class NoteServiceImpl extends PinkElephantService implements NoteService {
+public class NoteServiceImpl extends PinkElephantTaggedService implements NoteService {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -36,6 +43,9 @@ public class NoteServiceImpl extends PinkElephantService implements NoteService 
 
 	@Autowired
 	private ResourceService resourceService;
+	
+	@Autowired
+	private TagService tagService;
 
 	@Override
 	public Note findById(String id) {
@@ -68,8 +78,10 @@ public class NoteServiceImpl extends PinkElephantService implements NoteService 
 		note.setCreatedAt(new Date());
 		note.setMeeting(meeting);
 		note.setResources(resources);
-
+		note.setTagList(request.getTagList());
+		
 		note = noteRepository.save(note);
+		tagService.tag(request.getTagList(), note, true);
 
 		return note;
 
@@ -101,7 +113,27 @@ public class NoteServiceImpl extends PinkElephantService implements NoteService 
 		note = noteRepository.save(note);
 
 		return note;
-
 	}
 
+	@Override
+	public ActionResponse tag(TagRequest request) {
+		
+		validate(request);
+		
+		Note note = findById(request.getEntityId());
+		
+		ActionResponse response = new ActionResponse();
+		if(tag(note, request.getTag(), request.isAdd())){
+			response.setAcknowledge(true);
+			
+			noteRepository.save(note);
+		}
+		
+		return response;
+	}
+	
+	@Override
+	protected TagService getTagService() {
+		return tagService;
+	}
 }

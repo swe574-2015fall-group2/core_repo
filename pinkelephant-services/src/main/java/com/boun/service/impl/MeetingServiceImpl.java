@@ -23,6 +23,7 @@ import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
+import com.boun.http.request.TagRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
@@ -30,11 +31,11 @@ import com.boun.http.response.GetMeetingResponse;
 import com.boun.http.response.ListMeetingResponse;
 import com.boun.service.GroupService;
 import com.boun.service.MeetingService;
-import com.boun.service.PinkElephantService;
+import com.boun.service.PinkElephantTaggedService;
 import com.boun.service.TagService;
 
 @Service
-public class MeetingServiceImpl extends PinkElephantService implements MeetingService{
+public class MeetingServiceImpl extends PinkElephantTaggedService implements MeetingService{
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -62,6 +63,11 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 	}
 
 	@Override
+	protected TagService getTagService() {
+		return tagService;
+	}
+	
+	@Override
 	public CreateResponse createMeeting(CreateMeetingRequest request) {
 
 		validate(request);
@@ -79,7 +85,7 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		response.setAcknowledge(true);
 		response.setEntityId(meeting.getId());
 			
-		tagService.tag("test", meeting);
+		tagService.tag(request.getTagList(), meeting, true);	
 		
 		return response;
 	}
@@ -314,6 +320,7 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		meeting.setType(request.getType());
 		meeting.setStatus(MeetingStatus.NOT_STARTED);
 		meeting.setTimezone(request.getTimezone());
+		meeting.setTagList(request.getTagList());
 		
 		if(request.getInvitedUserIdList() == null || request.getInvitedUserIdList().isEmpty()){
 			return meeting;
@@ -334,5 +341,22 @@ public class MeetingServiceImpl extends PinkElephantService implements MeetingSe
 		meeting.setInvitedUserSet(invitedList);
 
 		return meeting;
+	}
+
+	@Override
+	public ActionResponse tag(TagRequest request) {
+		
+		validate(request);
+		
+		Meeting meeting = findById(request.getEntityId());
+		
+		ActionResponse response = new ActionResponse();
+		if(tag(meeting, request.getTag(), request.isAdd())){
+			response.setAcknowledge(true);
+			
+			meetingRepository.save(meeting);
+		}
+		
+		return response;
 	}
 }

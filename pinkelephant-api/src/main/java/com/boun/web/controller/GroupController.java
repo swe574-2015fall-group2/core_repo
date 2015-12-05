@@ -16,6 +16,7 @@ import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateUpdateGroupRequest;
 import com.boun.http.request.JoinLeaveGroupRequest;
+import com.boun.http.request.TagRequest;
 import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
@@ -217,6 +218,24 @@ public class GroupController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("queryGroup operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Add/Remove tag to/from a Group")
+	@RequestMapping(value = "tag", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse tag(@RequestBody TagRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("tag request received, request->" + request.toString());
+			}
+			return groupService.tag(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("tag operation finished");
 			}
 		}
 	}

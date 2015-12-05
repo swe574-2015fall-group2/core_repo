@@ -16,8 +16,12 @@ import lombok.EqualsAndHashCode;
 @Document(collection = "meeting")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Discussion extends BaseEntity{
+public class Discussion extends TaggedEntity{
 
+	public Discussion(){
+		super(EntityType.DISCUSSION);
+	}
+	
 	@DBRef
 	private Group group;
 	

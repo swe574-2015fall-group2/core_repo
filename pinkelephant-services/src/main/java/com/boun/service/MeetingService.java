@@ -5,6 +5,7 @@ import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
+import com.boun.http.request.TagRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
@@ -26,4 +27,6 @@ public interface MeetingService {
 	ActionResponse invitationReply(MeetingInvitationReplyRequest request);
 	
 	GetMeetingResponse getMeeting(BasicQueryRequest request);
+	
+	ActionResponse tag(TagRequest request);
 }

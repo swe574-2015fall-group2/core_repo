@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.boun.http.request.AddCommentRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateDiscussionRequest;
+import com.boun.http.request.TagRequest;
 import com.boun.http.request.UpdateDiscussionRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.GetDiscussionResponse;
@@ -122,6 +123,24 @@ public class DiscussionController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("createComment operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Add/Remove tag to/from a Discussion")
+	@RequestMapping(value = "tag", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse tag(@RequestBody TagRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("tag request received, request->" + request.toString());
+			}
+			return discussionService.tag(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("tag operation finished");
 			}
 		}
 	}

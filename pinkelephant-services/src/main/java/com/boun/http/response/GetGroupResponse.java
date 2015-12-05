@@ -1,5 +1,7 @@
 package com.boun.http.response;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -15,6 +17,7 @@ public class GetGroupResponse extends ActionResponse{
 	private String description;
 	private ImageData image;
 	
+	private List<String> tagList;
 }
 
 

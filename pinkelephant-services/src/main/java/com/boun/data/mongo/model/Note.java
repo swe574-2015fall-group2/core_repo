@@ -1,21 +1,21 @@
 package com.boun.data.mongo.model;
 
-import com.boun.data.common.enums.ResourceType;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+
+import org.springframework.data.mongodb.core.mapping.DBRef;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Note extends BaseEntity{
+public class Note extends TaggedEntity{
 
     private String title;
 
@@ -36,4 +36,7 @@ public class Note extends BaseEntity{
     @DBRef
     private User creator;
 
+	public Note(){
+		super(EntityType.NOTE);
+	}
 }

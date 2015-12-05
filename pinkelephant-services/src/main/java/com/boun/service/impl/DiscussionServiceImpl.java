@@ -16,6 +16,7 @@ import com.boun.data.mongo.repository.DiscussionRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateDiscussionRequest;
+import com.boun.http.request.TagRequest;
 import com.boun.http.request.UpdateDiscussionRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.GetDiscussionResponse;
@@ -23,10 +24,11 @@ import com.boun.http.response.ListDiscussionResponse;
 import com.boun.service.CommentService;
 import com.boun.service.DiscussionService;
 import com.boun.service.GroupService;
-import com.boun.service.PinkElephantService;
+import com.boun.service.PinkElephantTaggedService;
+import com.boun.service.TagService;
 
 @Service
-public class DiscussionServiceImpl extends PinkElephantService implements DiscussionService{
+public class DiscussionServiceImpl extends PinkElephantTaggedService implements DiscussionService{
 
 	@Autowired
 	private DiscussionRepository discussionRepository;
@@ -36,6 +38,9 @@ public class DiscussionServiceImpl extends PinkElephantService implements Discus
 	
 	@Autowired
 	private CommentService commentService;
+	
+	@Autowired
+	private TagService tagService;
 	
 	@Override
 	public Discussion findById(String discussionId) {
@@ -60,8 +65,11 @@ public class DiscussionServiceImpl extends PinkElephantService implements Discus
 		discussion.setGroup(group);
 		discussion.setCreator(authenticatedUser);
 		discussion.setName(request.getName());
+		discussion.setTagList(request.getTagList());
 		
 		discussionRepository.save(discussion);
+		
+		tagService.tag(request.getTagList(), discussion, true);	
 		
 		ActionResponse response = new ActionResponse();
 		response.setAcknowledge(true);
@@ -112,7 +120,7 @@ public class DiscussionServiceImpl extends PinkElephantService implements Discus
 		}
 		
 		for (Discussion discussion : discussionList) {
-			response.addDiscussion(discussion.getId(), discussion.getName(), discussion.getDescription(), discussion.getCreator().getId(), discussion.getCreationTime());
+			response.addDiscussion(discussion.getId(), discussion.getName(), discussion.getDescription(), discussion.getCreator().getId(), discussion.getCreationTime(), discussion.getTagList());
 		}
 		
 		return response;
@@ -132,6 +140,7 @@ public class DiscussionServiceImpl extends PinkElephantService implements Discus
 		response.setGroupId(discussion.getGroup().getId());
 		response.setId(discussion.getId());
 		response.setName(discussion.getName());
+		response.setTagList(discussion.getTagList());
 		
 		List<Comment> commentList = commentService.getComments(discussion.getId());
 		if(commentList != null && !commentList.isEmpty()){
@@ -140,6 +149,28 @@ public class DiscussionServiceImpl extends PinkElephantService implements Discus
 			}
 		}
 		return response;
+	}
+	
+	@Override
+	public ActionResponse tag(TagRequest request) {
+		
+		validate(request);
+		
+		Discussion discussion = findById(request.getEntityId());
+		
+		ActionResponse response = new ActionResponse();
+		if(tag(discussion, request.getTag(), request.isAdd())){
+			response.setAcknowledge(true);
+			
+			discussionRepository.save(discussion);
+		}
+		
+		return response;
+	}
+
+	@Override
+	protected TagService getTagService() {
+		return tagService;
 	}
 
 }

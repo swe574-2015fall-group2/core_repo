@@ -20,15 +20,18 @@ import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Resource;
 import com.boun.data.mongo.repository.ResourceRepository;
 import com.boun.data.session.PinkElephantSession;
+import com.boun.http.request.BasicDeleteRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateResourceRequest;
-import com.boun.http.request.BasicDeleteRequest;
+import com.boun.http.request.TagRequest;
+import com.boun.http.response.ActionResponse;
 import com.boun.service.GroupService;
-import com.boun.service.PinkElephantService;
+import com.boun.service.PinkElephantTaggedService;
 import com.boun.service.ResourceService;
+import com.boun.service.TagService;
 
 @Service
-public class ResourceServiceImpl extends PinkElephantService implements ResourceService {
+public class ResourceServiceImpl extends PinkElephantTaggedService implements ResourceService {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -41,6 +44,9 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 	@Autowired
 	private GroupService groupService;
 
+	@Autowired
+	private TagService tagService;
+	
 	@Override
 	public Resource findById(String resourceId) {
 		Resource resource = resourceRepository.findOne(resourceId);
@@ -79,8 +85,10 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 		resource.setGroup(group);
 		resource.setCreatedAt(new Date());
 		resource.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
-
+		resource.setTagList(request.getTagList());
+		
 		resource = resourceRepository.save(resource);
+		tagService.tag(request.getTagList(), resource, true);
 
 		return  resource;
 
@@ -139,5 +147,27 @@ public class ResourceServiceImpl extends PinkElephantService implements Resource
 	public List<Resource> queryResourcesOfGroup(BasicQueryRequest request) {
 		Group group = groupService.findById(request.getId());
 		return resourceRepository.findResources(group.getId());
+	}
+	
+	@Override
+	public ActionResponse tag(TagRequest request) {
+		
+		validate(request);
+		
+		Resource resource = findById(request.getEntityId());
+		
+		ActionResponse response = new ActionResponse();
+		if(tag(resource, request.getTag(), request.isAdd())){
+			response.setAcknowledge(true);
+			
+			resourceRepository.save(resource);
+		}
+		
+		return response;
+	}
+	
+	@Override
+	protected TagService getTagService() {
+		return tagService;
 	}
 }

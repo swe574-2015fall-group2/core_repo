@@ -1,6 +1,7 @@
 package com.boun.service.impl;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -23,26 +24,55 @@ public class TagServiceImpl extends PinkElephantService implements TagService{
 	private TagRepository tagRepository;
 	
 	@Override
-	public void tag(String tagStr, BaseEntity baseEntity) {
+	public void tag(String tagStr, BaseEntity baseEntity, boolean add) {
 		
 		Tag tag = tagRepository.findOne(tagStr);
 		if(tag == null){
+			
+			if(!add){
+				return;
+			}
+			
 			tag = new Tag();
 			tag.setTag(tagStr);
 		}
 		
 		Set<BaseEntity> referenceSet = tag.getReferenceSet();
 		if(referenceSet == null || referenceSet.isEmpty()){
+			
+			if(!add){
+				return;
+			}
+			
 			referenceSet = new HashSet<BaseEntity>();
 		}
 		
-		if(!referenceSet.contains(baseEntity)){
-			referenceSet.add(baseEntity);
+		if(add){
+		
+			if(!referenceSet.contains(baseEntity)){
+				referenceSet.add(baseEntity);
+			}
+			
+		}else{
+			
+			if(referenceSet.contains(baseEntity)){
+				referenceSet.remove(baseEntity);
+			}
 		}
 		
 		tag.setReferenceSet(referenceSet);
 		
 		tagRepository.save(tag);
+	}
+
+	@Override
+	public void tag(List<String> tagList, BaseEntity baseEntity, boolean add) {
+		if(tagList == null || tagList.isEmpty()){
+			return;
+		}
+		for (String tag : tagList) {
+			tag(tag, baseEntity, add);
+		}
 	}
 
 }

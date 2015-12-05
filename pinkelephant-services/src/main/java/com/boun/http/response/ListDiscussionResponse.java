@@ -16,11 +16,11 @@ public class ListDiscussionResponse extends ActionResponse{
 
 	private List<DiscussionObj> discussionList;
 	
-	public void addDiscussion(String id, String name, String description, String creatorId, Date creationTime){
+	public void addDiscussion(String id, String name, String description, String creatorId, Date creationTime, List<String> tagList){
 		if(discussionList == null){
 			discussionList = new ArrayList<DiscussionObj>();
 		}
-		discussionList.add(new DiscussionObj(id, name, description, creatorId, creationTime));
+		discussionList.add(new DiscussionObj(id, name, description, creatorId, creationTime, tagList));
 	}
 	
 	@Data
@@ -30,13 +30,15 @@ public class ListDiscussionResponse extends ActionResponse{
 		private String description;
 		private String creatorId;
 		private Date creationTime;
+		List<String> tagList;
 		
-		public DiscussionObj(String id, String name, String description, String creatorId, Date creationTime){
+		public DiscussionObj(String id, String name, String description, String creatorId, Date creationTime, List<String> tagList){
 			this.id = id;
 			this.name = name;
 			this.description = description;
 			this.creatorId = creatorId;
 			this.creationTime = creationTime;
+			this.tagList = tagList;
 		}
 		
 	}

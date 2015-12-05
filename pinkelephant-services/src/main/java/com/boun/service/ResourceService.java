@@ -5,6 +5,8 @@ import java.util.List;
 import com.boun.data.mongo.model.Resource;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateResourceRequest;
+import com.boun.http.request.TagRequest;
+import com.boun.http.response.ActionResponse;
 import com.boun.http.request.BasicDeleteRequest;
 
 public interface ResourceService {
@@ -21,4 +23,5 @@ public interface ResourceService {
 
     boolean delete(BasicDeleteRequest id);
     
+    public ActionResponse tag(TagRequest request);
 }

@@ -46,6 +46,10 @@ public class User extends BaseEntity{
 
     private Status status;
 
+	public User(){
+		super(EntityType.USER);
+	}
+	
     public UserRole getGroupRoles(String groupId) {
         UserRole role = new UserRole();
 

@@ -18,6 +18,8 @@ import com.boun.app.exception.PinkElephantValidationException;
 import com.boun.data.mongo.model.Resource;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateResourceRequest;
+import com.boun.http.request.TagRequest;
+import com.boun.http.response.ActionResponse;
 import com.boun.http.request.BasicDeleteRequest;
 import com.boun.service.ResourceService;
 import com.wordnik.swagger.annotations.Api;
@@ -96,6 +98,24 @@ public class ResourceController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("queryResourceByGroupId operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Add/Remove tag to/from a Resource")
+	@RequestMapping(value = "tag", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse tag(@RequestBody TagRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("tag request received, request->" + request.toString());
+			}
+			return resourceService.tag(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("tag operation finished");
 			}
 		}
 	}

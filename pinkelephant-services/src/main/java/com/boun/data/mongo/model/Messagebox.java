@@ -26,6 +26,10 @@ public class Messagebox extends BaseEntity{
 	
 	private List<MessageDetails> messages;
 	
+	public Messagebox(){
+		super(EntityType.MESSAGEBOX);
+	}
+	
 	public void addMessage(String message){
 		if(messages == null || messages.isEmpty()){
 			messages = new ArrayList<MessageDetails>();

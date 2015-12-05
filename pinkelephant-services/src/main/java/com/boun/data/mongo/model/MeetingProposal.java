@@ -31,6 +31,10 @@ public class MeetingProposal extends BaseEntity{
 	
 	private List<Respondant> respondantList;
 	
+	public MeetingProposal(){
+		super(EntityType.MEETING_PROPOSAL);
+	}
+	
 	@Data
 	public static class Respondant{
 		

@@ -59,6 +59,8 @@ public class ListMeetingResponse extends ActionResponse{
 		private Set<String> rejectedUserSet;
 		private Set<String> tentativeUserSet;
 		
+		private List<String> tagList;
+		
 		public MeetingObj(Meeting meeting){
 			this.id = meeting.getId();
 			this.name = meeting.getName();
@@ -79,6 +81,7 @@ public class ListMeetingResponse extends ActionResponse{
 			this.type = meeting.getType();
 			this.creatorId = meeting.getCreator().getId();
 			this.groupId = meeting.getGroup().getId();
+			this.tagList = meeting.getTagList();
 		}
 		
 		private Set<String> getUsernameSet(Set<User> userSet){

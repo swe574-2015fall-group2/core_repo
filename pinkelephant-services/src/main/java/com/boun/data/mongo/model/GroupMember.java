@@ -17,6 +17,10 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GroupMember extends BaseEntity{
 
+	public GroupMember(){
+		super(EntityType.GROUPMEMBER);
+	}
+	
 	@DBRef
 	private User user;
 

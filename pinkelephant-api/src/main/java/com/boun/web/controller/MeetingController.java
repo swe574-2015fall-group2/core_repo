@@ -14,6 +14,7 @@ import com.boun.http.request.BasicDeleteRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
 import com.boun.http.request.MeetingProposalInvitationReplyRequest;
+import com.boun.http.request.TagRequest;
 import com.boun.http.request.UpdateMeetingProposalRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateMeetingProposalRequest;
@@ -225,6 +226,24 @@ public class MeetingController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("getMeeting operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Add/Remove tag to/from a Meeting")
+	@RequestMapping(value = "tag", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse tag(@RequestBody TagRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("tag request received, request->" + request.toString());
+			}
+			return meetingService.tag(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("tag operation finished");
 			}
 		}
 	}

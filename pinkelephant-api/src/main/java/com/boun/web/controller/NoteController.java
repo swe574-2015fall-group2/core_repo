@@ -2,6 +2,7 @@ package com.boun.web.controller;
 
 import com.boun.data.mongo.model.Note;
 import com.boun.http.request.*;
+import com.boun.http.response.ActionResponse;
 import com.boun.service.NoteService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -54,6 +55,24 @@ public class NoteController {
 		}finally{
 			if(logger.isDebugEnabled()){
 				logger.debug("updateNote operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Add/Remove tag to/from a Note")
+	@RequestMapping(value = "tag", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse tag(@RequestBody TagRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("tag request received, request->" + request.toString());
+			}
+			return noteService.tag(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("tag operation finished");
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package com.boun.service;
 import com.boun.data.mongo.model.Discussion;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateDiscussionRequest;
+import com.boun.http.request.TagRequest;
 import com.boun.http.request.UpdateDiscussionRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.GetDiscussionResponse;
@@ -19,4 +20,6 @@ public interface DiscussionService {
 	public GetDiscussionResponse queryDiscussion(BasicQueryRequest request);
 	
 	public ListDiscussionResponse listDiscussions(BasicQueryRequest request);
+	
+	public ActionResponse tag(TagRequest request);
 }

@@ -3,7 +3,6 @@ package com.boun.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import com.boun.data.mongo.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,11 @@ import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.GroupStatus;
 import com.boun.data.common.enums.MemberStatus;
+import com.boun.data.mongo.model.Group;
+import com.boun.data.mongo.model.GroupCount;
+import com.boun.data.mongo.model.GroupMember;
+import com.boun.data.mongo.model.ImageInfo;
+import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.GroupMemberRepository;
 import com.boun.data.mongo.repository.GroupRepository;
 import com.boun.data.mongo.repository.UserRepository;
@@ -21,19 +25,19 @@ import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateUpdateGroupRequest;
 import com.boun.http.request.JoinLeaveGroupRequest;
+import com.boun.http.request.TagRequest;
 import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
 import com.boun.http.response.GetGroupResponse;
-import com.boun.http.response.ImageData;
 import com.boun.http.response.ListGroupResponse;
 import com.boun.service.GroupService;
-import com.boun.service.PinkElephantService;
+import com.boun.service.PinkElephantTaggedService;
 import com.boun.service.TagService;
 import com.boun.util.ImageUtil;
 
 @Service
-public class GroupServiceImpl extends PinkElephantService implements GroupService{
+public class GroupServiceImpl extends PinkElephantTaggedService implements GroupService{
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -92,19 +96,21 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		group.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
 		group.setCreatedAt(new Date());
 		group.setStatus(GroupStatus.ACTIVE);
+		group.setTagList(request.getTagList());
 		
 		group = groupRepository.save(group);
 		
 		response.setAcknowledge(true);
 		response.setEntityId(group.getId());
 
-		tagService.tag("test", group);
+		tagService.tag(request.getTagList(), group, true);	
 
 		JoinLeaveGroupRequest joinLeaveGroupRequest = new JoinLeaveGroupRequest();
 		joinLeaveGroupRequest.setAuthToken(request.getAuthToken());
 		joinLeaveGroupRequest.setGroupId(group.getId());
 
 		joinGroup(joinLeaveGroupRequest);
+		
 		
 		return response;
 	}
@@ -230,7 +236,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		}
 
 		for (Group group : groupList) {
-			response.addGroup(group.getId(), group.getName(), group.getDescription(), true);
+			response.addGroup(group.getId(), group.getName(), group.getDescription(), true, group.getTagList());
 		}
 		
 		response.setAcknowledge(true);
@@ -250,6 +256,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 		response.setId(group.getId());
 		response.setName(group.getName());
 		response.setImage(ImageUtil.getImage(group.getImage()));			
+		response.setTagList(group.getTagList());
 		
 		response.setAcknowledge(true);
 
@@ -276,7 +283,7 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 			if(group.getStatus() == null || group.getStatus().value() != GroupStatus.ACTIVE.value()){
 				continue;
 			}
-			response.addGroup(group.getId(), group.getName(), group.getDescription(), checkIfJoined(myGroupList, group));
+			response.addGroup(group.getId(), group.getName(), group.getDescription(), checkIfJoined(myGroupList, group), group.getTagList());
 		}
 
 		
@@ -304,6 +311,23 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 
 		return groups;
 	}
+	
+	@Override
+	public ActionResponse tag(TagRequest request) {
+		
+		validate(request);
+		
+		Group group = findById(request.getEntityId());
+		
+		ActionResponse response = new ActionResponse();
+		if(tag(group, request.getTag(), request.isAdd())){
+			response.setAcknowledge(true);
+			
+			groupRepository.save(group);
+		}
+		
+		return response;
+	}
 
 	private Boolean checkIfJoined(List<ListGroupResponse.GroupObj> myGroups, Group group) {
 
@@ -313,5 +337,10 @@ public class GroupServiceImpl extends PinkElephantService implements GroupServic
 				return true;
 		}
 		return false;
+	}
+	
+	@Override
+	protected TagService getTagService() {
+		return tagService;
 	}
 }
