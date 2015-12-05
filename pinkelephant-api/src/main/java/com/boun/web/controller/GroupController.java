@@ -17,6 +17,7 @@ import com.boun.http.request.JoinLeaveGroupRequest;
 import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
+import com.boun.http.response.GetGroupResponse;
 import com.boun.service.GroupService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -146,8 +147,9 @@ public class GroupController {
 	@RequestMapping(value = "listPopularGroups", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody ActionResponse getPopularGroups(@RequestBody BaseRequest request) {
+	public @ResponseBody ListGroupResponse getPopularGroups(@RequestBody BaseRequest request) {
 
+		//TODO implement method for popular groups
 		try {
 			if (logger.isDebugEnabled()) {
 				logger.debug("getAllGroups request received, request->" + request.toString());
@@ -160,6 +162,25 @@ public class GroupController {
 		}
 	}
 
+	@ApiOperation(value = "List popular groups")
+	@RequestMapping(value = "listRecommended", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ListGroupResponse getRecommendedGroups(@RequestBody BaseRequest request) {
+
+		//TODO implement method for recommended groups
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getRecommendedGroups request received, request->" + request.toString());
+			}
+			return groupService.getAllGroups(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getRecommendedGroups operation finished");
+			}
+		}
+	}
+	
 	@ApiOperation(value = "Upload image to group")
 	@RequestMapping(value = "uploadImage", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
@@ -182,7 +203,7 @@ public class GroupController {
 	@RequestMapping(value = "query", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody ActionResponse queryGroup(@RequestBody BasicQueryRequest request) {
+	public @ResponseBody GetGroupResponse queryGroup(@RequestBody BasicQueryRequest request) {
 
 		try {
 			if (logger.isDebugEnabled()) {
