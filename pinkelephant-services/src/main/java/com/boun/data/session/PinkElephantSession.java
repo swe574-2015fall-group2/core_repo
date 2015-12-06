@@ -28,6 +28,10 @@ public final class PinkElephantSession {
 		sessionStorage.put(token, user);
 	}
 	
+	public void removeToken(String token){
+		sessionStorage.remove(token);
+	}
+	
 	public User getUser(String token){
 		return sessionStorage.get(token);
 	}

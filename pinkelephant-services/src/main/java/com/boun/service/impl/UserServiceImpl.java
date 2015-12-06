@@ -20,6 +20,7 @@ import com.boun.data.mongo.model.UserRole;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.AuthenticationRequest;
+import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.BasicSearchRequest;
 import com.boun.http.request.ChangePasswordRequest;
@@ -166,6 +167,18 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		
 		PinkElephantSession.getInstance().addToken(response.getToken(), user);
 
+		return response;
+	}
+	
+	@Override
+	public ActionResponse logout(BaseRequest request) {
+
+		ActionResponse response = new ActionResponse();
+		validate(request);
+		
+		PinkElephantSession.getInstance().removeToken(request.getAuthToken());
+
+		response.setAcknowledge(true);
 		return response;
 	}
 

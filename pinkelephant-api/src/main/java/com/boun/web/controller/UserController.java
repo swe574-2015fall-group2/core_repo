@@ -98,6 +98,23 @@ public class UserController {
     		}
     	}
     }
+    
+    @ApiOperation(value="Logout")
+    @RequestMapping(value="logout", method = RequestMethod.POST)
+    @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
+    public @ResponseBody ActionResponse logout(@RequestBody BaseRequest request){
+    	
+    	try{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("logout request received, request->" + request.toString());
+    		}
+    		return userService.logout(request);	
+    	}finally{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("logout operation finished, username->" + request.getAuthToken());
+    		}
+    	}
+    }
  
     @ApiOperation(value="Reset Password")
     @RequestMapping(value="resetPassword", method = RequestMethod.POST)

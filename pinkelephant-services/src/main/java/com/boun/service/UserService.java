@@ -14,6 +14,8 @@ public interface UserService {
 
 	LoginResponse authenticate(AuthenticationRequest request);
 	
+	ActionResponse logout(BaseRequest request);
+	
     User createUser(CreateUserRequest request);
 
     ActionResponse updateUser(UpdateUserRequest request);
