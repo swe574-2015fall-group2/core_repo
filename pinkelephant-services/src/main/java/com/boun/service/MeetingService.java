@@ -1,6 +1,7 @@
 package com.boun.service;
 
 import com.boun.data.mongo.model.Meeting;
+import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
@@ -29,4 +30,6 @@ public interface MeetingService {
 	GetMeetingResponse getMeeting(BasicQueryRequest request);
 	
 	ActionResponse tag(TagRequest request);
+	
+	ListMeetingResponse getMyMeetings(BaseRequest request);
 }

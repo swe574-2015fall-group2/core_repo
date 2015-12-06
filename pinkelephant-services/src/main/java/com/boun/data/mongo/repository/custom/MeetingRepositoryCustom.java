@@ -7,4 +7,6 @@ import com.boun.data.mongo.model.Meeting;
 public interface MeetingRepositoryCustom {
 
 	List<Meeting> findMeetings(String groupId);
+	
+	List<String> getMeetingsOfUser(String userId);
 }

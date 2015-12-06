@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boun.http.request.CreateMeetingRequest;
+import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicDeleteRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
@@ -244,6 +245,24 @@ public class MeetingController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("tag operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "List Meetings of Given User")
+	@RequestMapping(value = "myMeetings", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ListMeetingResponse getMyMeetings(@RequestBody BaseRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getMyMeetings request received, request->" + request.toString());
+			}
+			return meetingService.getMyMeetings(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("getMyMeetings operation finished");
 			}
 		}
 	}

@@ -20,6 +20,7 @@ import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.MeetingRepository;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
+import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
@@ -57,8 +58,8 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 	}
 	
 	@Override
-	public Meeting findById(String groupId) {
-		Meeting meeting = meetingRepository.findOne(groupId);
+	public Meeting findById(String meetingId) {
+		Meeting meeting = meetingRepository.findOne(meetingId);
 
 		if(meeting == null) {
 			throw new PinkElephantRuntimeException(400, ErrorCode.MEETING_NOT_FOUND, "");
@@ -306,6 +307,26 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		GetMeetingResponse response = new GetMeetingResponse();
 		
 		response.setMeeting(new ListMeetingResponse.MeetingObj(meeting));
+		response.setAcknowledge(true);
+			
+		return response;
+	}
+	
+	@Override
+	public ListMeetingResponse getMyMeetings(BaseRequest request) {
+		
+		validate(request);
+		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
+		
+		List<String> meetingIdList = meetingRepository.getMeetingsOfUser(authenticatedUser.getId());
+
+		ListMeetingResponse response = new ListMeetingResponse();
+		
+		for (String meetingId : meetingIdList) {
+			Meeting meeting = findById(meetingId);
+			response.addMeeting(meeting);
+		}
+		
 		response.setAcknowledge(true);
 			
 		return response;
