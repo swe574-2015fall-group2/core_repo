@@ -1,8 +1,5 @@
 package com.boun.web.controller;
 
-import com.boun.data.mongo.model.Group;
-import com.boun.data.mongo.model.GroupCount;
-import com.boun.http.response.ListGroupResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +18,12 @@ import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
 import com.boun.http.response.GetGroupResponse;
+import com.boun.http.response.ListGroupResponse;
 import com.boun.service.GroupService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
-
-import java.util.List;
 
 @RestController
 @Api(value = "group", description = "Group service")
@@ -152,7 +148,7 @@ public class GroupController {
 	@RequestMapping(value = "listLatest", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody List<Group> getLatestGroups(@RequestBody BaseRequest request) {
+	public @ResponseBody ListGroupResponse getLatestGroups(@RequestBody BaseRequest request) {
 
 		try {
 			if (logger.isDebugEnabled()) {
@@ -170,8 +166,7 @@ public class GroupController {
 	@RequestMapping(value = "listPopularGroups", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
 			@ApiResponse(code = 500, message = "Internal Server Error") })
-	public @ResponseBody
-	List<GroupCount> getPopularGroups(@RequestBody BaseRequest request) {
+	public @ResponseBody ListGroupResponse getPopularGroups(@RequestBody BaseRequest request) {
 
 		try {
 			if (logger.isDebugEnabled()) {

@@ -300,23 +300,48 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 	}
 
 	@Override
-	public List<Group> getLatestGroups(BaseRequest request) {
+	public ListGroupResponse getLatestGroups(BaseRequest request) {
 
 		validate(request);
 
-		List<Group> groups = groupRepository.findLatestGroups();
+		ListGroupResponse response = new ListGroupResponse();
 
-		return groups;
+		List<Group> groups = groupRepository.findLatestGroups();
+		if(groups == null || groups.isEmpty()){
+			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
+		}
+		
+		ListGroupResponse myGroupsResponse = getMyGroups(request);
+		List<ListGroupResponse.GroupObj> myGroupList = myGroupsResponse.getGroupList();
+		
+		for (Group group : groups) {
+			response.addGroup(group.getId(), group.getName(), group.getDescription(), checkIfJoined(myGroupList, group), group.getTagList());			
+		}
+		
+		response.setAcknowledge(true);
+		return response;
 	}
 
 	@Override
-	public List<GroupCount> getPopularGroups(BaseRequest request) {
+	public ListGroupResponse getPopularGroups(BaseRequest request) {
 
 		validate(request);
 
-		List<GroupCount> groups = groupMemberRepository.findPopularGroups();
+		ListGroupResponse response = new ListGroupResponse();
 
-		return groups;
+		List<GroupCount> groups = groupMemberRepository.findPopularGroups();
+		if(groups == null || groups.isEmpty()){
+			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
+		}
+		
+		ListGroupResponse myGroupsResponse = getMyGroups(request);
+		List<ListGroupResponse.GroupObj> myGroupList = myGroupsResponse.getGroupList();
+		
+		for (GroupCount groupCount : groups) {
+			response.addGroup(groupCount, checkIfJoined(myGroupList, groupCount.getGroup()));
+		}
+		
+		return response;
 	}
 	
 	public ListGroupResponse findRecommendedGroups(BaseRequest request){

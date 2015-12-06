@@ -3,6 +3,8 @@ package com.boun.http.response;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.boun.data.mongo.model.Group;
+import com.boun.data.mongo.model.GroupCount;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -19,7 +21,15 @@ public class ListGroupResponse extends ActionResponse{
 		if(groupList == null){
 			groupList = new ArrayList<GroupObj>();
 		}
-		groupList.add(new GroupObj(id, name, description, isJoined, tagList));
+		groupList.add(new GroupObj(id, name, description, isJoined, tagList, null));
+	}
+	
+	public void addGroup(GroupCount groupCount, boolean isJoined){
+		Group group = groupCount.getGroup();
+		if(groupList == null){
+			groupList = new ArrayList<GroupObj>();
+		}
+		groupList.add(new GroupObj(group.getId(), group.getName(), group.getDescription(), isJoined, group.getTagList(), groupCount.getTotal()));
 	}
 	
 	@Data
@@ -29,8 +39,9 @@ public class ListGroupResponse extends ActionResponse{
 		private String description;
 		private Boolean joined;
 		private List<String> tagList;
+		private Integer total;
 
-		public GroupObj(String id, String name, String description, Boolean isJoined, List<String> tagList){
+		public GroupObj(String id, String name, String description, Boolean isJoined, List<String> tagList, Long total){
 			this.id = id;
 			this.name = name;
 			this.description = description;
