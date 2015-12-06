@@ -67,9 +67,11 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 
 		validate(request);
 
+		//TODO find group method will throw an exception if entity not found
 		Group group = groupService.findById(request.getGroupId());
 		//TODO check if user is in this group
 
+		//TODO find meeting method will throw an exception if entity not found
 		Meeting meeting = meetingService.findById(request.getMeetingId());
 		List<Resource> resources = resourceService.findByIds(request.getResourceIds());
 
@@ -98,9 +100,11 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 
 		Note note = findById(request.getId());
 
+		//TODO find group method will throw an exception if entity not found
 		Group group = groupService.findById(request.getGroupId());
 		//TODO check if user is in this group
 
+		//TODO find meeting method will throw an exception if entity not found
 		Meeting meeting = meetingService.findById(request.getMeetingId());
 		List<Resource> resources = resourceService.findByIds(request.getResourceIds());
 
