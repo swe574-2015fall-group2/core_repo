@@ -3,6 +3,8 @@ package com.boun.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.boun.data.Permission;
+import com.boun.util.PermissionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,10 +42,12 @@ public class MeetingProposalServiceImpl extends PinkElephantService implements M
 		ActionResponse response = new ActionResponse();
 		
 		validate(request);
-		
+
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
 		Discussion discussion = discussionService.findById(request.getDiscussionId());
-		
+
+		PermissionUtil.checkPermission(request, discussion.getGroup().getId(), Permission.CREATE_MEETING_PROPOSAL);
+
 		MeetingProposal proposal = new MeetingProposal();
 		proposal.setDiscussion(discussion);
 		proposal.setCreator(authenticatedUser);
@@ -67,7 +71,9 @@ public class MeetingProposalServiceImpl extends PinkElephantService implements M
 		
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
 		MeetingProposal proposal = findById(request.getId());
-		
+
+		PermissionUtil.checkPermission(request, proposal.getDiscussion().getGroup().getId(), Permission.CREATE_MEETING_PROPOSAL);
+
 		if(!authenticatedUser.isEqual(proposal.getCreator())){
 			throw new PinkElephantRuntimeException(400, ErrorCode.INVALID_INPUT, "Input userId is different than authenticated user", "");
 		}

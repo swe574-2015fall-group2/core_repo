@@ -4,6 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.boun.data.Permission;
+import com.boun.data.mongo.model.*;
+import com.boun.http.request.*;
+import com.boun.util.PermissionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,7 @@ import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.MeetingInvitationResult;
 import com.boun.data.common.enums.MeetingStatus;
+
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Meeting;
 import com.boun.data.mongo.model.TaggedEntity;
@@ -20,11 +25,6 @@ import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.MeetingRepository;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
-import com.boun.http.request.BasicQueryRequest;
-import com.boun.http.request.CreateMeetingRequest;
-import com.boun.http.request.InviteUserToMeetingRequest;
-import com.boun.http.request.MeetingInvitationReplyRequest;
-import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
 import com.boun.http.response.GetMeetingResponse;
@@ -77,6 +77,8 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 
 		validate(request);
 
+		PermissionUtil.checkPermission(request, request.getGroupId(), Permission.CREATE_MEETING);
+
 		CreateResponse response = new CreateResponse();
 
 		Group group = groupService.findById(request.getGroupId());
@@ -101,6 +103,10 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 
 		validate(request);
 
+		Meeting meeting = findById(request.getMeetingId());
+
+		PermissionUtil.checkPermission(request, meeting.getGroup().getId(), Permission.INVITE_USER_TO_MEETING);
+
 		//TODO check role of user
 		//TODO send message/mail to invited user
 
@@ -108,7 +114,7 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 			throw new PinkElephantRuntimeException(400, ErrorCode.INVALID_INPUT, "UserIdList is empty", "");
 		}
 		
-		Meeting meeting = findById(request.getMeetingId());
+
 
 		Set<User> invitedList = meeting.getInvitedUserSet();
 		if(invitedList == null){

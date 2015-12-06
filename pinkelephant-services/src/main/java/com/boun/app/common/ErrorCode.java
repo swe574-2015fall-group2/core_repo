@@ -43,6 +43,8 @@ public enum ErrorCode {
 	
 	MESSAGE_NOT_FOUND("Message not found", "170"),
 
+	PERMISSION_NOT_FOUND("You don't have permission for : ", "170"),
+
 	INTERNAL_SERVER_ERROR("Internal Server Error", "900")
 	;
 
