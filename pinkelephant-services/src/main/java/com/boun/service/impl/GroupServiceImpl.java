@@ -449,6 +449,9 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 
 	private Boolean checkIfJoined(List<ListGroupResponse.GroupObj> myGroups, Group group) {
 
+		if(myGroups == null || myGroups.isEmpty()){
+			return false;
+		}
 		for(ListGroupResponse.GroupObj myGroup: myGroups)
 		{
 			if(myGroup.getId().equals(group.getId()))
