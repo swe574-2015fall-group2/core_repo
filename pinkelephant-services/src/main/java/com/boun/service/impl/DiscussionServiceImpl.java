@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import com.boun.app.common.ErrorCode;
@@ -11,12 +12,12 @@ import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.mongo.model.Comment;
 import com.boun.data.mongo.model.Discussion;
 import com.boun.data.mongo.model.Group;
+import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.DiscussionRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateDiscussionRequest;
-import com.boun.http.request.TagRequest;
 import com.boun.http.request.UpdateDiscussionRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.GetDiscussionResponse;
@@ -50,6 +51,11 @@ public class DiscussionServiceImpl extends PinkElephantTaggedService implements 
 			throw new PinkElephantRuntimeException(400, ErrorCode.DISCUSSION_NOT_FOUND, "");
 		}
 		return discussion;
+	}
+	
+	@Override
+	public void save(TaggedEntity entity) {
+		discussionRepository.save((Discussion)entity);
 	}
 	
 	public ActionResponse createDiscussion(CreateDiscussionRequest request){
@@ -148,23 +154,6 @@ public class DiscussionServiceImpl extends PinkElephantTaggedService implements 
 				response.addComment(comment.getId(), comment.getComment(), comment.getCreationTime(), comment.getUser().getId());
 			}
 		}
-		return response;
-	}
-	
-	@Override
-	public ActionResponse tag(TagRequest request) {
-		
-		validate(request);
-		
-		Discussion discussion = findById(request.getEntityId());
-		
-		ActionResponse response = new ActionResponse();
-		if(tag(discussion, request.getTag(), request.isAdd())){
-			response.setAcknowledge(true);
-			
-			discussionRepository.save(discussion);
-		}
-		
 		return response;
 	}
 

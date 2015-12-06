@@ -1,6 +1,6 @@
 package com.boun.data.mongo.model;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -23,5 +23,5 @@ public class Tag{
 	private String tag;
 	
 	@DBRef
-	private Set<BaseEntity> referenceSet;
+	private List<TaggedEntity> referenceSet;
 }

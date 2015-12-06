@@ -42,4 +42,6 @@ public interface GroupService {
 	public GetGroupResponse queryGroup(BasicQueryRequest request);
 	
 	public ActionResponse tag(TagRequest request);
+	
+	public ListGroupResponse findRecommendedGroups(BaseRequest request);
 }

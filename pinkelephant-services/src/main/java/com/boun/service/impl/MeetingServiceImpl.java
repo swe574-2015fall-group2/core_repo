@@ -15,6 +15,7 @@ import com.boun.data.common.enums.MeetingInvitationResult;
 import com.boun.data.common.enums.MeetingStatus;
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Meeting;
+import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.MeetingRepository;
 import com.boun.data.mongo.repository.UserRepository;
@@ -23,7 +24,6 @@ import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
-import com.boun.http.request.TagRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
@@ -51,6 +51,11 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 	@Autowired
 	private TagService tagService;
 
+	@Override
+	public void save(TaggedEntity entity) {
+		meetingRepository.save((Meeting)entity);
+	}
+	
 	@Override
 	public Meeting findById(String groupId) {
 		Meeting meeting = meetingRepository.findOne(groupId);
@@ -341,22 +346,5 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		meeting.setInvitedUserSet(invitedList);
 
 		return meeting;
-	}
-
-	@Override
-	public ActionResponse tag(TagRequest request) {
-		
-		validate(request);
-		
-		Meeting meeting = findById(request.getEntityId());
-		
-		ActionResponse response = new ActionResponse();
-		if(tag(meeting, request.getTag(), request.isAdd())){
-			response.setAcknowledge(true);
-			
-			meetingRepository.save(meeting);
-		}
-		
-		return response;
 	}
 }

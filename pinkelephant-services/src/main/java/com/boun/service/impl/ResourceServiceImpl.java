@@ -18,13 +18,12 @@ import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.ResourceType;
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Resource;
+import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.repository.ResourceRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.BasicDeleteRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateResourceRequest;
-import com.boun.http.request.TagRequest;
-import com.boun.http.response.ActionResponse;
 import com.boun.service.GroupService;
 import com.boun.service.PinkElephantTaggedService;
 import com.boun.service.ResourceService;
@@ -46,6 +45,11 @@ public class ResourceServiceImpl extends PinkElephantTaggedService implements Re
 
 	@Autowired
 	private TagService tagService;
+	
+	@Override
+	public void save(TaggedEntity entity) {
+		resourceRepository.save((Resource)entity);
+	}
 	
 	@Override
 	public Resource findById(String resourceId) {
@@ -147,23 +151,6 @@ public class ResourceServiceImpl extends PinkElephantTaggedService implements Re
 	public List<Resource> queryResourcesOfGroup(BasicQueryRequest request) {
 		Group group = groupService.findById(request.getId());
 		return resourceRepository.findResources(group.getId());
-	}
-	
-	@Override
-	public ActionResponse tag(TagRequest request) {
-		
-		validate(request);
-		
-		Resource resource = findById(request.getEntityId());
-		
-		ActionResponse response = new ActionResponse();
-		if(tag(resource, request.getTag(), request.isAdd())){
-			response.setAcknowledge(true);
-			
-			resourceRepository.save(resource);
-		}
-		
-		return response;
 	}
 	
 	@Override

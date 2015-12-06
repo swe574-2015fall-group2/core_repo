@@ -239,4 +239,22 @@ public class GroupController {
 			}
 		}
 	}
+	
+	@ApiOperation(value = "List Recommended Groups")
+	@RequestMapping(value = "listRecommended", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ListGroupResponse listRecommended(@RequestBody BaseRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("listRecommended request received, request->" + request.toString());
+			}
+			 return groupService.findRecommendedGroups(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("listRecommended operation finished");
+			}
+		}
+	}
 }

@@ -14,12 +14,11 @@ import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Meeting;
 import com.boun.data.mongo.model.Note;
 import com.boun.data.mongo.model.Resource;
+import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.repository.NoteRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.CreateNoteRequest;
-import com.boun.http.request.TagRequest;
 import com.boun.http.request.UpdateNoteRequest;
-import com.boun.http.response.ActionResponse;
 import com.boun.service.GroupService;
 import com.boun.service.MeetingService;
 import com.boun.service.NoteService;
@@ -47,6 +46,11 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 	@Autowired
 	private TagService tagService;
 
+	@Override
+	public void save(TaggedEntity entity) {
+		noteRepository.save((Note)entity);
+	}
+	
 	@Override
 	public Note findById(String id) {
 		Note note = noteRepository.findOne(id);
@@ -113,23 +117,6 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 		note = noteRepository.save(note);
 
 		return note;
-	}
-
-	@Override
-	public ActionResponse tag(TagRequest request) {
-		
-		validate(request);
-		
-		Note note = findById(request.getEntityId());
-		
-		ActionResponse response = new ActionResponse();
-		if(tag(note, request.getTag(), request.isAdd())){
-			response.setAcknowledge(true);
-			
-			noteRepository.save(note);
-		}
-		
-		return response;
 	}
 	
 	@Override

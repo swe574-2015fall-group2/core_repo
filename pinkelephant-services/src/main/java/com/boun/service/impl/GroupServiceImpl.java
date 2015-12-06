@@ -1,5 +1,6 @@
 package com.boun.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,10 +13,12 @@ import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.GroupStatus;
 import com.boun.data.common.enums.MemberStatus;
+import com.boun.data.mongo.model.BaseEntity.EntityType;
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.GroupCount;
 import com.boun.data.mongo.model.GroupMember;
 import com.boun.data.mongo.model.ImageInfo;
+import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.GroupMemberRepository;
 import com.boun.data.mongo.repository.GroupRepository;
@@ -25,7 +28,6 @@ import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateUpdateGroupRequest;
 import com.boun.http.request.JoinLeaveGroupRequest;
-import com.boun.http.request.TagRequest;
 import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
@@ -73,6 +75,11 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		}
 
 		return group;
+	}
+	
+	@Override
+	public void save(TaggedEntity entity) {
+		groupRepository.save((Group)entity);
 	}
 
 	@Override
@@ -312,21 +319,132 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		return groups;
 	}
 	
-	@Override
-	public ActionResponse tag(TagRequest request) {
-		
+	public ListGroupResponse findRecommendedGroups(BaseRequest request){
 		validate(request);
 		
-		Group group = findById(request.getEntityId());
+		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
 		
-		ActionResponse response = new ActionResponse();
-		if(tag(group, request.getTag(), request.isAdd())){
-			response.setAcknowledge(true);
+		List<Group> groupList = groupMemberRepository.findGroupsOfUser(authenticatedUser.getId());
+		if(groupList == null || groupList.isEmpty()){
+			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
+		}
+		
+		List<String> tagList = new ArrayList<String>();
+		
+		
+		for (Group group : groupList) {
 			
-			groupRepository.save(group);
+			if(group.getTagList() == null || group.getTagList().isEmpty()){
+				continue;
+			}
+			
+			for (String tag : group.getTagList()) {
+				if(!tagList.contains(tag)){
+					tagList.add(tag);
+				}
+			}
+		}
+		
+		List<TaggedEntity> recommendedGroupList = new ArrayList<TaggedEntity>();
+		int depth = 5;
+		for (String tag : tagList) {
+			walkThrough(tag, null, recommendedGroupList, depth, groupList, new ArrayList<String>());
+		}
+		
+		
+		ListGroupResponse response = new ListGroupResponse();
+		for (TaggedEntity taggedEntity : recommendedGroupList) {
+			Group group = (Group) taggedEntity;
+			response.addGroup(group.getId(), group.getName(), group.getDescription(), false, group.getTagList());	
 		}
 		
 		return response;
+		
+	}
+	
+	private void walkThrough(String tag, TaggedEntity group, List<TaggedEntity> recommendedGroupList, int depth, List<Group> groupsOfUser, List<String> processedTags){
+		
+		if(processedTags.contains(tag)){
+			return;
+		}
+		
+		if(group != null && !recommendedGroupList.contains(group)){
+			recommendedGroupList.add(group);	
+		}
+		
+		if(depth == 0){
+			return;
+		}
+		
+		--depth;
+		
+		processedTags.add(tag);
+		
+		List<TaggedEntity> taggedGroupList = tagService.findTaggedEntityList(tag, EntityType.GROUP);
+		if(taggedGroupList == null || taggedGroupList.isEmpty()){
+			return;
+		}
+		
+		for (TaggedEntity taggedEntity : filterGroup(groupsOfUser, taggedGroupList)) {
+			
+			Group g = (Group) taggedEntity;
+			if(g.getTagList() == null || g.getTagList().isEmpty()){
+				continue;
+			}
+			
+			for (String t : filterTags(processedTags, g.getTagList())) {
+				walkThrough(t, g, recommendedGroupList, depth, groupsOfUser, processedTags);
+			}
+		}
+	}
+	
+	private List<String> filterTags(List<String> processedTags, List<String> tags){
+		
+		List<String> resultList = new ArrayList<String>();
+		
+		for (String t1 : tags) {
+			
+			boolean found = false;
+			for (String t2 : processedTags) {
+				if(t1.equalsIgnoreCase(t2)){
+					found = true;
+					break;
+				}
+			}
+			
+			if(!found){
+				resultList.add(t1);
+			}
+		}
+		return resultList;
+		
+	}
+	private List<TaggedEntity> filterGroup(List<Group> groupsOfUser, List<TaggedEntity> groupList){
+		
+		if(groupList == null || groupList.isEmpty()){
+			return null;
+		}
+		
+		if(groupsOfUser == null || groupsOfUser.isEmpty()){
+			return null;
+		}
+		List<TaggedEntity> resultList = new ArrayList<TaggedEntity>();
+		
+		for (TaggedEntity g1 : groupList) {
+			
+			boolean found = false;
+			for (TaggedEntity g2 : groupsOfUser) {
+				if(g1.getId().equalsIgnoreCase(g2.getId())){
+					found = true;
+					break;
+				}
+			}
+			
+			if(!found){
+				resultList.add(g1);
+			}
+		}
+		return resultList;
 	}
 
 	private Boolean checkIfJoined(List<ListGroupResponse.GroupObj> myGroups, Group group) {
