@@ -18,7 +18,6 @@ import lombok.EqualsAndHashCode;
 public class GroupMember extends BaseEntity{
 
 	public GroupMember(){
-		super(EntityType.GROUPMEMBER);
 	}
 	
 	@DBRef

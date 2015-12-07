@@ -9,6 +9,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class CreateUpdateGroupRequest extends BaseRequest{
 
+	private String groupId;
 	private String name;
 	private String description;
 	

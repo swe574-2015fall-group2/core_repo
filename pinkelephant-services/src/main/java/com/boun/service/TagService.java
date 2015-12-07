@@ -3,7 +3,7 @@ package com.boun.service;
 import java.util.List;
 
 import com.boun.data.mongo.model.TaggedEntity;
-import com.boun.data.mongo.model.BaseEntity.EntityType;
+import com.boun.data.mongo.model.TaggedEntity.EntityType;
 
 public interface TagService {
 

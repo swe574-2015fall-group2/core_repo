@@ -13,12 +13,12 @@ import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.GroupStatus;
 import com.boun.data.common.enums.MemberStatus;
-import com.boun.data.mongo.model.BaseEntity.EntityType;
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.GroupCount;
 import com.boun.data.mongo.model.GroupMember;
 import com.boun.data.mongo.model.ImageInfo;
 import com.boun.data.mongo.model.TaggedEntity;
+import com.boun.data.mongo.model.TaggedEntity.EntityType;
 import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.GroupMemberRepository;
 import com.boun.data.mongo.repository.GroupRepository;
@@ -149,11 +149,10 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		validate(request);
 
 		ActionResponse response = new ActionResponse();
-		Group group = groupRepository.findByName(request.getName());
-		if(group == null){
-			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
-		}
+		Group group = findById(request.getGroupId());
 		group.setDescription(request.getDescription());
+		group.setName(request.getName());
+		group.updateTagList(request.getTagList());
 		
 		groupRepository.save(group);
 		

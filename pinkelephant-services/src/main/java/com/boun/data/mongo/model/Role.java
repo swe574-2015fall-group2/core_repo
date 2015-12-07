@@ -21,7 +21,6 @@ public class Role extends BaseEntity{
     private List<Permission> permissions;
 
     public Role() {
-    	super(EntityType.ROLE);
        permissions = new ArrayList<>();
     }
 }

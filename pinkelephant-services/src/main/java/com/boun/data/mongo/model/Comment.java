@@ -19,7 +19,6 @@ import lombok.EqualsAndHashCode;
 public class Comment extends BaseEntity{
 
 	public Comment(){
-		super(EntityType.COMMENT);
 	}
 	
 	@DBRef

@@ -8,9 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.boun.data.mongo.model.BaseEntity.EntityType;
 import com.boun.data.mongo.model.Tag;
 import com.boun.data.mongo.model.TaggedEntity;
+import com.boun.data.mongo.model.TaggedEntity.EntityType;
 import com.boun.data.mongo.repository.TagRepository;
 import com.boun.service.PinkElephantService;
 import com.boun.service.TagService;
