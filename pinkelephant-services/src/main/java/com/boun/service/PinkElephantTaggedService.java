@@ -1,6 +1,6 @@
 package com.boun.service;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import java.util.List;
 
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.mongo.model.TaggedEntity;
@@ -40,5 +40,22 @@ public abstract class PinkElephantTaggedService extends PinkElephantService{
 		}
 		
 		return response;
+	}
+	
+	public void updateTag(TaggedEntity taggedEntity, List<String> newList) {
+		
+		List<String> addedTagList = taggedEntity.addTagList(newList);
+		if(addedTagList != null && !addedTagList.isEmpty()){
+			for (String tag : addedTagList) {
+				getTagService().tag(tag, taggedEntity, true);
+			}	
+		}
+
+		List<String> removedTagList = taggedEntity.removeTagList(newList);
+		if(removedTagList != null && !removedTagList.isEmpty()){
+			for (String tag : removedTagList) {
+				getTagService().tag(tag, taggedEntity, false);
+			}	
+		}
 	}
 }

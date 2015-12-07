@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import com.boun.app.common.ErrorCode;
@@ -103,6 +102,8 @@ public class DiscussionServiceImpl extends PinkElephantTaggedService implements 
 		discussion.setDescription(request.getDescription());
 		discussion.setName(request.getName());
 		discussion.setUpdateTime(new Date());
+		updateTag(discussion, request.getTagList());
+		
 		discussionRepository.save(discussion);
 		
 		ActionResponse response = new ActionResponse();

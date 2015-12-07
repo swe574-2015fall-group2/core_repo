@@ -49,15 +49,28 @@ public class TagServiceImpl extends PinkElephantService implements TagService{
 		
 		if(add){
 		
-			if(!referenceSet.contains(baseEntity)){
+			boolean found = false;
+			for (TaggedEntity taggedEntity : referenceSet) {
+				if(taggedEntity.getId().equalsIgnoreCase(baseEntity.getId())){
+					found = true;
+					break;
+				}
+			}
+			if(!found){
 				referenceSet.add(baseEntity);
 			}
 			
 		}else{
-			
-			if(referenceSet.contains(baseEntity)){
-				referenceSet.remove(baseEntity);
+
+			// remove baseEntity from list
+			List<TaggedEntity> newSet = new ArrayList<TaggedEntity>();
+			for (TaggedEntity taggedEntity : referenceSet) {
+				if(!taggedEntity.getId().equalsIgnoreCase(baseEntity.getId())){
+					newSet.add(taggedEntity);
+				}
 			}
+			referenceSet.clear();
+			referenceSet.addAll(newSet);
 		}
 		
 		tag.setReferenceSet(referenceSet);

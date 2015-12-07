@@ -40,49 +40,51 @@ public class TaggedEntity extends BaseEntity{
 		return remove(tag);
 	}
 	
-	public boolean updateTagList(List<String> newList){
+	public List<String> removeTagList(List<String> newList){
 		
 		if(tagList == null || tagList.isEmpty()){
-			
-			if(newList == null || newList.isEmpty()){
-				return false;
-			}
-			
-			for (String tag : newList) {
-				add(tag);	
-			}
-			return true;
+			return null;
 		}
 		
 		if(newList == null || newList.isEmpty()){
-			
-			if(tagList == null || tagList.isEmpty()){
-				return false;
-			}
-			
-			for (String tag : tagList) {
-				remove(tag);	
-			}
-			return true;
+			List<String> copyTagList = new ArrayList<>(tagList);
+			tagList = null;
+			return copyTagList;
 		}
 		
-		boolean updated = false;
+		List<String> removeList = new ArrayList<String>();
+		
+		List<String> copyTagList = new ArrayList<>(tagList);
+		for (String tag : copyTagList) {
+			if(!newList.contains(tag)){
+				removeList.add(tag);
+			}
+		}
+		tagList = newList;
+		
+		return removeList;
+	}
+	
+	public List<String> addTagList(List<String> newList){
+		
+		if(newList == null || newList.isEmpty()){
+			return null;
+		}
+		
+		if(tagList == null || tagList.isEmpty()){
+			tagList = newList;
+			return tagList;
+		}
+
+		List<String> addedList = new ArrayList<String>();
 		
 		for (String newTag : newList) {
 			if(!tagList.contains(newTag)){
 				add(newTag);
-				updated = true;
+				addedList.add(newTag);
 			}
 		}
-		
-		for (String newTag : tagList) {
-			if(!newList.contains(newTag)){
-				remove(newTag);	
-				updated = true;
-			}
-		}
-		
-		return updated;
+		return addedList;
 	}
 	
 	private boolean remove(String tag){

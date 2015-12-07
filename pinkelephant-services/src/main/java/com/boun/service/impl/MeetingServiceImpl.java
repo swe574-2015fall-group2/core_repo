@@ -231,42 +231,19 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		ActionResponse response = new ActionResponse();
 		Meeting meeting = findById(request.getMeetingId());
 		
-		if(request.getName() != null){
-			meeting.setName(request.getName());
-		}
-		if(request.getActualDuration() != null){
-			meeting.setActualDuration(request.getActualDuration());
-		}
-		if(request.getAgendaSet() != null && !request.getAgendaSet().isEmpty()){
-			meeting.setAgendaSet(request.getAgendaSet());
-		}
-		if(request.getDatetime() != null){
-			meeting.setDatetime(request.getDatetime());
-		}
-		if(request.getTimezone() != null){
-			meeting.setTimezone(request.getTimezone());
-		}
-		if(request.getDescription()!=null && !request.getDescription().equalsIgnoreCase("")){
-			meeting.setDescription(request.getDescription());
-		}
-		if(request.getEndHour() != null){
-			meeting.setEndHour(request.getEndHour());
-		}
-		if(request.getStartHour() != null){
-			meeting.setStartHour(request.getStartHour());
-		}
-		if(request.getLocation() != null && !request.getLocation().equalsIgnoreCase("")){
-			meeting.setLocation(request.getLocation());
-		}
-		if(request.getStatus() != null){
-			meeting.setStatus(request.getStatus());
-		}
-		if(request.getType() != null){
-			meeting.setType(request.getType());
-		}
-		if(request.getTodoSet() != null){
-			meeting.setTodoSet(request.getTodoSet());
-		}
+		meeting.setName(request.getName());
+		meeting.setActualDuration(request.getActualDuration());
+		meeting.setAgendaSet(request.getAgendaSet());
+		meeting.setDatetime(request.getDatetime());
+		meeting.setTimezone(request.getTimezone());
+		meeting.setDescription(request.getDescription());
+		meeting.setEndHour(request.getEndHour());
+		meeting.setStartHour(request.getStartHour());
+		meeting.setLocation(request.getLocation());
+		meeting.setStatus(request.getStatus());
+		meeting.setType(request.getType());
+		meeting.setTodoSet(request.getTodoSet());
+		updateTag(meeting, request.getTagList());
 		
 		meetingRepository.save(meeting);
 		

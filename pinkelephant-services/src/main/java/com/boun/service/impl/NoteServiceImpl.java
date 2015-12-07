@@ -111,6 +111,8 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 		note.setTitle(request.getTitle());
 		note.setText(request.getText());
 		note.setGroup(group);
+		updateTag(note, request.getTagList());
+		
 		//note.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
 		//note.setCreatedAt(new Date());
 		//TODO modifiedDate, modifiedBy

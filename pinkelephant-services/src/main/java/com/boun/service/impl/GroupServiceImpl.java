@@ -152,7 +152,8 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		Group group = findById(request.getGroupId());
 		group.setDescription(request.getDescription());
 		group.setName(request.getName());
-		group.updateTagList(request.getTagList());
+		
+		updateTag(group, request.getTagList());
 		
 		groupRepository.save(group);
 		
