@@ -24,7 +24,7 @@ public class BaseEntity {
     private EntityType entityType;
     
     public boolean isEqual(BaseEntity request){
-    	return this.id == request.getId();
+    	return this.id.equalsIgnoreCase(request.getId());
     }
 
     public enum EntityType{
