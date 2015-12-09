@@ -32,6 +32,13 @@ public class ListGroupResponse extends ActionResponse{
 		groupList.add(new GroupObj(group.getId(), group.getName(), group.getDescription(), isJoined, group.getTagList(), groupCount.getTotal()));
 	}
 	
+	public void addGroup(String id, String name, String description, Boolean isJoined, List<String> tagList, long total){
+		if(groupList == null){
+			groupList = new ArrayList<GroupObj>();
+		}
+		groupList.add(new GroupObj(id, name, description, isJoined, tagList, total));
+	}
+	
 	@Data
 	public static class GroupObj{
 		private String id;
@@ -39,7 +46,7 @@ public class ListGroupResponse extends ActionResponse{
 		private String description;
 		private Boolean joined;
 		private List<String> tagList;
-		private Integer total;
+		private Long total;
 
 		public GroupObj(String id, String name, String description, Boolean isJoined, List<String> tagList, Long total){
 			this.id = id;
@@ -47,6 +54,7 @@ public class ListGroupResponse extends ActionResponse{
 			this.description = description;
 			this.setJoined(isJoined);
 			this.tagList = tagList;
+			this.total = total;
 		}
 		
 	}
