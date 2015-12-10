@@ -3,6 +3,8 @@ package com.boun.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.boun.http.request.BasicQueryRequest;
+import com.boun.http.response.NoteResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,5 +130,22 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 	@Override
 	protected TagService getTagService() {
 		return tagService;
+	}
+
+	@Override
+	public NoteResponse queryNote(BasicQueryRequest request) {
+
+		validate(request);
+
+		Note note = findById(request.getId());
+
+		NoteResponse noteResponse = new NoteResponse();
+		noteResponse.setId(note.getId());
+		noteResponse.setCreatedAt(note.getCreatedAt());
+		noteResponse.setTagList(note.getTagList());
+		noteResponse.setText(note.getText());
+		noteResponse.setTitle(note.getTitle());
+
+		return noteResponse;
 	}
 }

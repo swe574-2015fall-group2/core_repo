@@ -3,6 +3,7 @@ package com.boun.web.controller;
 import com.boun.data.mongo.model.Note;
 import com.boun.http.request.*;
 import com.boun.http.response.ActionResponse;
+import com.boun.http.response.NoteResponse;
 import com.boun.service.NoteService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -73,6 +74,25 @@ public class NoteController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("tag operation finished");
+			}
+		}
+	}
+
+	@ApiOperation(value = "Query Note")
+	@RequestMapping(value = "query", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody
+	NoteResponse queryNote(@RequestBody BasicQueryRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("queryNote request received, request->" + request.toString());
+			}
+			return noteService.queryNote(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("queryNote operation finished");
 			}
 		}
 	}
