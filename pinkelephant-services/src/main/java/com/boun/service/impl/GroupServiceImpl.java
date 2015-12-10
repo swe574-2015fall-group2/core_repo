@@ -204,7 +204,9 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 
 		//TODO delete!!! temporary role setter
 		List<String> roles = new ArrayList<>();
-		roles.add("56699c72d4c652c6f9e2ab47");  // buraya static bir roleID'si eklenecek,
+
+		//56699c72d4c652c6f9e2ab47
+		roles.add("5669d8f6e4b0e04197562c31");  // buraya static bir roleID'si eklenecek,
 
 		SetRolesRequest setRolesRequest = new SetRolesRequest();
 		setRolesRequest.setGroupId(group.getId());
