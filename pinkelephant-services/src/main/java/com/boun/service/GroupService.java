@@ -12,33 +12,37 @@ import com.boun.http.response.CreateResponse;
 import com.boun.http.response.GetGroupResponse;
 import com.boun.http.response.ListGroupResponse;
 
+import java.util.List;
+
 public interface GroupService {
 
-	public Group findById(String groupId);
+	Group findById(String groupId);
 
-	public Group findByName(String groupName);
+	Group findByName(String groupName);
 
-	public CreateResponse createGroup(CreateUpdateGroupRequest request);
+	CreateResponse createGroup(CreateUpdateGroupRequest request);
 	
-	public ActionResponse updateGroup(CreateUpdateGroupRequest request);
+	ActionResponse updateGroup(CreateUpdateGroupRequest request);
 	
-	public ActionResponse joinGroup(JoinLeaveGroupRequest request);
+	ActionResponse joinGroup(JoinLeaveGroupRequest request);
 	
-	public ActionResponse leaveGroup(JoinLeaveGroupRequest request);
+	ActionResponse leaveGroup(JoinLeaveGroupRequest request);
 	
-	public ListGroupResponse getMyGroups(BaseRequest request);
+	ListGroupResponse getMyGroups(BaseRequest request);
 	
-	public ListGroupResponse getAllGroups(BaseRequest request);
+	ListGroupResponse getAllGroups(BaseRequest request);
 
-	public ListGroupResponse getPopularGroups(BaseRequest request);
+	ListGroupResponse getPopularGroups(BaseRequest request);
 
-	public ListGroupResponse getLatestGroups(BaseRequest request);
+	ListGroupResponse getLatestGroups(BaseRequest request);
 	
-	public ActionResponse uploadImage(UploadImageRequest request);
+	ActionResponse uploadImage(UploadImageRequest request);
 	
-	public GetGroupResponse queryGroup(BasicQueryRequest request);
+	GetGroupResponse queryGroup(BasicQueryRequest request);
 	
-	public ActionResponse tag(TagRequest request);
+	ActionResponse tag(TagRequest request);
 	
-	public ListGroupResponse findRecommendedGroups(BaseRequest request);
+	ListGroupResponse findRecommendedGroups(BaseRequest request);
+
+	List<Group> findGroupsOfUser(String userId);
 }

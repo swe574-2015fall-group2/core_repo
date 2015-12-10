@@ -175,15 +175,9 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		ActionResponse response = new ActionResponse();
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
 
-		Group group = groupRepository.findOne(request.getGroupId());
-		if(group == null){
-			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
-		}
+		Group group = findById(request.getGroupId());
 
-		User user = userRepository.findOne(authenticatedUser.getId());
-		if(user == null){
-			throw new PinkElephantRuntimeException(400, ErrorCode.USER_NOT_FOUND, "");
-		}
+		User user = userService.findById(authenticatedUser.getId());
 
 		GroupMember groupMember = groupMemberRepository.findGroupMember(user.getId(), group.getId());
 		if(groupMember != null){
@@ -232,10 +226,7 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		ActionResponse response = new ActionResponse();
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
 
-		Group group = groupRepository.findOne(request.getGroupId());
-		if(group == null){
-			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
-		}
+		Group group = findById(request.getGroupId());
 
 		GroupMember groupMember = groupMemberRepository.findGroupMember(authenticatedUser.getId(), request.getGroupId());
 		if(groupMember == null){
@@ -256,10 +247,7 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		ListGroupResponse response = new ListGroupResponse();
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
 
-		List<Group> groupList = groupMemberRepository.findGroupsOfUser(authenticatedUser.getId());
-		if(groupList == null){
-			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
-		}
+		List<Group> groupList = findGroupsOfUser(authenticatedUser.getId());
 
 		for (Group group : groupList) {
 			response.addGroup(group.getId(), group.getName(), group.getDescription(), true, group.getTagList());
@@ -269,7 +257,19 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 
 		return response;
 	}
-	
+
+	@Override
+	public List<Group> findGroupsOfUser(String userId) {
+
+		List<Group> groupList = groupMemberRepository.findGroupsOfUser(userId);
+
+		if(groupList == null || groupList.isEmpty()){
+			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
+		}
+
+		return groupList;
+	}
+
 	@Override
 	public GetGroupResponse queryGroup(BasicQueryRequest request) {
 		
@@ -312,7 +312,6 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 			response.addGroup(group.getId(), group.getName(), group.getDescription(), checkIfJoined(myGroupList, group), group.getTagList());
 		}
 
-		
 		response.setAcknowledge(true);
 
 		return response;
@@ -367,12 +366,10 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		validate(request);
 		
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
-		
-		List<Group> groupList = groupMemberRepository.findGroupsOfUser(authenticatedUser.getId());
-		if(groupList == null || groupList.isEmpty()){
-			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
-		}
-		
+
+
+		List<Group> groupList = findGroupsOfUser(authenticatedUser.getId());
+
 		Collection<RecommendationData> recommendedGroupList = recommendationService.findRecommendedGroups(authenticatedUser, groupList);
 		
 		ListGroupResponse response = new ListGroupResponse();
