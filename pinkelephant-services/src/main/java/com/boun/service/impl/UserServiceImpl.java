@@ -93,6 +93,7 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 		response.setLastname(user.getLastname());
 		response.setStatus(user.getStatus());
 		response.setUserDetail(user.getUserDetail());
+		response.setRoles(user.getRoles());
 		response.setImage(ImageUtil.getImage(user.getImage()));
 		response.setAcknowledge(true);
 		
@@ -241,6 +242,7 @@ public class UserServiceImpl extends PinkElephantService implements UserService 
 
 		List<Role> roles = roleService.findAll(request.getRoleIds());
 		groupRoles.setGroupRoles(roles);
+
 
 		user = userRepository.save(user);
 

@@ -63,7 +63,10 @@ public class User extends BaseEntity{
                     break;
                 }
             }
+            role.setGroupId(groupId);
+            roles.add(role);
         }
+
 
         return role;
     }

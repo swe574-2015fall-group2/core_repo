@@ -1,9 +1,12 @@
 package com.boun.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import com.boun.http.request.*;
+import com.boun.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +26,6 @@ import com.boun.data.mongo.repository.GroupMemberRepository;
 import com.boun.data.mongo.repository.GroupRepository;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
-import com.boun.http.request.BaseRequest;
-import com.boun.http.request.BasicQueryRequest;
-import com.boun.http.request.CreateUpdateGroupRequest;
-import com.boun.http.request.JoinLeaveGroupRequest;
-import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
 import com.boun.http.response.GetGroupResponse;
@@ -52,6 +50,9 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 	
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private TagService tagService;
@@ -83,7 +84,7 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 	
 	@Override
 	public void save(TaggedEntity entity) {
-		groupRepository.save((Group)entity);
+		groupRepository.save((Group) entity);
 	}
 
 	@Override
@@ -173,7 +174,7 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 
 		ActionResponse response = new ActionResponse();
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
-		
+
 		Group group = groupRepository.findOne(request.getGroupId());
 		if(group == null){
 			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
@@ -186,7 +187,7 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 
 		GroupMember groupMember = groupMemberRepository.findGroupMember(user.getId(), group.getId());
 		if(groupMember != null){
-			
+
 			if(groupMember.getStatus().value() == MemberStatus.ACTIVE.value()){
 				throw new PinkElephantRuntimeException(400, ErrorCode.USER_IS_ALREADY_A_MEMBER, "");
 			}
@@ -202,13 +203,27 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 			groupMember.setUser(user);
 			groupMember.setStatus(MemberStatus.ACTIVE);
 		}
-		
+
 		groupMemberRepository.save(groupMember);
 		response.setAcknowledge(true);
 
+
+		//TODO delete!!! temporary role setter
+		List<String> roles = new ArrayList<>();
+		roles.add("56699c72d4c652c6f9e2ab47");  // buraya static bir roleID'si eklenecek,
+
+		SetRolesRequest setRolesRequest = new SetRolesRequest();
+		setRolesRequest.setGroupId(group.getId());
+		setRolesRequest.setAuthToken(request.getAuthToken());
+		setRolesRequest.setRoleIds(roles);
+		setRolesRequest.setUserId(authenticatedUser.getId());
+
+		userService.setRoles(setRolesRequest);
+		//
+
 		return response;
 	}
-	
+
 	@Override
 	public ActionResponse leaveGroup(JoinLeaveGroupRequest request) {
 
@@ -249,7 +264,7 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		for (Group group : groupList) {
 			response.addGroup(group.getId(), group.getName(), group.getDescription(), true, group.getTagList());
 		}
-		
+
 		response.setAcknowledge(true);
 
 		return response;
@@ -268,7 +283,7 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		response.setName(group.getName());
 		response.setImage(ImageUtil.getImage(group.getImage()));			
 		response.setTagList(group.getTagList());
-		
+
 		response.setAcknowledge(true);
 
 		return response;
