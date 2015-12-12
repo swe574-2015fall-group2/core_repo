@@ -266,7 +266,8 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		List<Group> groupList = groupMemberRepository.findGroupsOfUser(userId);
 
 		if(groupList == null || groupList.isEmpty()){
-			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
+			//throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
+			groupList = new ArrayList<Group>();
 		}
 
 		return groupList;
