@@ -83,7 +83,7 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 
 		validate(request);
 
-		PermissionUtil.checkPermission(request, request.getGroupId(), Permission.CREATE_MEETING);
+		//PermissionUtil.checkPermission(request, request.getGroupId(), Permission.CREATE_MEETING);
 
 		CreateResponse response = new CreateResponse();
 
@@ -111,7 +111,7 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 
 		Meeting meeting = findById(request.getMeetingId());
 
-		PermissionUtil.checkPermission(request, meeting.getGroup().getId(), Permission.INVITE_USER_TO_MEETING);
+		//PermissionUtil.checkPermission(request, meeting.getGroup().getId(), Permission.INVITE_USER_TO_MEETING);
 
 		//TODO check role of user
 		//TODO send message/mail to invited user
