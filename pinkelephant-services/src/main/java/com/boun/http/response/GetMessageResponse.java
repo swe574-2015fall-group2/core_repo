@@ -31,10 +31,18 @@ public class GetMessageResponse extends ActionResponse{
 	private static class MessageObj{
 		private String receiverId;
 		private List<MessageDetails> messageList;
+
+		private int unreadCount;
 		
 		public MessageObj(String receiverId, List<MessageDetails> messageList){
 			this.receiverId = receiverId;
 			this.messageList = messageList;
+			
+			for (MessageDetails messageDetails : messageList) {
+				if(!messageDetails.isRead()){
+					++this.unreadCount;
+				}
+			}
 		}
 	}
 	

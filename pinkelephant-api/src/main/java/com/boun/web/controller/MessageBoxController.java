@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boun.http.request.BaseRequest;
+import com.boun.http.request.MessageReadRequest;
 import com.boun.http.request.SendMessageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.GetMessageResponse;
@@ -76,6 +77,40 @@ public class MessageBoxController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("sendMessage operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Read Message")
+	@RequestMapping(value = "read", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse read(@RequestBody MessageReadRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("read request received, request->" + request.toString());
+			}
+			return messageboxService.read(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("read operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Unread Message")
+	@RequestMapping(value = "unread", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse unread(@RequestBody MessageReadRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("unread request received, request->" + request.toString());
+			}
+			return messageboxService.unread(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("unread operation finished");
 			}
 		}
 	}

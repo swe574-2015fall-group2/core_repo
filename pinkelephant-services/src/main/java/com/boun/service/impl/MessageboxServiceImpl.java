@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.mongo.model.Messagebox;
+import com.boun.data.mongo.model.Messagebox.MessageDetails;
 import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.MessageboxRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.BaseRequest;
+import com.boun.http.request.MessageReadRequest;
 import com.boun.http.request.SendMessageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.GetMessageResponse;
@@ -27,27 +29,71 @@ public class MessageboxServiceImpl extends PinkElephantService implements Messag
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	private MessageboxRepository tagRepository;
+	private MessageboxRepository msgBoxRepository;
 	
 	@Autowired
 	private UserService userService;
 
+	public Messagebox findById(String id){
+		Messagebox messagebox = msgBoxRepository.findOne(id);
+		if(messagebox == null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.MESSAGE_NOT_FOUND, "");
+		}
+		return messagebox;
+	}
+	
 	@Override
 	public Messagebox findMessageBox(String senderId, String receiverId) {
-		Messagebox messageBox = tagRepository.search(senderId, receiverId);
+		Messagebox messageBox = msgBoxRepository.search(senderId, receiverId);
 		return messageBox;
 	}
 	
 	@Override
 	public List<Messagebox> findMessageBoxBySender(String senderId) {
-		List<Messagebox> messageBoxList = tagRepository.searchBySender(senderId);
+		List<Messagebox> messageBoxList = msgBoxRepository.searchBySender(senderId);
 		return messageBoxList;
 	}
 	
 	@Override
 	public List<Messagebox> findMessageBoxByReceiver(String receiverId) {
-		List<Messagebox> messageBoxList = tagRepository.searchByReceiver(receiverId);
+		List<Messagebox> messageBoxList = msgBoxRepository.searchByReceiver(receiverId);
 		return messageBoxList;
+	}
+	
+	public ActionResponse read(MessageReadRequest request){
+		ActionResponse response = new ActionResponse();
+		
+		read(request.getMessageBoxId(), request.getMessageId(), true);
+		
+		response.setAcknowledge(true);
+		return response;
+	}
+	
+	public ActionResponse unread(MessageReadRequest request){
+		ActionResponse response = new ActionResponse();
+		
+		read(request.getMessageBoxId(), request.getMessageId(), false);
+		
+		response.setAcknowledge(true);
+		return response;
+	}
+	
+	private void read(String messageboxId, String messageId, boolean read){
+		Messagebox messagebox = findById(messageboxId);
+		List<MessageDetails> messages = messagebox.getMessages();
+		
+		if(messages == null || messages.isEmpty()){
+			throw new PinkElephantRuntimeException(400, ErrorCode.MESSAGE_NOT_FOUND, "");
+		}
+		
+		for (MessageDetails messageDetails : messages) {
+			if(messageDetails.getId().equalsIgnoreCase(messageId)){
+				messageDetails.setRead(read);
+				break;
+			}
+		}
+		
+		msgBoxRepository.save(messagebox);
 	}
 	
 	@Override
@@ -68,7 +114,7 @@ public class MessageboxServiceImpl extends PinkElephantService implements Messag
 		
 		ActionResponse response = new ActionResponse();
 		response.setAcknowledge(true);
-		tagRepository.save(messageBox);
+		msgBoxRepository.save(messageBox);
 		
 		return response;
 	}

@@ -33,17 +33,22 @@ public class Messagebox extends BaseEntity{
 		if(messages == null || messages.isEmpty()){
 			messages = new ArrayList<MessageDetails>();
 		}
-		messages.add(new MessageDetails(message));
+		messages.add(new MessageDetails(message, String.valueOf(messages.size()+1)));
 	}
 	
 	@Data
 	public static class MessageDetails{
+		
+	    private String id;
 		private Date datetime;
 		private String message;
+		private boolean read;
 		
-		public MessageDetails(String message){
+		public MessageDetails(String message, String id){
+			this.id = id;
 			this.message = message;
 			this.datetime = new Date();
+			this.read = false;
 		}
 	}
 }
