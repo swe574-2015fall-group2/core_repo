@@ -205,7 +205,8 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		//TODO delete!!! temporary role setter
 		List<String> roles = new ArrayList<>();
 
-		//56699c72d4c652c6f9e2ab47
+		// 56699c72d4c652c6f9e2ab47 local
+		// 5669d8f6e4b0e04197562c31 remote
 		roles.add("5669d8f6e4b0e04197562c31");  // buraya static bir roleID'si eklenecek,
 
 		SetRolesRequest setRolesRequest = new SetRolesRequest();
@@ -374,11 +375,9 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		List<Group> groupList = findGroupsOfUser(authenticatedUser.getId());
 
 		Collection<RecommendationData> recommendedGroupList = recommendationService.findRecommendedGroups(authenticatedUser, groupList);
-		
+
+
 		ListGroupResponse response = new ListGroupResponse();
-		if(recommendedGroupList == null || recommendedGroupList.isEmpty()){
-			throw new PinkElephantRuntimeException(400, ErrorCode.GROUP_NOT_FOUND, "");
-		}
 		
 		for (RecommendationData data : recommendedGroupList) {
 			Group group = data.getGroup();
