@@ -22,6 +22,7 @@ public class CreateMeetingRequest extends BaseRequest{
 	private String location;
 	private String description;
 	private MeetingType type;
+	private Boolean isPinned;
 	
 	private String groupId;
 	
