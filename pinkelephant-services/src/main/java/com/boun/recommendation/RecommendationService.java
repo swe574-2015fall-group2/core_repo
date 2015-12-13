@@ -9,5 +9,5 @@ import com.boun.recommendation.RecommendationEngine.RecommendationData;
 
 public interface RecommendationService {
 
-	public Collection<RecommendationData> findRecommendedGroups(User user, List<Group> groupList);
+	Collection<RecommendationData> findRecommendedGroups(User user, List<Group> groupList);
 }

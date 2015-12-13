@@ -227,7 +227,7 @@ public class RecommendationEngine implements RecommendationService{
 	private List<RecommendationData> filterRecommendationCollection(Collection<RecommendationData> list){
 		
 		if(list == null || list.isEmpty()){
-			return null;
+			return new ArrayList<RecommendationData>();
 		}
 		
 		ArrayList<RecommendationData> flist = new ArrayList<RecommendationData>(list);
