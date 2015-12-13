@@ -4,6 +4,7 @@ import com.boun.data.mongo.model.Note;
 import com.boun.data.mongo.repository.custom.NoteRepositoryCustom;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -19,6 +20,7 @@ public class NoteRepositoryImpl implements NoteRepositoryCustom {
 
 		Query query = new Query();
 		query.addCriteria(Criteria.where("group.$id").is(new ObjectId(groupId)));
+		query.with(new Sort(Sort.Direction.DESC, "isPinned"));
 
 		List<Note> noteList = mongoTemplate.find(query, Note.class);
 

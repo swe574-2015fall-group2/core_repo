@@ -268,9 +268,12 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		ListMeetingResponse response = new ListMeetingResponse();
 		
 		List<Meeting> meetingList = meetingRepository.findMeetings(group.getId());
+
+		/*
 		if(meetingList == null || meetingList.isEmpty()){
 			throw new PinkElephantRuntimeException(400, ErrorCode.MEETING_NOT_FOUND, "");
 		}
+		*/
 		
 		for (Meeting meeting : meetingList) {
 			response.addMeeting(meeting);

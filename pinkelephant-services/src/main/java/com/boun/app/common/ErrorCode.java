@@ -39,7 +39,7 @@ public enum ErrorCode {
 
 	COMMENT_NOT_FOUND("Discussion not found", "160"),
 	
-	NOTE_NOT_FOUND("Resource not found", "119"),
+	NOTE_NOT_FOUND("Note not found", "119"),
 	
 	MESSAGE_NOT_FOUND("Message not found", "170"),
 
