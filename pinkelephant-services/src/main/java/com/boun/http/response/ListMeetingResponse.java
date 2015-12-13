@@ -53,6 +53,7 @@ public class ListMeetingResponse extends ActionResponse{
 		private String description;
 		private MeetingStatus status;
 		private MeetingType type;
+		private Boolean isPinned;
 		
 		private Set<String> invitedUserSet;
 		private Set<String> attandedUserSet;
@@ -82,6 +83,7 @@ public class ListMeetingResponse extends ActionResponse{
 			this.creatorId = meeting.getCreator().getId();
 			this.groupId = meeting.getGroup().getId();
 			this.tagList = meeting.getTagList();
+			this.isPinned = meeting.getIsPinned();
 		}
 		
 		private Set<String> getUsernameSet(Set<User> userSet){

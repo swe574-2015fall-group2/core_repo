@@ -330,6 +330,7 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		meeting.setStatus(MeetingStatus.NOT_STARTED);
 		meeting.setTimezone(request.getTimezone());
 		meeting.setTagList(request.getTagList());
+		meeting.setIsPinned(request.getIsPinned());
 		
 		if(request.getInvitedUserIdList() == null || request.getInvitedUserIdList().isEmpty()){
 			return meeting;

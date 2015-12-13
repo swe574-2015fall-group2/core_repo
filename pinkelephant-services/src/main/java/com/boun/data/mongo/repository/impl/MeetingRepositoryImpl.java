@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -25,6 +26,7 @@ public class MeetingRepositoryImpl implements MeetingRepositoryCustom {
 
 		Query query = new Query();
 		query.addCriteria(Criteria.where("group.$id").is(new ObjectId(groupId)));
+		query.with(new Sort(Sort.Direction.DESC, "isPinned"));
 
 		List<Meeting> meetingList = mongoTemplate.find(query, Meeting.class);
 
