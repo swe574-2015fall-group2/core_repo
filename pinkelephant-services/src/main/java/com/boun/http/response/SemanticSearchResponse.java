@@ -22,7 +22,10 @@ public class SemanticSearchResponse {
 		if(resultList == null){
 			resultList = new ArrayList<SearchDetail>();
 		}
-		resultList.add(new SearchDetail(type, id, description, tag, priority));
+		SearchDetail detail = new SearchDetail(type, id, description, tag, priority);
+		if(!resultList.contains(detail)){
+			resultList.add(detail);	
+		}
 	}
 	
 	public List<SearchDetail> getResultList(){
@@ -46,6 +49,23 @@ public class SemanticSearchResponse {
 			this.description = description;
 			this.priority = priority;
 			this.tag = tag;
+		}
+		
+		public boolean equals(Object o){
+			if(o == null){
+				return false;
+			}
+			SearchDetail idx = (SearchDetail)o;
+			
+			return (idx.getId().equalsIgnoreCase(this.getId())) && (idx.getType() == this.getType());
+		}
+		
+		@Override
+		public int hashCode() {
+			int code = 7;
+			code = 89 * code * this.getTag().hashCode();
+			code = code * this.getType().hashCode();
+			return code;
 		}
 	}
 	

@@ -119,7 +119,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 			
 			for (String t : taggedEntity.getTagList()) {
 				
-				SemanticSearchIndex idx = new SemanticSearchIndex(t, 0);
+				SemanticSearchIndex idx = new SemanticSearchIndex(t, 0); // Set similarity index to zero, because we have found this tag through relations 
 				if(searchIndex.contains(idx)){
 					continue;
 				}
