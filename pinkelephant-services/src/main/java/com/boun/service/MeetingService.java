@@ -1,5 +1,7 @@
 package com.boun.service;
 
+import java.util.List;
+
 import com.boun.data.mongo.model.Meeting;
 import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicQueryRequest;
@@ -32,4 +34,6 @@ public interface MeetingService {
 	ActionResponse tag(TagRequest request);
 	
 	ListMeetingResponse getMyMeetings(BaseRequest request);
+	
+	List<Meeting> findAllMeetingList();
 }

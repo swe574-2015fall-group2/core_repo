@@ -4,10 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.boun.data.Permission;
-import com.boun.data.mongo.model.*;
-import com.boun.http.request.*;
-import com.boun.util.PermissionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +13,6 @@ import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.MeetingInvitationResult;
 import com.boun.data.common.enums.MeetingStatus;
-
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Meeting;
 import com.boun.data.mongo.model.TaggedEntity;
@@ -355,5 +350,10 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		meeting.setInvitedUserSet(invitedList);
 
 		return meeting;
+	}
+
+	@Override
+	public List<Meeting> findAllMeetingList() {
+		return meetingRepository.findAll();
 	}
 }

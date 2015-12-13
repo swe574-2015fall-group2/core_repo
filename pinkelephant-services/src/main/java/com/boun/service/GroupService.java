@@ -1,5 +1,7 @@
 package com.boun.service;
 
+import java.util.List;
+
 import com.boun.data.mongo.model.Group;
 import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicQueryRequest;
@@ -11,8 +13,6 @@ import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
 import com.boun.http.response.GetGroupResponse;
 import com.boun.http.response.ListGroupResponse;
-
-import java.util.List;
 
 public interface GroupService {
 
@@ -45,4 +45,6 @@ public interface GroupService {
 	ListGroupResponse findRecommendedGroups(BaseRequest request);
 
 	List<Group> findGroupsOfUser(String userId);
+	
+	List<Group> findAllGroupList();
 }

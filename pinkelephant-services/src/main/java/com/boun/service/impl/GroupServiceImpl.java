@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import com.boun.http.request.*;
-import com.boun.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +24,12 @@ import com.boun.data.mongo.repository.GroupMemberRepository;
 import com.boun.data.mongo.repository.GroupRepository;
 import com.boun.data.mongo.repository.UserRepository;
 import com.boun.data.session.PinkElephantSession;
+import com.boun.http.request.BaseRequest;
+import com.boun.http.request.BasicQueryRequest;
+import com.boun.http.request.CreateUpdateGroupRequest;
+import com.boun.http.request.JoinLeaveGroupRequest;
+import com.boun.http.request.SetRolesRequest;
+import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
 import com.boun.http.response.GetGroupResponse;
@@ -35,6 +39,7 @@ import com.boun.recommendation.RecommendationService;
 import com.boun.service.GroupService;
 import com.boun.service.PinkElephantTaggedService;
 import com.boun.service.TagService;
+import com.boun.service.UserService;
 import com.boun.util.ImageUtil;
 
 @Service
@@ -403,5 +408,10 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 	@Override
 	protected TagService getTagService() {
 		return tagService;
+	}
+
+	@Override
+	public List<Group> findAllGroupList() {
+		return groupRepository.findAll();
 	}
 }
