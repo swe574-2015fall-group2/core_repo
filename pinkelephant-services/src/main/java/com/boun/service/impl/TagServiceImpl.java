@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.boun.data.cache.TagCache;
 import com.boun.data.mongo.model.Tag;
 import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.model.TaggedEntity.EntityType;
@@ -74,6 +75,8 @@ public class TagServiceImpl extends PinkElephantService implements TagService{
 		}
 		
 		tag.setReferenceSet(referenceSet);
+		
+		TagCache.getInstance(this).updateTag(tag.getTag(), tag.getReferenceSet());
 		
 		tagRepository.save(tag);
 	}

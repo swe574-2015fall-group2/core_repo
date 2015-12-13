@@ -84,11 +84,17 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 				continue;
 			}
 			searchIndex.add(new SemanticSearchIndex(tag, similarityIndex));
+			
+			resolveTagRelations(tag, searchIndex);
 		}
 		Collections.sort(searchIndex, new SemanticSearchIndexSort());
 		
 		for (SemanticSearchIndex index : searchIndex) {
 			List<TaggedEntityMetaData> tagEntityIdList = TagCache.getInstance(tagService).getTag(index.getTag());
+			
+			if(tagEntityIdList == null || tagEntityIdList.isEmpty()){
+				continue;
+			}
 			
 			for (TaggedEntityMetaData taggedEntityMetaData : tagEntityIdList) {
 				addResultList(response, resolveEntity(taggedEntityMetaData), index.getTag(), index.getSimilarityIndex());
@@ -98,7 +104,35 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		return response;
 	}
 	
+	private void resolveTagRelations(String tag, List<SemanticSearchIndex> searchIndex){
+		List<TaggedEntityMetaData> tagEntityIdList = TagCache.getInstance(tagService).getTag(tag);
+		if(tagEntityIdList == null || tagEntityIdList.isEmpty()){
+			return;
+		}
+		
+		for (TaggedEntityMetaData taggedEntityMetaData : tagEntityIdList) {
+			
+			TaggedEntity taggedEntity = resolveEntity(taggedEntityMetaData);
+			if(taggedEntity ==  null){
+				continue;
+			}
+			
+			for (String t : taggedEntity.getTagList()) {
+				
+				SemanticSearchIndex idx = new SemanticSearchIndex(t, 0);
+				if(searchIndex.contains(idx)){
+					continue;
+				}
+				searchIndex.add(idx);
+				
+				resolveTagRelations(t, searchIndex);
+			}
+		}
+	}
+	
 	private TaggedEntity resolveEntity(TaggedEntityMetaData taggedEntityMetaData){
+		//TODO cache these entities somehow
+		
 		if(taggedEntityMetaData.getType() == EntityType.DISCUSSION){
 			return discussionService.findById(taggedEntityMetaData.getId());
 		}
@@ -153,6 +187,22 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		private SemanticSearchIndex(String tag, float similarityIndex){
 			this.tag = tag;
 			this.similarityIndex = similarityIndex;
+		}
+		
+		public boolean equals(Object o){
+			if(o == null){
+				return false;
+			}
+			SemanticSearchIndex idx = (SemanticSearchIndex)o;
+			
+			return (idx.getTag().equalsIgnoreCase(this.getTag()));
+		}
+		
+		@Override
+		public int hashCode() {
+			int code = 7;
+			code = 89 * code * this.getTag().hashCode();
+			return code;
 		}
 	}
 	
