@@ -18,11 +18,11 @@ public class SemanticSearchResponse {
 	
 	private List<SearchDetail> resultList;
 	
-	public void addDetail(TaggedEntity.EntityType type, String id, String description, float priority){
+	public void addDetail(TaggedEntity.EntityType type, String id, String description, String tag, float priority){
 		if(resultList == null){
 			resultList = new ArrayList<SearchDetail>();
 		}
-		resultList.add(new SearchDetail(type, id, description, priority));
+		resultList.add(new SearchDetail(type, id, description, tag, priority));
 	}
 	
 	public List<SearchDetail> getResultList(){
@@ -36,14 +36,16 @@ public class SemanticSearchResponse {
 		
 		private String id;
 		private String description;
+		private String tag;
 		
 		private float priority;
 		
-		public SearchDetail(TaggedEntity.EntityType type, String id, String description, float priority){
+		public SearchDetail(TaggedEntity.EntityType type, String id, String description, String tag, float priority){
 			this.type = type;
 			this.id = id;
 			this.description = description;
 			this.priority = priority;
+			this.tag = tag;
 		}
 	}
 	
@@ -52,7 +54,7 @@ public class SemanticSearchResponse {
 	    @Override
 	    public int compare(SearchDetail o1, SearchDetail o2) {
 	    	
-	    	return (o1.getPriority() < o2.getPriority()) ? -1 : 1;
+	    	return (o1.getPriority() >= o2.getPriority()) ? -1 : 1;
 	    }
 	}
 }

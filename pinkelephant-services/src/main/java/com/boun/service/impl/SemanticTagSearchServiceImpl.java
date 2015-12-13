@@ -91,7 +91,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 			List<TaggedEntityMetaData> tagEntityIdList = TagCache.getInstance(tagService).getTag(index.getTag());
 			
 			for (TaggedEntityMetaData taggedEntityMetaData : tagEntityIdList) {
-				addResultList(response, resolveEntity(taggedEntityMetaData), index.getSimilarityIndex());
+				addResultList(response, resolveEntity(taggedEntityMetaData), index.getTag(), index.getSimilarityIndex());
 			}
 		}
 		
@@ -121,17 +121,17 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		
 		return null;
 	}
-	private void addResultList(SemanticSearchResponse response, TaggedEntity taggedEntity, float priority){
+	private void addResultList(SemanticSearchResponse response, TaggedEntity taggedEntity, String tag, float priority){
 		if(taggedEntity == null){
 			return;
 		}
 		
-		response.addDetail(taggedEntity.getEntityType(), taggedEntity.getId(), taggedEntity.getDescription(), priority);	
+		response.addDetail(taggedEntity.getEntityType(), taggedEntity.getId(), taggedEntity.getDescription(), tag, priority);	
 	}
 	
 	private float getSimilarityIndex(String str1, String str2){
 		
-		Set<String> commonWords = Sets.newHashSet("it", "is", "a", "and", "the");
+		Set<String> commonWords = Sets.newHashSet("it", "is", "a", "and", "the", "are, i");
 		
 		StringMetric metric = 
 				with(new CosineSimilarity<String>())
@@ -161,7 +161,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 	    @Override
 	    public int compare(SemanticSearchIndex o1, SemanticSearchIndex o2) {
 	    	
-	    	return (o1.getSimilarityIndex() < o2.getSimilarityIndex()) ? -1 : 1;
+	    	return (o1.getSimilarityIndex() >= o2.getSimilarityIndex()) ? -1 : 1;
 	    }
 	}
 }
