@@ -83,7 +83,7 @@ public class ResourceServiceImpl extends PinkElephantTaggedService implements Re
 		Group group = groupService.findById(request.getGroupId());
 
 		Resource resource = new Resource();
-		resource.setName(request.getName());
+		resource.setDescription(request.getName());
 		resource.setLink(request.getLink());
 		resource.setType(ResourceType.EXTERNAL);
 		resource.setGroup(group);
@@ -106,7 +106,7 @@ public class ResourceServiceImpl extends PinkElephantTaggedService implements Re
 		Group group = groupService.findById(groupId);
 
 		Resource resource = new Resource();
-		resource.setName(name);
+		resource.setDescription(name);
 		resource.setType(ResourceType.INTERNAL);
 		//TODO resource.setLink(request.getLink());
 		resource.setGroup(group);

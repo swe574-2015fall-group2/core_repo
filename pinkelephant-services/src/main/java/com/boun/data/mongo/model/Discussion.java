@@ -29,7 +29,6 @@ public class Discussion extends TaggedEntity{
 	private User creator;
 	
 	private String name;
-	private String description;
 	private Date creationTime;
 	private Date updateTime;
 }

@@ -3,8 +3,6 @@ package com.boun.service.impl;
 import java.util.Date;
 import java.util.List;
 
-import com.boun.http.request.BasicQueryRequest;
-import com.boun.http.response.NoteResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +17,10 @@ import com.boun.data.mongo.model.Resource;
 import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.repository.NoteRepository;
 import com.boun.data.session.PinkElephantSession;
+import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateNoteRequest;
 import com.boun.http.request.UpdateNoteRequest;
+import com.boun.http.response.NoteResponse;
 import com.boun.service.GroupService;
 import com.boun.service.MeetingService;
 import com.boun.service.NoteService;
@@ -80,7 +80,7 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 		Note note = new Note();
 
 		note.setTitle(request.getTitle());
-		note.setText(request.getText());
+		note.setDescription(request.getText());
 		note.setGroup(group);
 		note.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
 		note.setCreatedAt(new Date());
@@ -111,7 +111,7 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 		List<Resource> resources = resourceService.findByIds(request.getResourceIds());
 
 		note.setTitle(request.getTitle());
-		note.setText(request.getText());
+		note.setDescription(request.getText());
 		note.setGroup(group);
 		updateTag(note, request.getTagList());
 		
@@ -143,7 +143,7 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 		noteResponse.setId(note.getId());
 		noteResponse.setCreatedAt(note.getCreatedAt());
 		noteResponse.setTagList(note.getTagList());
-		noteResponse.setText(note.getText());
+		noteResponse.setText(note.getDescription());
 		noteResponse.setTitle(note.getTitle());
 
 		return noteResponse;

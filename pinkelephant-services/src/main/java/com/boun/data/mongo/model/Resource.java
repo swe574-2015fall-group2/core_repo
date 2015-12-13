@@ -17,8 +17,6 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Resource extends TaggedEntity{
 
-    private String name;
-
     private String link;
 
     private ResourceType type;

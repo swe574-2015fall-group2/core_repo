@@ -1,11 +1,10 @@
 package com.boun.service;
 
+import java.util.List;
+
 import com.boun.data.mongo.model.Role;
 import com.boun.http.request.CreateRoleRequest;
 import com.boun.http.request.UpdateRoleRequest;
-import com.boun.http.response.ActionResponse;
-
-import java.util.List;
 
 public interface RoleService {
 

@@ -19,8 +19,6 @@ public class Note extends TaggedEntity{
 
     private String title;
 
-    private String text;
-
     @DBRef
     private List<Resource> resources;
 

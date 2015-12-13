@@ -104,4 +104,9 @@ public class TagServiceImpl extends PinkElephantService implements TagService{
 		return resultList;
 	}
 
+	@Override
+	public List<Tag> findAllTagList() {
+		return tagRepository.findAll();
+	}
+
 }

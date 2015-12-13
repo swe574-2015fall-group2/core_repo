@@ -30,7 +30,6 @@ public class Meeting extends TaggedEntity{
 	private String endHour;
 	private Integer actualDuration;
 	private String location;
-	private String description;
 
 	private MeetingStatus status;
 	private MeetingType type;

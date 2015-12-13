@@ -17,6 +17,8 @@ public class TaggedEntity extends BaseEntity{
 
 	private List<String> tagList;
 	
+	private String description;
+	
     @Transient
     private EntityType entityType;
     

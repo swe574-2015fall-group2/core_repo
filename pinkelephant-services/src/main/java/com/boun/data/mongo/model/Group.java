@@ -25,8 +25,6 @@ public class Group extends TaggedEntity{
 	
     private String name;
     
-    private String description;
-    
     private GroupStatus status;
     
     private ImageInfo image;
