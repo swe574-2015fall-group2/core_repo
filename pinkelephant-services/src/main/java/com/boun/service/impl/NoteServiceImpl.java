@@ -3,6 +3,7 @@ package com.boun.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.boun.http.response.ListNoteResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,11 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 
 		//TODO find meeting method will throw an exception if entity not found
 		Meeting meeting = meetingService.findById(request.getMeetingId());
-		List<Resource> resources = resourceService.findByIds(request.getResourceIds());
+
+
+		List<Resource> resources = null;
+		if(request.getResourceIds() != null)
+			resources = resourceService.findByIds(request.getResourceIds());
 
 		Note note = new Note();
 
@@ -87,6 +92,7 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 		note.setMeeting(meeting);
 		note.setResources(resources);
 		note.setTagList(request.getTagList());
+		note.setIsPinned(request.getIsPinned());
 		
 		note = noteRepository.save(note);
 		tagService.tag(request.getTagList(), note, true);
@@ -121,6 +127,7 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 
 		note.setMeeting(meeting);
 		note.setResources(resources);
+		note.setIsPinned(request.getIsPinned());
 
 		note = noteRepository.save(note);
 
@@ -147,5 +154,23 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 		noteResponse.setTitle(note.getTitle());
 
 		return noteResponse;
+	}
+
+	@Override
+	public ListNoteResponse queryNotesOfGroup(BasicQueryRequest request) {
+
+		validate(request);
+
+		Group group = groupService.findById(request.getId());
+
+		ListNoteResponse response = new ListNoteResponse();
+
+		List<Note> noteList = noteRepository.findNotes(group.getId());
+
+		for (Note note : noteList) {
+			response.addNote(note);
+		}
+
+		return response;
 	}
 }

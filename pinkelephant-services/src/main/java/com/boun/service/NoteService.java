@@ -6,6 +6,7 @@ import com.boun.http.request.CreateNoteRequest;
 import com.boun.http.request.TagRequest;
 import com.boun.http.request.UpdateNoteRequest;
 import com.boun.http.response.ActionResponse;
+import com.boun.http.response.ListNoteResponse;
 import com.boun.http.response.NoteResponse;
 
 public interface NoteService {
@@ -19,5 +20,7 @@ public interface NoteService {
     ActionResponse tag(TagRequest request);
 
     NoteResponse queryNote(BasicQueryRequest request);
+
+    ListNoteResponse queryNotesOfGroup(BasicQueryRequest request);
     
 }

@@ -30,6 +30,8 @@ public class Note extends TaggedEntity{
 
     private Date createdAt;
 
+    private Boolean isPinned;
+
     //TODO UserMetadata must be sent to frontend instead of User (security reasons:password)
     @DBRef
     private User creator;
