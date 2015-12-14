@@ -132,27 +132,30 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 	
 	private TaggedEntity resolveEntity(TaggedEntityMetaData taggedEntityMetaData){
 		//TODO cache these entities somehow
-		
-		if(taggedEntityMetaData.getType() == EntityType.DISCUSSION){
-			return discussionService.findById(taggedEntityMetaData.getId());
+		try {
+			if (taggedEntityMetaData.getType() == EntityType.DISCUSSION) {
+				return discussionService.findById(taggedEntityMetaData.getId());
+			}
+
+			if (taggedEntityMetaData.getType() == EntityType.GROUP) {
+				return groupService.findById(taggedEntityMetaData.getId());
+			}
+
+			if (taggedEntityMetaData.getType() == EntityType.MEETING) {
+				return meetingService.findById(taggedEntityMetaData.getId());
+			}
+
+			if (taggedEntityMetaData.getType() == EntityType.NOTE) {
+				return noteService.findById(taggedEntityMetaData.getId());
+			}
+
+			if (taggedEntityMetaData.getType() == EntityType.RESOURCE) {
+				return resourceService.findById(taggedEntityMetaData.getId());
+			}
 		}
-		
-		if(taggedEntityMetaData.getType() == EntityType.GROUP){
-			return groupService.findById(taggedEntityMetaData.getId());
+		catch (Exception e) {
+			//TODO fix
 		}
-		
-		if(taggedEntityMetaData.getType() == EntityType.MEETING){
-			return meetingService.findById(taggedEntityMetaData.getId());
-		}
-		
-		if(taggedEntityMetaData.getType() == EntityType.NOTE){
-			return noteService.findById(taggedEntityMetaData.getId());
-		}
-		
-		if(taggedEntityMetaData.getType() == EntityType.RESOURCE){
-			return resourceService.findById(taggedEntityMetaData.getId());
-		}
-		
 		return null;
 	}
 	private void addResultList(SemanticSearchResponse response, TaggedEntity taggedEntity, String tag, float priority){
