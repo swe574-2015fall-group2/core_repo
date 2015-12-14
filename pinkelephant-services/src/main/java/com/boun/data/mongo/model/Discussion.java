@@ -31,4 +31,5 @@ public class Discussion extends TaggedEntity{
 	private String name;
 	private Date creationTime;
 	private Date updateTime;
+	private Boolean isPinned;
 }
