@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+         <!-- XML Schema Generated from XML Document on Thu Dec 17 2015 00:14:13 GMT+0200 (Turkey Standard Time) -->
+         <!-- with XmlGrid.net Free Online Service http://xmlgrid.net -->
+	<xs:element name="ArrayOfResult">
+		<xs:complexType>
+			<xs:sequence> 
+				<xs:element ref="Result" minOccurs="0" maxOccurs="unbounded"></xs:element>              
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+         
+	<xs:element name="Result">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Label" type="xs:string"></xs:element>
+                <xs:element name="URI" type="xs:string"></xs:element>
+                <xs:element name="Description"></xs:element>
+                <xs:element ref="Classes"></xs:element>
+                <xs:element ref="Categories"></xs:element>
+                <xs:element name="Templates"></xs:element>
+                <xs:element name="Redirects"></xs:element>
+                <xs:element name="Refcount" type="xs:int"></xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+  
+  	<xs:element name="Classes">
+		<xs:complexType>
+      		<xs:sequence>
+        		<xs:element name="Class" maxOccurs="unbounded" minOccurs="0">
+          			<xs:complexType>
+            			<xs:sequence>
+              				<xs:element type="xs:string" name="Label"/>
+              				<xs:element type="xs:anyURI" name="URI"/>
+            			</xs:sequence>
+          			</xs:complexType>
+        		</xs:element>
+      		</xs:sequence>
+    	</xs:complexType>
+  	</xs:element>
+  	
+	<xs:element name="Categories">
+		<xs:complexType>
+      		<xs:sequence>
+        		<xs:element name="Category" maxOccurs="unbounded" minOccurs="0">
+          			<xs:complexType>
+            			<xs:sequence>
+              				<xs:element type="xs:string" name="Label"/>
+              				<xs:element type="xs:anyURI" name="URI"/>
+            			</xs:sequence>
+          			</xs:complexType>
+        		</xs:element>
+      		</xs:sequence>
+    	</xs:complexType>
+  	</xs:element>
+  
+</xs:schema>
+ 

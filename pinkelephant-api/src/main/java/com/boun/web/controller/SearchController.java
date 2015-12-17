@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boun.http.request.BasicSearchRequest;
+import com.boun.http.response.QueryLabelResponse;
 import com.boun.http.response.SemanticSearchResponse;
 import com.boun.service.SemanticTagSearchService;
 import com.wordnik.swagger.annotations.Api;
@@ -40,6 +41,23 @@ public class SearchController {
     	}finally{
     		if(logger.isDebugEnabled()){
     			logger.debug("search operation finished");
+    		}
+    	}
+    }
+    
+    @ApiOperation(value="Query Label")
+    @RequestMapping(value="queryLabel", method = RequestMethod.POST)
+    @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
+    public @ResponseBody QueryLabelResponse queryLabel(@RequestBody BasicSearchRequest request) {
+
+    	try{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("queryLabel request received, request->" + request.toString());
+    		}
+    		return semanticSearchService.queryLabel(request);
+    	}finally{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("queryLabel operation finished");
     		}
     	}
     }
