@@ -11,15 +11,15 @@ import com.boun.http.response.ListDiscussionResponse;
 
 public interface DiscussionService {
 
-	public Discussion findById(String discussionId);
+	Discussion findById(String discussionId);
 	
-	public ActionResponse createDiscussion(CreateDiscussionRequest request);
+	ActionResponse createDiscussion(CreateDiscussionRequest request);
 	
-	public ActionResponse updateDiscussion(UpdateDiscussionRequest request);
+	ActionResponse updateDiscussion(UpdateDiscussionRequest request);
 	
-	public GetDiscussionResponse queryDiscussion(BasicQueryRequest request);
+	GetDiscussionResponse queryDiscussion(BasicQueryRequest request);
 	
-	public ListDiscussionResponse listDiscussions(BasicQueryRequest request);
+	ListDiscussionResponse listDiscussions(BasicQueryRequest request);
 	
-	public ActionResponse tag(TagRequest request);
+	ActionResponse tag(TagRequest request);
 }

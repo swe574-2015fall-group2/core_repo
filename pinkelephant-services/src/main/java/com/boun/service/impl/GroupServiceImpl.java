@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import com.boun.http.response.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,6 @@ import com.boun.http.request.CreateUpdateGroupRequest;
 import com.boun.http.request.JoinLeaveGroupRequest;
 import com.boun.http.request.SetRolesRequest;
 import com.boun.http.request.UploadImageRequest;
-import com.boun.http.response.ActionResponse;
-import com.boun.http.response.CreateResponse;
-import com.boun.http.response.GetGroupResponse;
-import com.boun.http.response.ListGroupResponse;
 import com.boun.recommendation.RecommendationEngine.RecommendationData;
 import com.boun.recommendation.RecommendationService;
 import com.boun.service.GroupService;
@@ -292,6 +289,9 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		response.setName(group.getName());
 		response.setImage(ImageUtil.getImage(group.getImage()));			
 		response.setTagList(group.getTagList());
+
+		List<User> usersOfGroup = groupMemberRepository.findUsersOfGroup(group.getId());
+		response.setUsers(UserResponse.userToUserResponse(usersOfGroup));
 
 		response.setAcknowledge(true);
 

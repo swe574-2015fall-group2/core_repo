@@ -71,6 +71,7 @@ public class DiscussionServiceImpl extends PinkElephantTaggedService implements 
 		discussion.setCreator(authenticatedUser);
 		discussion.setName(request.getName());
 		discussion.setTagList(request.getTagList());
+		discussion.setIsPinned(request.getIsPinned());
 		
 		discussionRepository.save(discussion);
 		
@@ -102,6 +103,7 @@ public class DiscussionServiceImpl extends PinkElephantTaggedService implements 
 		discussion.setDescription(request.getDescription());
 		discussion.setName(request.getName());
 		discussion.setUpdateTime(new Date());
+		discussion.setIsPinned(request.getIsPinned());
 		updateTag(discussion, request.getTagList());
 		
 		discussionRepository.save(discussion);
@@ -127,7 +129,7 @@ public class DiscussionServiceImpl extends PinkElephantTaggedService implements 
 		}
 		
 		for (Discussion discussion : discussionList) {
-			response.addDiscussion(discussion.getId(), discussion.getName(), discussion.getDescription(), discussion.getCreator().getId(), discussion.getCreationTime(), discussion.getTagList());
+			response.addDiscussion(discussion.getId(), discussion.getName(), discussion.getDescription(), discussion.getCreator().getId(), discussion.getCreationTime(), discussion.getTagList(), discussion.getIsPinned());
 		}
 		
 		return response;

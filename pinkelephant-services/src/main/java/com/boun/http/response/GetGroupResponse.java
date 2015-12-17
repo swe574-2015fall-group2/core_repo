@@ -18,6 +18,8 @@ public class GetGroupResponse extends ActionResponse{
 	private ImageData image;
 	
 	private List<String> tagList;
+
+	private List<UserResponse> users;
 }
 
 
