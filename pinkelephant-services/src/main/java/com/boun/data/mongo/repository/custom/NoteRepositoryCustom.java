@@ -7,5 +7,7 @@ import java.util.List;
 public interface NoteRepositoryCustom {
 
 	List<Note> findNotes(String groupId);
+	
+	List<Note> findNotesByMeeting(String meetingId);
 
 }

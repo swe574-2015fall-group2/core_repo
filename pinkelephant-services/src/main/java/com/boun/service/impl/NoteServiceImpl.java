@@ -173,4 +173,21 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 
 		return response;
 	}
+	
+	public ListNoteResponse queryNotesOfMeeting(BasicQueryRequest request) {
+
+		validate(request);
+
+		Meeting meeting = meetingService.findById(request.getId());
+
+		ListNoteResponse response = new ListNoteResponse();
+
+		List<Note> noteList = noteRepository.findNotesByMeeting(meeting.getId());
+
+		for (Note note : noteList) {
+			response.addNote(note);
+		}
+
+		return response;
+	}
 }

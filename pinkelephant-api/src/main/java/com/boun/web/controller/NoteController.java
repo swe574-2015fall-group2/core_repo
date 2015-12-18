@@ -115,4 +115,23 @@ public class NoteController {
 			}
 		}
 	}
+	
+	@ApiOperation(value = "Query Notes of a Meeting")
+	@RequestMapping(value = "queryByMeeting", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody
+	ListNoteResponse queryNoteByMeeting(@RequestBody BasicQueryRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("queryNoteByMeeting request received, request->" + request.toString());
+			}
+			return noteService.queryNotesOfMeeting(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("queryNoteByMeeting operation finished");
+			}
+		}
+	}
 }

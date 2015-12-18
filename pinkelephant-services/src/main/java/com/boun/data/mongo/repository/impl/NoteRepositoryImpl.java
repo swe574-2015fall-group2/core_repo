@@ -26,4 +26,15 @@ public class NoteRepositoryImpl implements NoteRepositoryCustom {
 
 		return noteList;
 	}
+	
+	public List<Note> findNotesByMeeting(String meetingId) {
+
+		Query query = new Query();
+		query.addCriteria(Criteria.where("meeting.$id").is(new ObjectId(meetingId)));
+		query.with(new Sort(Sort.Direction.DESC, "isPinned"));
+
+		List<Note> noteList = mongoTemplate.find(query, Note.class);
+
+		return noteList;
+	}
 }

@@ -23,4 +23,6 @@ public interface NoteService {
 
     ListNoteResponse queryNotesOfGroup(BasicQueryRequest request);
     
+    ListNoteResponse queryNotesOfMeeting(BasicQueryRequest request);
+    
 }
