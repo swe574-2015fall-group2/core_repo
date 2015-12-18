@@ -106,9 +106,9 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 				}
 			}
 			if(current == null){
-				response.addData(result.getLabel(), null);	
+				response.addData(result.getLabel(), null, result.getDescription());	
 			}else{
-				response.addData(result.getLabel(), current.getLabel());
+				response.addData(result.getLabel(), current.getLabel(), result.getDescription());
 			}
 			
 		}

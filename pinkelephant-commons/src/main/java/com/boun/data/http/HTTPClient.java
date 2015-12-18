@@ -39,15 +39,15 @@ public class HTTPClient {
 			return null;
 		}
 
+		BufferedReader rd = null;
+		HttpGet request = new HttpGet(url+label);
 		try{
-			HttpGet request = new HttpGet(url+label);
 			HttpResponse response = client.execute(request);
-
 			if(response.getStatusLine().getStatusCode() != 200){
 				return null;
 			}
 			
-			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+			rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
 			StringBuffer result = new StringBuffer();
 			String line = "";
@@ -61,7 +61,22 @@ public class HTTPClient {
 			
 		}catch(Throwable e){
 			e.printStackTrace();
+		}finally{
+			cleanup(rd, request);
 		}
 		return null;
+	}
+	
+	private void cleanup(BufferedReader rd, HttpGet request){
+		
+		try{
+			if(rd != null){
+				rd.close();
+			}
+			request.releaseConnection();			
+		}catch(Throwable e){
+			rd = null;
+			request = null;
+		}
 	}
 }
