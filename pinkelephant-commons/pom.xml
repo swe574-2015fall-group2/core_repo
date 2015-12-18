@@ -117,10 +117,6 @@
 	        <configuration>
 	          <source>${java.version}</source>
 	          <target>${java.version}</target>
-	          <includes>
-		            <include>src/main/java/*.java</include>
-		            <include>gensrc/*.java</include>
-		        </includes>
 	        </configuration>
 	      </plugin>
 		</plugins>
