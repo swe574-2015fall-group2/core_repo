@@ -5,10 +5,13 @@ import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @EqualsAndHashCode(callSuper=false)
 public class UpdateNoteRequest extends BaseRequest{
 
+	@NotNull
 	private String id;
 
 	private String title;

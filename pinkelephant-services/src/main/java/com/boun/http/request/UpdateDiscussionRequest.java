@@ -1,5 +1,7 @@
 package com.boun.http.request;
 
+import javax.validation.constraints.NotNull;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -7,6 +9,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class UpdateDiscussionRequest extends CreateDiscussionRequest{
 
+	@NotNull
 	private String discussionId;
 	
 }

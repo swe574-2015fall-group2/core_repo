@@ -22,7 +22,7 @@ public abstract class PinkElephantService {
 
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected void validate(Object request) throws PinkElephantValidationException {
+    protected void validateFields(Object request) throws PinkElephantValidationException {
         Set<? extends ConstraintViolation<?>> constraintViolations = validator.validate(request);
         if (constraintViolations.size() > 0) {
             throw new PinkElephantValidationException(constraintViolations);
@@ -37,6 +37,8 @@ public abstract class PinkElephantService {
     	if (!PinkElephantSession.getInstance().validateToken(request.getAuthToken())) {
     		throw new PinkElephantRuntimeException(400, ErrorCode.OPERATION_NOT_ALLOWED, "");
 		}
+    	
+    	validateFields(request);
     }
 
     protected void validate(String authToken) throws PinkElephantRuntimeException{
