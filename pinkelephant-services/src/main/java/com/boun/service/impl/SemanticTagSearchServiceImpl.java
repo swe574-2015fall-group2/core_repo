@@ -52,7 +52,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private static final String DBPEDIA_URL = "http://lookup.dbpedia.org/api/search.asmx/PrefixSearch?MaxHits=10&QueryString=";
+	private static final String DBPEDIA_URL = "http://lookup.dbpedia.org/api/search.asmx/PrefixSearch?MaxHits=20&QueryString=";
 	
 	@Autowired
 	private TagService tagService;

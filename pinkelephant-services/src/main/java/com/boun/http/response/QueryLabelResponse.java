@@ -31,7 +31,7 @@ public class QueryLabelResponse extends ActionResponse{
 		private DataObj(String label, String clazz, String description){
 			this.label = label;
 			this.clazz = clazz;
-			this.description = description;
+//			this.description = description; 
 		}
 	}
 }
