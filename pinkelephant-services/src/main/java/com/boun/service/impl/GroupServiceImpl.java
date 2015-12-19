@@ -209,7 +209,7 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 
 		// 56699c72d4c652c6f9e2ab47 local
 		// 5669d8f6e4b0e04197562c31 remote
-		roles.add("5674abf8a1d279a0c6c2dc0b");  // buraya static bir roleID'si eklenecek,
+		roles.add("5669d8f6e4b0e04197562c31");  // buraya static bir roleID'si eklenecek,
 
 		SetRolesRequest setRolesRequest = new SetRolesRequest();
 		setRolesRequest.setGroupId(group.getId());
