@@ -46,6 +46,7 @@ public enum ErrorCode {
 	PERMISSION_NOT_FOUND("You don't have permission for : ", "180"),
 	
 	TAG_CLASS_NOT_FOUND("Tag.class information does not recognized", "190"),
+	TAG_NOT_FOUND("No tag found", "191"),
 
 	INTERNAL_SERVER_ERROR("Internal Server Error", "900")
 	;

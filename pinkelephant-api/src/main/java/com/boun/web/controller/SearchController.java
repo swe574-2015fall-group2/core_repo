@@ -62,4 +62,21 @@ public class SearchController {
     		}
     	}
     }
+    
+    @ApiOperation(value="Query Search String")
+    @RequestMapping(value="querySearchString", method = RequestMethod.POST)
+    @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
+    public @ResponseBody QueryLabelResponse querySearchString(@RequestBody BasicSearchRequest request) {
+
+    	try{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("querySearchString request received, request->" + request.toString());
+    		}
+    		return semanticSearchService.querySearchString(request);
+    	}finally{
+    		if(logger.isDebugEnabled()){
+    			logger.debug("querySearchString operation finished");
+    		}
+    	}
+    }
 }

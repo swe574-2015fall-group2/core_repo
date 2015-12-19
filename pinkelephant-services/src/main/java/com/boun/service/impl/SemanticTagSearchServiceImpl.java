@@ -72,6 +72,31 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 	@Autowired
 	private MeetingService meetingService;
 	
+	@Override
+	public QueryLabelResponse querySearchString(BasicSearchRequest request) {
+		
+		validate(request);
+		
+		List<TagData> tagDataList = TagCache.getInstance(tagService).getAllTags();
+		if(tagDataList == null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.TAG_NOT_FOUND, "");
+		}
+		
+		QueryLabelResponse response = new QueryLabelResponse(request.getQueryString());
+		
+		for (TagData tagData : tagDataList) {
+			float result = getSimilarityIndex(tagData.getTag(), request.getQueryString());
+			
+			if(result == 0){
+				continue;
+			}
+			
+			response.addData(tagData.getTag(), tagData.getClazz(), null);
+		}
+		
+		return response;
+	}
+	
 	public QueryLabelResponse queryLabel(BasicSearchRequest request){
 		
 		validate(request);
