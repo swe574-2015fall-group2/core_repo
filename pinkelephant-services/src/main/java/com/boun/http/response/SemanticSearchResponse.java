@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.boun.data.mongo.model.TaggedEntity;
+import com.boun.http.request.TagData;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -18,7 +19,7 @@ public class SemanticSearchResponse {
 	
 	private List<SearchDetail> resultList;
 	
-	public void addDetail(TaggedEntity.EntityType type, String id, String description, String tag, float priority){
+	public void addDetail(TaggedEntity.EntityType type, String id, String description, TagData tag, float priority){
 		if(resultList == null){
 			resultList = new ArrayList<SearchDetail>();
 		}
@@ -39,11 +40,11 @@ public class SemanticSearchResponse {
 		
 		private String id;
 		private String description;
-		private String tag;
+		private TagData tag;
 		
 		private float priority;
 		
-		public SearchDetail(TaggedEntity.EntityType type, String id, String description, String tag, float priority){
+		public SearchDetail(TaggedEntity.EntityType type, String id, String description, TagData tag, float priority){
 			this.type = type;
 			this.id = id;
 			this.description = description;

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.GroupCount;
+import com.boun.http.request.TagData;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -17,7 +18,7 @@ public class ListGroupResponse extends ActionResponse{
 
 	private List<GroupObj> groupList;
 	
-	public void addGroup(String id, String name, String description, Boolean isJoined, List<String> tagList){
+	public void addGroup(String id, String name, String description, Boolean isJoined, List<TagData> tagList){
 		if(groupList == null){
 			groupList = new ArrayList<GroupObj>();
 		}
@@ -32,7 +33,7 @@ public class ListGroupResponse extends ActionResponse{
 		groupList.add(new GroupObj(group.getId(), group.getName(), group.getDescription(), isJoined, group.getTagList(), groupCount.getTotal()));
 	}
 	
-	public void addGroup(String id, String name, String description, Boolean isJoined, List<String> tagList, long total){
+	public void addGroup(String id, String name, String description, Boolean isJoined, List<TagData> tagList, long total){
 		if(groupList == null){
 			groupList = new ArrayList<GroupObj>();
 		}
@@ -45,10 +46,10 @@ public class ListGroupResponse extends ActionResponse{
 		private String name;
 		private String description;
 		private Boolean joined;
-		private List<String> tagList;
+		private List<TagData> tagList;
 		private Long total;
 
-		public GroupObj(String id, String name, String description, Boolean isJoined, List<String> tagList, Long total){
+		public GroupObj(String id, String name, String description, Boolean isJoined, List<TagData> tagList, Long total){
 			this.id = id;
 			this.name = name;
 			this.description = description;

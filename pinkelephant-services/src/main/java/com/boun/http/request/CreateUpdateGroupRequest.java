@@ -13,5 +13,5 @@ public class CreateUpdateGroupRequest extends BaseRequest{
 	private String name;
 	private String description;
 	
-	private List<String> tagList;
+	private List<TagData> tagList;
 }

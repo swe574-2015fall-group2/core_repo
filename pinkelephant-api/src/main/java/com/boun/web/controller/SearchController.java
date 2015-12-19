@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boun.http.request.BasicSearchRequest;
+import com.boun.http.request.TagSearchRequest;
 import com.boun.http.response.QueryLabelResponse;
 import com.boun.http.response.SemanticSearchResponse;
 import com.boun.service.SemanticTagSearchService;
@@ -31,7 +32,7 @@ public class SearchController {
     @ApiOperation(value="Semantic Search")
     @RequestMapping(value="search", method = RequestMethod.POST)
     @ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
-    public @ResponseBody SemanticSearchResponse search(@RequestBody BasicSearchRequest request) {
+    public @ResponseBody SemanticSearchResponse search(@RequestBody TagSearchRequest request) {
 
     	try{
     		if(logger.isDebugEnabled()){

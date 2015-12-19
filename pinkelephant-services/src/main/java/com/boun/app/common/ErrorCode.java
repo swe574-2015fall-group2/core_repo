@@ -43,7 +43,9 @@ public enum ErrorCode {
 	
 	MESSAGE_NOT_FOUND("Message not found", "170"),
 
-	PERMISSION_NOT_FOUND("You don't have permission for : ", "170"),
+	PERMISSION_NOT_FOUND("You don't have permission for : ", "180"),
+	
+	TAG_CLASS_NOT_FOUND("Tag.class information does not recognized", "190"),
 
 	INTERNAL_SERVER_ERROR("Internal Server Error", "900")
 	;

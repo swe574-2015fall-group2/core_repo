@@ -21,7 +21,7 @@ public class UpdateNoteRequest extends BaseRequest{
 
 	private String meetingId;
 
-	private List<String> tagList;
+	private List<TagData> tagList;
 
 	private Boolean isPinned;
 }

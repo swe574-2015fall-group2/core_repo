@@ -15,6 +15,7 @@ import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.model.TaggedEntity.EntityType;
 import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.GroupMemberRepository;
+import com.boun.http.request.TagData;
 import com.boun.service.TagService;
 
 import lombok.Data;
@@ -30,7 +31,7 @@ public class RecommendationEngine implements RecommendationService{
 	
 	public Collection<RecommendationData> findRecommendedGroups(User user, List<Group> groupList){
 		
-		List<String> tagList = new ArrayList<String>();
+		List<TagData> tagList = new ArrayList<TagData>();
 		
 		for (Group group : groupList) {
 			
@@ -38,7 +39,7 @@ public class RecommendationEngine implements RecommendationService{
 				continue;
 			}
 			
-			for (String tag : group.getTagList()) {
+			for (TagData tag : group.getTagList()) {
 				if(!tagList.contains(tag)){
 					tagList.add(tag);
 				}
@@ -47,8 +48,8 @@ public class RecommendationEngine implements RecommendationService{
 		
 		Hashtable<String, RecommendationData> recommendedGroupList = new Hashtable<String, RecommendationData>();
 		int depth = 5;
-		for (String tag : tagList) {
-			walkThrough(tag, null, recommendedGroupList, depth, groupList, new ArrayList<String>());
+		for (TagData tag : tagList) {
+			walkThrough(tag, null, recommendedGroupList, depth, groupList, new ArrayList<TagData>());
 		}
 		
 		if(recommendedGroupList.size() == 0){
@@ -60,7 +61,7 @@ public class RecommendationEngine implements RecommendationService{
 		return filterRecommendationCollection(recommendedGroupList.values());
 	}
 	
-	private void walkThrough(String tag, Group group, Hashtable<String, RecommendationData> recommendedGroupTable, int depth, List<Group> groupsOfUser, List<String> processedTags){
+	private void walkThrough(TagData tag, Group group, Hashtable<String, RecommendationData> recommendedGroupTable, int depth, List<Group> groupsOfUser, List<TagData> processedTags){
 		
 		if(processedTags.contains(tag)){
 			return;
@@ -96,21 +97,21 @@ public class RecommendationEngine implements RecommendationService{
 				continue;
 			}
 			
-			for (String t : filterTags(processedTags, g.getTagList())) {
+			for (TagData t : filterTags(processedTags, g.getTagList())) {
 				walkThrough(t, g, recommendedGroupTable, depth, groupsOfUser, processedTags);
 			}
 		}
 	}
 	
-	private List<String> filterTags(List<String> processedTags, List<String> tags){
+	private List<TagData> filterTags(List<TagData> processedTags, List<TagData> tags){
 		
-		List<String> resultList = new ArrayList<String>();
+		List<TagData> resultList = new ArrayList<TagData>();
 		
-		for (String t1 : tags) {
+		for (TagData t1 : tags) {
 			
 			boolean found = false;
-			for (String t2 : processedTags) {
-				if(t1.equalsIgnoreCase(t2)){
+			for (TagData t2 : processedTags) {
+				if(t1.getTag().equalsIgnoreCase(t2.getTag())){
 					found = true;
 					break;
 				}

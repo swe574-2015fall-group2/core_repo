@@ -5,10 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class TagRequest extends BaseRequest{
+public class TagSearchRequest extends BaseRequest{
 
-	private String entityId;
-	private TagData tag;
-	private boolean add;
-	
+	private TagData tagData;
 }

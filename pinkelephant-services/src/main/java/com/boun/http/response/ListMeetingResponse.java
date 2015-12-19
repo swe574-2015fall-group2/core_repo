@@ -12,6 +12,7 @@ import com.boun.data.common.enums.MeetingStatus;
 import com.boun.data.common.enums.MeetingType;
 import com.boun.data.mongo.model.Meeting;
 import com.boun.data.mongo.model.User;
+import com.boun.http.request.TagData;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -60,7 +61,7 @@ public class ListMeetingResponse extends ActionResponse{
 		private Set<String> rejectedUserSet;
 		private Set<String> tentativeUserSet;
 		
-		private List<String> tagList;
+		private List<TagData> tagList;
 		
 		public MeetingObj(Meeting meeting){
 			this.id = meeting.getId();

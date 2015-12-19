@@ -30,6 +30,8 @@ import com.boun.data.http.HTTPClient;
 import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.model.TaggedEntity.EntityType;
 import com.boun.http.request.BasicSearchRequest;
+import com.boun.http.request.TagData;
+import com.boun.http.request.TagSearchRequest;
 import com.boun.http.response.QueryLabelResponse;
 import com.boun.http.response.SemanticSearchResponse;
 import com.boun.service.DiscussionService;
@@ -117,22 +119,22 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 	}
 	
 	@Override
-	public SemanticSearchResponse search(BasicSearchRequest request) {
+	public SemanticSearchResponse search(TagSearchRequest request) {
 
 		validate(request);
 		
 		SemanticSearchResponse response = new SemanticSearchResponse();
 		
-		String queryString = request.getQueryString();
-		if(queryString == null || "".equalsIgnoreCase(queryString)){
+		TagData tagData = request.getTagData();
+		if(tagData == null){
 			throw new PinkElephantRuntimeException(400, ErrorCode.INVALID_INPUT, "Query string cannot be null", "");
 		}
 
 		List<SemanticSearchIndex> searchIndex = new ArrayList<SemanticSearchIndex>();
 		
-		List<String> tagList = TagCache.getInstance(tagService).getAllTags();
-		for (String tag : tagList) {
-			float similarityIndex = getSimilarityIndex(tag, request.getQueryString());
+		List<TagData> tagList = TagCache.getInstance(tagService).getAllTags();
+		for (TagData tag : tagList) {
+			float similarityIndex = getSimilarityIndex(tag, tagData);
 			
 			if(similarityIndex == 0){
 				continue;
@@ -158,7 +160,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		return response;
 	}
 	
-	private void resolveTagRelations(String tag, List<SemanticSearchIndex> searchIndex){
+	private void resolveTagRelations(TagData tag, List<SemanticSearchIndex> searchIndex){
 		List<TaggedEntityMetaData> tagEntityIdList = TagCache.getInstance(tagService).getTag(tag);
 		if(tagEntityIdList == null || tagEntityIdList.isEmpty()){
 			return;
@@ -171,7 +173,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 				continue;
 			}
 			
-			for (String t : taggedEntity.getTagList()) {
+			for (TagData t : taggedEntity.getTagList()) {
 				
 				SemanticSearchIndex idx = new SemanticSearchIndex(t, 0); // Set similarity index to zero, because we have found this tag through relations 
 				if(searchIndex.contains(idx)){
@@ -212,7 +214,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		}
 		return null;
 	}
-	private void addResultList(SemanticSearchResponse response, TaggedEntity taggedEntity, String tag, float priority){
+	private void addResultList(SemanticSearchResponse response, TaggedEntity taggedEntity, TagData tag, float priority){
 		if(taggedEntity == null){
 			return;
 		}
@@ -220,7 +222,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		response.addDetail(taggedEntity.getEntityType(), taggedEntity.getId(), taggedEntity.getDescription(), tag, priority);	
 	}
 	
-	private float getSimilarityIndex(String str1, String str2){
+	private float getSimilarityIndex(TagData str1, TagData str2){
 		
 		Set<String> commonWords = Sets.newHashSet("it", "is", "a", "and", "the", "are, i");
 		
@@ -233,15 +235,15 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 				.tokenize(Tokenizers.qGram(2))
 				.build();
 		
-		return metric.compare(str1, str2);
+		return metric.compare(str1.getTag(), str2.getTag());
 	}
 	
 	@Data
 	private static class SemanticSearchIndex{
-		private String tag;
+		private TagData tag;
 		private float similarityIndex;
 		
-		private SemanticSearchIndex(String tag, float similarityIndex){
+		private SemanticSearchIndex(TagData tag, float similarityIndex){
 			this.tag = tag;
 			this.similarityIndex = similarityIndex;
 		}
@@ -252,7 +254,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 			}
 			SemanticSearchIndex idx = (SemanticSearchIndex)o;
 			
-			return (idx.getTag().equalsIgnoreCase(this.getTag()));
+			return (idx.getTag().getTag().equalsIgnoreCase(this.getTag().getTag()));
 		}
 		
 		@Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.boun.http.request.TagData;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -16,7 +17,7 @@ public class ListDiscussionResponse extends ActionResponse{
 
 	private List<DiscussionObj> discussionList;
 	
-	public void addDiscussion(String id, String name, String description, String creatorId, Date creationTime, List<String> tagList, Boolean isPinned){
+	public void addDiscussion(String id, String name, String description, String creatorId, Date creationTime, List<TagData> tagList, Boolean isPinned){
 		if(discussionList == null){
 			discussionList = new ArrayList<DiscussionObj>();
 		}
@@ -31,9 +32,9 @@ public class ListDiscussionResponse extends ActionResponse{
 		private String creatorId;
 		private Date creationTime;
 		private Boolean isPinned;
-		List<String> tagList;
+		private List<TagData> tagList;
 		
-		public DiscussionObj(String id, String name, String description, String creatorId, Date creationTime, List<String> tagList, Boolean isPinned){
+		public DiscussionObj(String id, String name, String description, String creatorId, Date creationTime, List<TagData> tagList, Boolean isPinned){
 			this.id = id;
 			this.name = name;
 			this.description = description;

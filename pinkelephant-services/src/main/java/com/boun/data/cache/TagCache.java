@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.boun.data.mongo.model.Tag;
 import com.boun.data.mongo.model.TaggedEntity;
+import com.boun.http.request.TagData;
 import com.boun.service.TagService;
 
 import lombok.Data;
@@ -14,7 +15,7 @@ public class TagCache {
 
 	private static TagCache instance = null;
 	
-	private Hashtable<String, List<TaggedEntityMetaData>> tagTable = new Hashtable<String, List<TaggedEntityMetaData>>();
+	private Hashtable<TagData, List<TaggedEntityMetaData>> tagTable = new Hashtable<TagData, List<TaggedEntityMetaData>>();
 	
 	private TagCache(){
 	}
@@ -43,20 +44,20 @@ public class TagCache {
 		}
 	}
 	
-	public List<TaggedEntityMetaData> getTag(String tag){
+	public List<TaggedEntityMetaData> getTag(TagData tag){
 		return tagTable.get(tag);
 	}
 	
-	public List<String> getAllTags(){
+	public List<TagData> getAllTags(){
 		
 		if(tagTable.isEmpty()){
 			return null;
 		}
 		
-		return new ArrayList<>(tagTable.keySet());
+		return new ArrayList<TagData>(tagTable.keySet());
 	}
 
-	public void updateTag(String tag, List<TaggedEntity> tagList){
+	public void updateTag(TagData tag, List<TaggedEntity> tagList){
 		List<TaggedEntityMetaData> list = new ArrayList<TaggedEntityMetaData>();
 		for (TaggedEntity taggedEntity : tagList) {
 			list.add(new TaggedEntityMetaData(taggedEntity.getId(), taggedEntity.getEntityType()));

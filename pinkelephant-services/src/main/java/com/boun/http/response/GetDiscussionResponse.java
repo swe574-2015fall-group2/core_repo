@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.boun.http.request.TagData;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
@@ -21,7 +22,7 @@ public class GetDiscussionResponse extends ActionResponse{
 	private String groupId;
 	
 	private List<Comment> commentList;
-	private List<String> tagList;
+	private List<TagData> tagList;
 	
 	public void addComment(String id, String comment, Date creationTime, String creatorId){
 		if(commentList == null){

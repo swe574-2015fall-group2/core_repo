@@ -5,6 +5,7 @@ import java.util.List;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.http.request.BaseRequest;
+import com.boun.http.request.TagData;
 import com.boun.http.request.TagRequest;
 import com.boun.http.response.ActionResponse;
 
@@ -42,18 +43,18 @@ public abstract class PinkElephantTaggedService extends PinkElephantService{
 		return response;
 	}
 	
-	public void updateTag(TaggedEntity taggedEntity, List<String> newList) {
+	public void updateTag(TaggedEntity taggedEntity, List<TagData> newList) {
 		
-		List<String> addedTagList = taggedEntity.addTagList(newList);
+		List<TagData> addedTagList = taggedEntity.addTagList(newList);
 		if(addedTagList != null && !addedTagList.isEmpty()){
-			for (String tag : addedTagList) {
+			for (TagData tag : addedTagList) {
 				getTagService().tag(tag, taggedEntity, true);
 			}	
 		}
 
-		List<String> removedTagList = taggedEntity.removeTagList(newList);
+		List<TagData> removedTagList = taggedEntity.removeTagList(newList);
 		if(removedTagList != null && !removedTagList.isEmpty()){
-			for (String tag : removedTagList) {
+			for (TagData tag : removedTagList) {
 				getTagService().tag(tag, taggedEntity, false);
 			}	
 		}

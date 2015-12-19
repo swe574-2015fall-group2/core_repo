@@ -13,5 +13,5 @@ public class CreateDiscussionRequest extends BaseRequest{
 	private String name;
 	private String description;
 	private Boolean isPinned;
-	private List<String> tagList;
+	private List<TagData> tagList;
 }

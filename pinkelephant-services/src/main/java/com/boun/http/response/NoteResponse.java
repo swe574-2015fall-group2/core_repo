@@ -1,5 +1,6 @@
 package com.boun.http.response;
 
+import com.boun.http.request.TagData;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,7 +27,7 @@ public class NoteResponse {
 
 	// creator
 
-	private List<String> tagList;
+	private List<TagData> tagList;
 }
 
 

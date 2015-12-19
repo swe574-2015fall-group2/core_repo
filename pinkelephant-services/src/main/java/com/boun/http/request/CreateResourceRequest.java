@@ -13,5 +13,5 @@ public class CreateResourceRequest extends BaseRequest{
 	private String link;
 	private String groupId;
 	
-	private List<String> tagList;
+	private List<TagData> tagList;
 }

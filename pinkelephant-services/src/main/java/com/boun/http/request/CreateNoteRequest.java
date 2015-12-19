@@ -16,5 +16,5 @@ public class CreateNoteRequest extends BaseRequest{
 	private String meetingId;
 	private Boolean isPinned;
 
-	private List<String> tagList;
+	private List<TagData> tagList;
 }

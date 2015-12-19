@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.boun.http.request.TagData;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -20,7 +21,9 @@ import lombok.EqualsAndHashCode;
 public class Tag{
 
 	@Id
-	private String tag;
+	private String id;
+	
+	private TagData tag;
 	
 	@DBRef
 	private List<TaggedEntity> referenceSet;

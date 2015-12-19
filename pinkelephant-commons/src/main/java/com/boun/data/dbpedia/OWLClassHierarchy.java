@@ -23,6 +23,8 @@ public class OWLClassHierarchy {
 	
 	private Hashtable<String, Node> hierarchy = new Hashtable<String, Node>();
 	
+	private List<String> allClassList = new ArrayList<String>();
+	
 	private OWLClassHierarchy() {
 		try{
 			initialize();
@@ -37,6 +39,10 @@ public class OWLClassHierarchy {
 	
 	public Hashtable<String, Node> getHierarchy() {
 		return hierarchy;
+	}
+	
+	public List<String> getAllClassList() {
+		return allClassList;
 	}
 	
 	@Data
@@ -100,6 +106,8 @@ public class OWLClassHierarchy {
             
             processParent(parentClazz, parentClazzUri, clazz, clazzUri);
             processChild(parentClazz, parentClazzUri, clazz, clazzUri);
+            
+            allClassList.add(clazz);
         }
 	}
 	

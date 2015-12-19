@@ -1,13 +1,20 @@
 package com.boun.http.response;
 
-import com.boun.data.mongo.model.Meeting;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.boun.data.mongo.model.Note;
 import com.boun.data.mongo.model.User;
+import com.boun.http.request.TagData;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.*;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
@@ -39,7 +46,7 @@ public class ListNoteResponse {
 
 		private Boolean isPinned;
 		
-		private List<String> tagList;
+		private List<TagData> tagList;
 		
 		public NoteObj(Note note) {
 			this.id = note.getId();
