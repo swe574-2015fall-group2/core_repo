@@ -3,6 +3,7 @@ package com.boun.data.http;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.net.URLEncoder;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -38,10 +39,13 @@ public class HTTPClient {
 		if(label == null || label.equalsIgnoreCase("")){
 			return null;
 		}
-
+		
 		BufferedReader rd = null;
-		HttpGet request = new HttpGet(url+label);
+		HttpGet request = null;
 		try{
+			label = URLEncoder.encode(label, "UTF-8");
+			request = new HttpGet(url+label);
+			
 			HttpResponse response = client.execute(request);
 			if(response.getStatusLine().getStatusCode() != 200){
 				return null;
@@ -73,7 +77,9 @@ public class HTTPClient {
 			if(rd != null){
 				rd.close();
 			}
-			request.releaseConnection();			
+			if(request != null){
+				request.releaseConnection();				
+			}
 		}catch(Throwable e){
 			rd = null;
 			request = null;
