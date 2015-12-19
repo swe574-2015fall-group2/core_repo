@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper=false)
-public class TagSearchRequest extends BaseRequest{
+public class TagSearchRequest extends BasicSearchRequest{
 
 	private TagData tagData;
 }
