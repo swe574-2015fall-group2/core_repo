@@ -76,7 +76,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		
 		validate(request);
 		
-		QueryLabelResponse response = new QueryLabelResponse();
+		QueryLabelResponse response = new QueryLabelResponse(request.getQueryString());
 		
 		ArrayOfResult arrayOfResult = HTTPClient.getInstance().get(DBPEDIA_URL, request.getQueryString());
 		
@@ -134,7 +134,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		
 		List<TagData> tagList = TagCache.getInstance(tagService).getAllTags();
 		for (TagData tag : tagList) {
-			float similarityIndex = getSimilarityIndex(tag, tagData);
+			float similarityIndex = getSimilarityIndex(tag.getTag(), tagData.getTag());
 			
 			if(similarityIndex == 0){
 				continue;
@@ -222,7 +222,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		response.addDetail(taggedEntity.getEntityType(), taggedEntity.getId(), taggedEntity.getDescription(), tag, priority);	
 	}
 	
-	private float getSimilarityIndex(TagData str1, TagData str2){
+	public static float getSimilarityIndex(String str1, String str2){
 		
 		Set<String> commonWords = Sets.newHashSet("it", "is", "a", "and", "the", "are, i");
 		
@@ -235,7 +235,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 				.tokenize(Tokenizers.qGram(2))
 				.build();
 		
-		return metric.compare(str1.getTag(), str2.getTag());
+		return metric.compare(str1, str2);
 	}
 	
 	@Data
