@@ -53,13 +53,13 @@ public class SemanticSearchResponse {
 		private String description;
 		private TagData tag;
 		
-		private float priority;
+		private float rank;
 		
-		public SearchDetail(TaggedEntity.EntityType type, String id, String description, TagData tag, float priority){
+		public SearchDetail(TaggedEntity.EntityType type, String id, String description, TagData tag, float rank){
 			this.type = type;
 			this.id = id;
 			this.description = description;
-			this.priority = priority;
+			this.rank = rank;
 			this.tag = tag;
 		}
 		
@@ -86,7 +86,7 @@ public class SemanticSearchResponse {
 	    @Override
 	    public int compare(SearchDetail o1, SearchDetail o2) {
 	    	
-	    	return (o1.getPriority() >= o2.getPriority()) ? -1 : 1;
+	    	return (o1.getRank() >= o2.getRank()) ? -1 : 1;
 	    }
 	}
 }
