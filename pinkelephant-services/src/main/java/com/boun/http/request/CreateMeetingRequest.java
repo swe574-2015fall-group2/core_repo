@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.validation.constraints.NotNull;
 
 import com.boun.data.common.enums.MeetingType;
+import com.boun.data.mongo.model.ContactDetails;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -44,6 +45,8 @@ public class CreateMeetingRequest extends BaseRequest{
 	
 	@NotNull
 	private String groupId;
+	
+	private ContactDetails contactDetails;
 	
 	private List<String> invitedUserIdList;
 	private List<TagData> tagList;

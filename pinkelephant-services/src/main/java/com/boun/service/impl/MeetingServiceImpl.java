@@ -352,7 +352,8 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 			}
 		}
 		meeting.setInvitedUserSet(invitedList);
-
+		meeting.setContactDetails(request.getContactDetails());
+		
 		return meeting;
 	}
 

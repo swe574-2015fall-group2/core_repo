@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.boun.data.common.enums.MeetingStatus;
 import com.boun.data.common.enums.MeetingType;
+import com.boun.data.mongo.model.ContactDetails;
 import com.boun.data.mongo.model.Meeting;
 import com.boun.data.mongo.model.User;
 import com.boun.http.request.TagData;
@@ -55,6 +56,7 @@ public class ListMeetingResponse extends ActionResponse{
 		private MeetingStatus status;
 		private MeetingType type;
 		private Boolean isPinned;
+		private ContactDetails contactDetails;
 		
 		private Set<String> invitedUserSet;
 		private Set<String> attandedUserSet;
@@ -85,6 +87,7 @@ public class ListMeetingResponse extends ActionResponse{
 			this.groupId = meeting.getGroup().getId();
 			this.tagList = meeting.getTagList();
 			this.isPinned = meeting.getIsPinned();
+			this.contactDetails = meeting.getContactDetails();
 		}
 		
 		private Set<String> getUsernameSet(Set<User> userSet){

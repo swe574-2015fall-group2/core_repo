@@ -34,6 +34,8 @@ public class Meeting extends TaggedEntity{
 
 	private MeetingStatus status;
 	private MeetingType type;
+	
+	private ContactDetails contactDetails;
 
 	public Meeting(){
 		super(EntityType.MEETING);
