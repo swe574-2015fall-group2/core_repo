@@ -113,7 +113,7 @@ public class OWLClassHierarchy {
 	
 	private void processParent(String parentClazz, String parentClazzUri, String childClazz, String clazzUri){
 		
-		 Node parentNode = hierarchy.get(parentClazzUri);
+		 Node parentNode = hierarchy.get(parentClazz);
          if(parentNode == null){
          	parentNode = new Node();
          	parentNode.setLabel(parentClazz);
@@ -121,26 +121,30 @@ public class OWLClassHierarchy {
          	parentNode.setParent(new Element(parentClazz, parentClazzUri));
          }
          parentNode.getChildList().add(new Element(childClazz, clazzUri));
-         hierarchy.put(parentClazzUri, parentNode);
+         hierarchy.put(parentClazz, parentNode);
 	}
 	
-	private void processChild(String parentClazz, String parentClazzUri, String childClazz, String clazzUri){
+	private void processChild(String parentClazz, String parentClazzUri, String childClazz, String childClazzUri){
 		
-		Node node = hierarchy.get(clazzUri);
+		Node node = hierarchy.get(childClazz);
         if(node == null){
         	node = new Node();
         	node.setLabel(childClazz);
-        	node.setUri(clazzUri);
+        	node.setUri(childClazzUri);
         	node.setParent(new Element(parentClazz, parentClazzUri));
         }
         node.setParent(new Element(parentClazz, parentClazzUri));
-        hierarchy.put(clazzUri, node);
+        hierarchy.put(childClazz, node);
 	}
 	
-	public boolean isChild(String uri1, String uri2){
+	public boolean isChild(String clazz1, String clazz2){
 		
-		Node node1 = getInstance().getHierarchy().get(uri1);
-		Node node2 = getInstance().getHierarchy().get(uri2);
+		Node node1 = getInstance().getHierarchy().get(clazz1);
+		Node node2 = getInstance().getHierarchy().get(clazz2);
+		
+		if(node1 == null || node2 == null){
+			return false;
+		}
 		
 		if(node1.getParent().getLabel().equalsIgnoreCase(node2.getLabel())){
 			return true;
@@ -153,7 +157,7 @@ public class OWLClassHierarchy {
 		}
 		
 		for (Element element : node2.getChildList()) {
-			if(isChild(uri1, element.getUri())){
+			if(isChild(clazz1, element.getLabel())){
 				return true;
 			}
 		}

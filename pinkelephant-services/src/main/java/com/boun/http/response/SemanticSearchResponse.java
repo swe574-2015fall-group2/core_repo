@@ -18,6 +18,7 @@ import lombok.EqualsAndHashCode;
 public class SemanticSearchResponse {
 	
 	private List<SearchDetail> resultList;
+	private List<String> clazzList;
 	
 	public void addDetail(TaggedEntity.EntityType type, String id, String description, TagData tag, float priority){
 		if(resultList == null){
@@ -26,6 +27,16 @@ public class SemanticSearchResponse {
 		SearchDetail detail = new SearchDetail(type, id, description, tag, priority);
 		if(!resultList.contains(detail)){
 			resultList.add(detail);	
+		}
+		
+		if(tag.getClazz() != null){
+			if(clazzList == null){
+				clazzList = new ArrayList<String>();
+			}
+			
+			if(!clazzList.contains(tag.getClazz())){
+				clazzList.add(tag.getClazz());
+			}
 		}
 	}
 	

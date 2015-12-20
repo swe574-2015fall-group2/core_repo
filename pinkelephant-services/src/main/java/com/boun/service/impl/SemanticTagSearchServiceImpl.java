@@ -159,15 +159,42 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		
 		List<TagData> tagList = TagCache.getInstance(tagService).getAllTags();
 		for (TagData tag : tagList) {
-			float similarityIndex = getSimilarityIndex(tag.getTag(), tagData.getTag());
 			
-			if(similarityIndex == 0){
+			if(tagData.getClazz() == null){
+				float similarityIndex = getSimilarityIndex(tag.getTag(), tagData.getTag());
+				
+				if(similarityIndex == 0){
+					continue;
+				}
+				searchIndex.add(new SemanticSearchIndex(tag, similarityIndex));
+				
+				resolveTagRelations(tag, searchIndex);
 				continue;
 			}
-			searchIndex.add(new SemanticSearchIndex(tag, similarityIndex));
 			
-			resolveTagRelations(tag, searchIndex);
+			if(tag.getClazz() != null){
+				//tagData.getClazz() is not null
+				if(tag.getClazz().equalsIgnoreCase(tagData.getClazz())){
+					
+					searchIndex.add(new SemanticSearchIndex(tag, 1));
+					
+				}else if(OWLClassHierarchy.getInstance().isChild(tagData.getClazz(), tag.getClazz()) ||
+						 OWLClassHierarchy.getInstance().isChild(tag.getClazz(), tagData.getClazz())){
+					
+					searchIndex.add(new SemanticSearchIndex(tag, 0.5F));
+					
+				}else{
+					continue;
+				}
+				
+				resolveTagRelations(tag, searchIndex);
+				
+				continue;
+			}
+			
+			//tagData.getClazz() is not null and tag.getClazz() is null //TODO what to do?
 		}
+		
 		Collections.sort(searchIndex, new SemanticSearchIndexSort());
 		
 		for (SemanticSearchIndex index : searchIndex) {
@@ -200,15 +227,45 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 			
 			for (TagData t : taggedEntity.getTagList()) {
 				
+				if(tag.getClazz() != null && t.getClazz() != null){
+					if(!hasRelation(tag, t)){
+						continue;
+					}
+				}
+				
+				if(tag.getClazz() != null){
+					//TODO what if input tag is not null and t.getClass() is null
+					continue;
+				}
+				
 				SemanticSearchIndex idx = new SemanticSearchIndex(t, 0); // Set similarity index to zero, because we have found this tag through relations 
 				if(searchIndex.contains(idx)){
 					continue;
 				}
-				searchIndex.add(idx);
+				searchIndex.add(idx);	
 				
 				resolveTagRelations(t, searchIndex);
 			}
 		}
+	}
+	
+	private boolean hasRelation(TagData tag, TagData tagData){
+		if(tag.getClazz() == null || tagData.getClazz() == null){
+			return false;
+		}
+		
+		if(tag.getClazz().equalsIgnoreCase(tagData.getClazz())){
+			return true;
+		}
+		
+		if(OWLClassHierarchy.getInstance().isChild(tagData.getClazz(), tag.getClazz())){
+			return true;
+		}
+		if(OWLClassHierarchy.getInstance().isChild(tag.getClazz(), tagData.getClazz())){
+			return true;
+		}
+		
+		return false;
 	}
 	
 	private TaggedEntity resolveEntity(TaggedEntityMetaData taggedEntityMetaData){
@@ -285,7 +342,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		@Override
 		public int hashCode() {
 			int code = 7;
-			code = 89 * code * this.getTag().hashCode();
+			code = 89 * code * this.getTag().getTag().hashCode();
 			return code;
 		}
 	}
