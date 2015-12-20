@@ -323,7 +323,7 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		Meeting meeting = new Meeting();
 		
 		meeting.setName(request.getName());
-		meeting.setAgendaSet(meeting.getAgendaSet());
+		meeting.setAgendaSet(request.getAgendaSet());
 		meeting.setDatetime(request.getDatetime());
 		meeting.setStartHour(request.getStartHour());
 		meeting.setEndHour(request.getEndHour());
