@@ -18,25 +18,27 @@ public class GetMessageResponse extends ActionResponse{
 
 	private List<MessageObj> messages;
 	
-	public void addMessageDetails(String receiverId, List<MessageDetails> msgDetails){
+	public void addMessageDetails(String receiverId, String senderId, List<MessageDetails> msgDetails){
 		if(messages == null){
 			messages = new ArrayList<MessageObj>();
 		}
 		
 		Collections.sort(msgDetails, new MessageSort());
-		messages.add(new MessageObj(receiverId, msgDetails));	
+		messages.add(new MessageObj(receiverId, senderId, msgDetails));	
 	}
 	
 	@Data
 	private static class MessageObj{
 		private String receiverId;
+		private String senderId;
 		private List<MessageDetails> messageList;
 
 		private int unreadCount;
 		
-		public MessageObj(String receiverId, List<MessageDetails> messageList){
+		public MessageObj(String receiverId, String senderId, List<MessageDetails> messageList){
 			this.receiverId = receiverId;
 			this.messageList = messageList;
+			this.senderId = senderId;
 			
 			for (MessageDetails messageDetails : messageList) {
 				if(!messageDetails.isRead()){
