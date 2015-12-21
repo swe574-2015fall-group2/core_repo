@@ -133,7 +133,7 @@ public class MessageboxServiceImpl extends PinkElephantService implements Messag
 		
 		GetMessageResponse response = new GetMessageResponse();
 		for (Messagebox mb : messageBoxList) {
-			response.addMessageDetails(mb.getReceiver().getId(), mb.getSender().getId(), mb.getMessages());	
+			response.addMessageDetails(mb.getId(), mb.getReceiver().getId(), mb.getSender().getId(), mb.getMessages());	
 		}
 		
 		return response;
@@ -153,7 +153,7 @@ public class MessageboxServiceImpl extends PinkElephantService implements Messag
 		
 		GetMessageResponse response = new GetMessageResponse();
 		for (Messagebox mb : messageBoxList) {
-			response.addMessageDetails(mb.getReceiver().getId(),mb.getSender().getId(),  mb.getMessages());	
+			response.addMessageDetails(mb.getId(), mb.getReceiver().getId(),mb.getSender().getId(),  mb.getMessages());	
 		}
 		
 		return response;
