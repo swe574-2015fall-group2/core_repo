@@ -12,6 +12,8 @@ import com.boun.data.common.enums.MeetingStatus;
 import com.boun.data.common.enums.MeetingType;
 import com.boun.data.mongo.model.ContactDetails;
 import com.boun.data.mongo.model.Meeting;
+import com.boun.data.mongo.model.EntityRelation;
+import com.boun.data.mongo.model.EntityRelation.RelationType;
 import com.boun.data.mongo.model.User;
 import com.boun.http.request.TagData;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -26,11 +28,11 @@ public class ListMeetingResponse extends ActionResponse{
 
 	private List<MeetingObj> meetingList;
 	
-	public void addMeeting(Meeting meeting){
+	public void addMeeting(Meeting meeting, List<EntityRelation> meetingDiscussionList){
 		if(meetingList == null){
 			meetingList = new ArrayList<MeetingObj>();
 		}
-		meetingList.add(new MeetingObj(meeting));
+		meetingList.add(new MeetingObj(meeting, meetingDiscussionList));
 	}
 	
 	public List<MeetingObj> getMeetingList(){
@@ -63,9 +65,12 @@ public class ListMeetingResponse extends ActionResponse{
 		private Set<String> rejectedUserSet;
 		private Set<String> tentativeUserSet;
 		
+		private Set<String> discussionIdList;
+		private Set<String> resourceIdList;
+		
 		private List<TagData> tagList;
 		
-		public MeetingObj(Meeting meeting){
+		public MeetingObj(Meeting meeting, List<EntityRelation> meetingDiscussionList){
 			this.id = meeting.getId();
 			this.name = meeting.getName();
 			this.description = meeting.getDescription();
@@ -88,6 +93,19 @@ public class ListMeetingResponse extends ActionResponse{
 			this.tagList = meeting.getTagList();
 			this.isPinned = meeting.getIsPinned();
 			this.contactDetails = meeting.getContactDetails();
+			
+			if(meetingDiscussionList != null && !meetingDiscussionList.isEmpty()){
+				this.discussionIdList = new HashSet<String>();
+				this.resourceIdList = new HashSet<String>();
+				for (EntityRelation meetingDiscussion : meetingDiscussionList) {
+					
+					if(meetingDiscussion.getToType() == RelationType.DISCUSSION){
+						this.discussionIdList.add(meetingDiscussion.getEntityTo().getId());	
+					}else if(meetingDiscussion.getToType() == RelationType.RESOURCE){
+						this.resourceIdList.add(meetingDiscussion.getEntityTo().getId());
+					}
+				}	
+			}
 		}
 		
 		private Set<String> getUsernameSet(Set<User> userSet){

@@ -13,6 +13,7 @@ import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicDeleteRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
+import com.boun.http.request.LinkRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
 import com.boun.http.request.MeetingProposalInvitationReplyRequest;
 import com.boun.http.request.TagRequest;
@@ -263,6 +264,78 @@ public class MeetingController {
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("getMyMeetings operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Link a discussion to a meeting")
+	@RequestMapping(value = "linkDiscussion", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse linkDiscussion(@RequestBody LinkRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("linkDiscussion request received, request->" + request.toString());
+			}
+			return meetingService.linkDiscussion(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("linkDiscussion operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Link a resource to a meeting")
+	@RequestMapping(value = "linkResource", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse linkResource(@RequestBody LinkRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("linkResource request received, request->" + request.toString());
+			}
+			return meetingService.linkResource(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("linkResource operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Removes link between meeting and resource")
+	@RequestMapping(value = "removeResourceLink", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse removeResourceLink(@RequestBody LinkRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("removeResourceLink request received, request->" + request.toString());
+			}
+			return meetingService.removeResourceLink(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("removeResourceLink operation finished");
+			}
+		}
+	}
+	
+	@ApiOperation(value = "Removes link between meeting and discussion")
+	@RequestMapping(value = "removeDiscussionLink", method = RequestMethod.POST)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
+			@ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody ActionResponse removeDiscussionLink(@RequestBody LinkRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("removeDiscussionLink request received, request->" + request.toString());
+			}
+			return meetingService.removeDiscussionLink(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("removeDiscussionLink operation finished");
 			}
 		}
 	}

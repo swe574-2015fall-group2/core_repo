@@ -47,6 +47,9 @@ public enum ErrorCode {
 	
 	TAG_CLASS_NOT_FOUND("Tag.class information does not recognized", "190"),
 	TAG_NOT_FOUND("No tag found", "191"),
+	
+	DUPLICATE_MEETING_DISCUSSION("Duplicate meeting discussion record", "200"),
+	MEETING_DISCUSSION_NOT_FOUND("Entity relation not found", "201"),
 
 	INTERNAL_SERVER_ERROR("Internal Server Error", "900")
 	;

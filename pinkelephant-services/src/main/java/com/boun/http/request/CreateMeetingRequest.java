@@ -46,6 +46,9 @@ public class CreateMeetingRequest extends BaseRequest{
 	@NotNull
 	private String groupId;
 	
+	private List<String> discussionIdList;
+	private List<String> resourceIdList;
+	
 	private ContactDetails contactDetails;
 	
 	private List<String> invitedUserIdList;

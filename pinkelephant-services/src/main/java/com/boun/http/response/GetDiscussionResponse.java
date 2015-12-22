@@ -24,6 +24,9 @@ public class GetDiscussionResponse extends ActionResponse{
 	private List<Comment> commentList;
 	private List<TagData> tagList;
 	
+	private List<String> meetingIdList;
+	private List<String> resourceIdList;
+	
 	public void addComment(String id, String comment, Date creationTime, String creatorId){
 		if(commentList == null){
 			commentList = new ArrayList<Comment>();

@@ -22,6 +22,9 @@ public class CreateDiscussionRequest extends BaseRequest{
 	@NotNull
 	private String description;
 	
+	private List<String> meetingIdList;
+	private List<String> resourceIdList;
+	
 	private Boolean isPinned;
 	private List<TagData> tagList;
 }

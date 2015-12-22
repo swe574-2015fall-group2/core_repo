@@ -7,6 +7,7 @@ import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
+import com.boun.http.request.LinkRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
 import com.boun.http.request.TagRequest;
 import com.boun.http.request.UpdateMeetingRequest;
@@ -36,4 +37,12 @@ public interface MeetingService {
 	ListMeetingResponse getMyMeetings(BaseRequest request);
 	
 	List<Meeting> findAllMeetingList();
+	
+	ActionResponse linkDiscussion(LinkRequest request);
+	
+	ActionResponse linkResource(LinkRequest request);
+	
+	ActionResponse removeResourceLink(LinkRequest request);
+	
+	ActionResponse removeDiscussionLink(LinkRequest request);
 }
