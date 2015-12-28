@@ -1,13 +1,21 @@
 package com.boun.data;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.List;
 
 import com.boun.data.dbpedia.OWLClassHierarchy;
 import com.boun.data.dbpedia.OWLClassHierarchy.Element;
 import com.boun.data.dbpedia.OWLClassHierarchy.Node;
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.rdf.model.Alt;
+import com.hp.hpl.jena.rdf.model.Bag;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -17,18 +25,50 @@ import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.DC;
+import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.VCARD;
 
 public class Test {
 
-	public static void main(String args[]) {
+	public static void main(String args[]) throws FileNotFoundException {
 
-		test3();
+		test4();
 
+	}
+	
+	private static void test4() throws FileNotFoundException{
+		
+		String file = "C:/Users/mehmetce/Desktop/test/dbpedia-ontology.n3";
+		
+//		final OntModel dbpedia = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+
+		String os = System.getProperty("os.name");
+		
+		InputStream in = null;
+		if(os.contains("Windows")){
+			in = new FileInputStream(new File(file));	
+		}else{
+			in = new FileInputStream(new File("/swe574/resources/dbpedia_2015-04.owl"));
+		}
+		
+		Model dbpedia  = FileManager.get().loadModel(file, "N3");
+		
+//        dbpedia.read(file, "" );
+        final StmtIterator stmts = dbpedia.listStatements(null, RDFS.subClassOf, (RDFNode) null);
+        while ( stmts.hasNext() ) {
+            final Statement stmt = stmts.next();
+            
+            String clazzUri = stmt.getSubject().getURI();
+            String clazz = stmt.getSubject().getLocalName();
+            String parentClazz = stmt.getObject().asResource().getLocalName();
+            String parentClazzUri = stmt.getObject().asResource().getURI();
+
+            System.out.println(clazz + ":" + clazzUri + ":" + parentClazz + ":" + parentClazzUri);
+        }
 	}
 
 	private static void test3() {
-		String file = "C:/Users/mehmetce/Desktop/test/category-labels_en.ttl";
+		String file = "C:/Users/mehmetce/Downloads/article-categories_en(1).ttl";
 
 		Model model = FileManager.get().loadModel(file, null, "TURTLE");
 
@@ -37,6 +77,11 @@ public class Test {
 			while (iter.hasNext()) {
 				Statement stmt = iter.next();
 
+				Resource r = stmt.getResource();
+				Resource subject = stmt.getSubject();
+				Alt alt = stmt.getAlt();
+				Bag bag = stmt.getBag();
+				Literal literal = stmt.getLiteral();
 				Resource s = stmt.getSubject();
 				Resource p = stmt.getPredicate();
 				RDFNode o = stmt.getObject();

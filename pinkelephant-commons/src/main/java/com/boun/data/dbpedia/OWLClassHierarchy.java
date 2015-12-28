@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -27,7 +29,8 @@ public class OWLClassHierarchy {
 	
 	private OWLClassHierarchy() {
 		try{
-			initialize();
+			initializeOWL();
+			initializeYAGO();
 		}catch(Throwable e){
 			e.printStackTrace();
 		}
@@ -80,7 +83,7 @@ public class OWLClassHierarchy {
 		}
 	}
 	
-	private void initialize() throws IOException{
+	private void initializeOWL() throws IOException{
 		
 		final Model dbpedia = ModelFactory.createDefaultModel();
 
@@ -111,9 +114,42 @@ public class OWLClassHierarchy {
         }
 	}
 	
+	protected void initializeYAGO() {
+
+		String localFile = "C:/Users/mehmetce/Desktop/test/yago_taxonomy.nt";
+		String remoteFile = "/swe574/resources/yago_taxonomy.nt";
+		
+		final OntModel dbpedia = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+
+		String os = System.getProperty("os.name");
+		
+		String file = null;
+		if(os.contains("Windows")){
+			file = localFile;	
+		}else{
+			file = remoteFile;
+		}
+		
+        dbpedia.read(file, "" );
+        final StmtIterator stmts = dbpedia.listStatements(null, RDFS.subClassOf, (RDFNode) null);
+        while ( stmts.hasNext() ) {
+            final Statement stmt = stmts.next();
+            
+            String clazzUri = stmt.getSubject().getURI();
+            String clazz = stmt.getSubject().getLocalName();
+            String parentClazz = stmt.getObject().asResource().getLocalName();
+            String parentClazzUri = stmt.getObject().asResource().getURI();
+
+            processParent(parentClazz, parentClazzUri, clazz, clazzUri);
+            processChild(parentClazz, parentClazzUri, clazz, clazzUri);
+            
+            allClassList.add(clazz);
+        }
+	}
+	
 	private void processParent(String parentClazz, String parentClazzUri, String childClazz, String clazzUri){
 		
-		 Node parentNode = hierarchy.get(parentClazz);
+		 Node parentNode = hierarchy.get(parentClazzUri);
          if(parentNode == null){
          	parentNode = new Node();
          	parentNode.setLabel(parentClazz);
@@ -121,12 +157,12 @@ public class OWLClassHierarchy {
          	parentNode.setParent(new Element(parentClazz, parentClazzUri));
          }
          parentNode.getChildList().add(new Element(childClazz, clazzUri));
-         hierarchy.put(parentClazz, parentNode);
+         hierarchy.put(parentClazzUri, parentNode);
 	}
 	
 	private void processChild(String parentClazz, String parentClazzUri, String childClazz, String childClazzUri){
 		
-		Node node = hierarchy.get(childClazz);
+		Node node = hierarchy.get(childClazzUri);
         if(node == null){
         	node = new Node();
         	node.setLabel(childClazz);
@@ -134,7 +170,7 @@ public class OWLClassHierarchy {
         	node.setParent(new Element(parentClazz, parentClazzUri));
         }
         node.setParent(new Element(parentClazz, parentClazzUri));
-        hierarchy.put(childClazz, node);
+        hierarchy.put(childClazzUri, node);
 	}
 	
 	public boolean isChild(String clazz1, String clazz2){

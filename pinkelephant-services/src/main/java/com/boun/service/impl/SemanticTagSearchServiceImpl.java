@@ -9,8 +9,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
-import org.dbpedia.lookup.ArrayOfResult;
-import org.dbpedia.lookup.ArrayOfResult.Result.Classes;
 import org.simmetrics.StringMetric;
 import org.simmetrics.metrics.CosineSimilarity;
 import org.simmetrics.simplifiers.Simplifiers;
@@ -25,10 +23,9 @@ import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.cache.TagCache;
 import com.boun.data.cache.TagCache.TaggedEntityMetaData;
 import com.boun.data.dbpedia.OWLClassHierarchy;
-import com.boun.data.dbpedia.OWLClassHierarchy.Node;
-import com.boun.data.http.HTTPClient;
 import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.model.TaggedEntity.EntityType;
+import com.boun.dbpedia.SPARQLRunner;
 import com.boun.http.request.BasicSearchRequest;
 import com.boun.http.request.TagData;
 import com.boun.http.request.TagSearchRequest;
@@ -52,7 +49,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	private static final String DBPEDIA_URL = "http://lookup.dbpedia.org/api/search.asmx/PrefixSearch?MaxHits=20&QueryString=";
+	
 	
 	@Autowired
 	private TagService tagService;
@@ -101,46 +98,9 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		
 		validate(request);
 		
-		QueryLabelResponse response = new QueryLabelResponse(request.getQueryString());
+//		return HTTPQueryRunner.getInstance().runQuery(request.getQueryString());
 		
-		ArrayOfResult arrayOfResult = HTTPClient.getInstance().get(DBPEDIA_URL, request.getQueryString());
-		
-		OWLClassHierarchy.getInstance().getHierarchy();
-
-		List<ArrayOfResult.Result> resultList = arrayOfResult.getResult();
-		for (ArrayOfResult.Result result : resultList) {
-			
-			Classes classes = result.getClasses();
-			List<org.dbpedia.lookup.ArrayOfResult.Result.Classes.Class> classList = classes.getClazz();
-
-			Node current = null;
-			for (org.dbpedia.lookup.ArrayOfResult.Result.Classes.Class clazz : classList) {
-				
-				Node node = OWLClassHierarchy.getInstance().getHierarchy().get(clazz.getURI());
-				
-				if(node == null){
-					continue;
-				}
-				
-				if(current == null){
-					current = node;
-					continue;
-				}
-				
-				boolean isChild = OWLClassHierarchy.getInstance().isChild(node.getUri(), current.getUri());
-				if(isChild){
-					current = node;
-				}
-			}
-			if(current == null){
-				response.addData(result.getLabel(), null, result.getDescription());	
-			}else{
-				response.addData(result.getLabel(), current.getLabel(), result.getDescription());
-			}
-			
-		}
-		
-		return response;
+		return SPARQLRunner.getInstance().runQuery(request.getQueryString());
 	}
 	
 	@Override
