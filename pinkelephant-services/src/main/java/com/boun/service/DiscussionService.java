@@ -1,6 +1,7 @@
 package com.boun.service;
 
 import com.boun.data.mongo.model.Discussion;
+import com.boun.data.mongo.model.TaggedEntity.EntityType;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateDiscussionRequest;
 import com.boun.http.request.LinkRequest;
@@ -24,11 +25,7 @@ public interface DiscussionService {
 	
 	ActionResponse tag(TagRequest request);
 	
-	ActionResponse linkMeeting(LinkRequest request);
+	ActionResponse link(LinkRequest request, EntityType toType);
 	
-	ActionResponse linkResource(LinkRequest request);
-	
-	ActionResponse removeResourceLink(LinkRequest request);
-	
-	ActionResponse removeMeetingLink(LinkRequest request);
+	ActionResponse removeLink(LinkRequest request, EntityType toType);
 }

@@ -3,6 +3,7 @@ package com.boun.service;
 import java.util.List;
 
 import com.boun.data.mongo.model.Meeting;
+import com.boun.data.mongo.model.TaggedEntity.EntityType;
 import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateMeetingRequest;
@@ -34,15 +35,11 @@ public interface MeetingService {
 	
 	ActionResponse tag(TagRequest request);
 	
+	ActionResponse link(LinkRequest request, EntityType toType);
+	
+	ActionResponse removeLink(LinkRequest request, EntityType toType);
+	
 	ListMeetingResponse getMyMeetings(BaseRequest request);
 	
 	List<Meeting> findAllMeetingList();
-	
-	ActionResponse linkDiscussion(LinkRequest request);
-	
-	ActionResponse linkResource(LinkRequest request);
-	
-	ActionResponse removeResourceLink(LinkRequest request);
-	
-	ActionResponse removeDiscussionLink(LinkRequest request);
 }

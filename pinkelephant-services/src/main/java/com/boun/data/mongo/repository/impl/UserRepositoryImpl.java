@@ -75,7 +75,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public List<User> searchUser(String queryString) {
 		
-		Pattern regex = Pattern.compile(queryString); 
+		Pattern regex = Pattern.compile("(?i)"+queryString); 
 		
 		DBObject clause1 = new BasicDBObject("firstname", regex);  
 		DBObject clause2 = new BasicDBObject("lastname", regex);    

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boun.http.request.CreateMeetingRequest;
+import com.boun.data.mongo.model.TaggedEntity.EntityType;
 import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicDeleteRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
@@ -278,7 +279,7 @@ public class MeetingController {
 			if (logger.isDebugEnabled()) {
 				logger.debug("linkDiscussion request received, request->" + request.toString());
 			}
-			return meetingService.linkDiscussion(request);
+			return meetingService.link(request, EntityType.DISCUSSION);
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("linkDiscussion operation finished");
@@ -296,7 +297,7 @@ public class MeetingController {
 			if (logger.isDebugEnabled()) {
 				logger.debug("linkResource request received, request->" + request.toString());
 			}
-			return meetingService.linkResource(request);
+			return meetingService.link(request, EntityType.RESOURCE);
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("linkResource operation finished");
@@ -314,7 +315,7 @@ public class MeetingController {
 			if (logger.isDebugEnabled()) {
 				logger.debug("removeResourceLink request received, request->" + request.toString());
 			}
-			return meetingService.removeResourceLink(request);
+			return meetingService.removeLink(request, EntityType.RESOURCE);
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("removeResourceLink operation finished");
@@ -332,7 +333,7 @@ public class MeetingController {
 			if (logger.isDebugEnabled()) {
 				logger.debug("removeDiscussionLink request received, request->" + request.toString());
 			}
-			return meetingService.removeDiscussionLink(request);
+			return meetingService.removeLink(request, EntityType.DISCUSSION);
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("removeDiscussionLink operation finished");

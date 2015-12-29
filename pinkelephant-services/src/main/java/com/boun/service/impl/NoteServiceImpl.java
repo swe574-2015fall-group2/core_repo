@@ -11,17 +11,20 @@ import org.springframework.stereotype.Service;
 
 import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
+import com.boun.data.mongo.model.EntityRelation;
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Meeting;
 import com.boun.data.mongo.model.Note;
 import com.boun.data.mongo.model.Resource;
 import com.boun.data.mongo.model.TaggedEntity;
+import com.boun.data.mongo.repository.EntityRelationRepository;
 import com.boun.data.mongo.repository.NoteRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateNoteRequest;
 import com.boun.http.request.UpdateNoteRequest;
 import com.boun.http.response.NoteResponse;
+import com.boun.service.DiscussionService;
 import com.boun.service.GroupService;
 import com.boun.service.MeetingService;
 import com.boun.service.NoteService;
@@ -189,5 +192,30 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 		}
 
 		return response;
+	}
+
+	@Override
+	protected ResourceService getResourceService() {
+		return null;
+	}
+
+	@Override
+	protected MeetingService getMeetingService() {
+		return null;
+	}
+
+	@Override
+	protected DiscussionService getDiscussionService() {
+		return null;
+	}
+
+	@Override
+	protected EntityRelationRepository getEntityRelationRepository() {
+		return null;
+	}
+
+	@Override
+	public List<EntityRelation> findRelationById(String meetindId) {
+		return null;
 	}
 }

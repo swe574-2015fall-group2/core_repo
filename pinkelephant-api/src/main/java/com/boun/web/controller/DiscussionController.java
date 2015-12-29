@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.boun.data.mongo.model.TaggedEntity.EntityType;
 import com.boun.http.request.AddCommentRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateDiscussionRequest;
@@ -156,7 +157,7 @@ public class DiscussionController {
 			if (logger.isDebugEnabled()) {
 				logger.debug("linkMeeting request received, request->" + request.toString());
 			}
-			return discussionService.linkMeeting(request);
+			return discussionService.link(request, EntityType.MEETING);
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("linkMeeting operation finished");
@@ -174,7 +175,7 @@ public class DiscussionController {
 			if (logger.isDebugEnabled()) {
 				logger.debug("linkResource request received, request->" + request.toString());
 			}
-			return discussionService.linkResource(request);
+			return discussionService.link(request, EntityType.RESOURCE);
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("linkResource operation finished");
@@ -192,7 +193,7 @@ public class DiscussionController {
 			if (logger.isDebugEnabled()) {
 				logger.debug("removeResourceLink request received, request->" + request.toString());
 			}
-			return discussionService.removeResourceLink(request);
+			return discussionService.removeLink(request, EntityType.RESOURCE);
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("removeResourceLink operation finished");
@@ -210,7 +211,7 @@ public class DiscussionController {
 			if (logger.isDebugEnabled()) {
 				logger.debug("removeMeetingLink request received, request->" + request.toString());
 			}
-			return discussionService.removeMeetingLink(request);
+			return discussionService.removeLink(request, EntityType.MEETING);
 		} finally {
 			if (logger.isDebugEnabled()) {
 				logger.debug("removeMeetingLink operation finished");

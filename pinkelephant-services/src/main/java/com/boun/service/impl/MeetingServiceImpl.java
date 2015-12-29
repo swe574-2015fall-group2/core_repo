@@ -13,14 +13,11 @@ import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.MeetingInvitationResult;
 import com.boun.data.common.enums.MeetingStatus;
-import com.boun.data.mongo.model.BaseEntity;
-import com.boun.data.mongo.model.Discussion;
 import com.boun.data.mongo.model.EntityRelation;
-import com.boun.data.mongo.model.EntityRelation.RelationType;
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Meeting;
-import com.boun.data.mongo.model.Resource;
 import com.boun.data.mongo.model.TaggedEntity;
+import com.boun.data.mongo.model.TaggedEntity.EntityType;
 import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.EntityRelationRepository;
 import com.boun.data.mongo.repository.MeetingRepository;
@@ -30,7 +27,6 @@ import com.boun.http.request.BaseRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
-import com.boun.http.request.LinkRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
@@ -108,8 +104,10 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 
 		meetingRepository.save(meeting);
 		
-		createRelation(meeting, RelationType.MEETING, request.getDiscussionIdList(), RelationType.DISCUSSION);
-		createRelation(meeting, RelationType.MEETING, request.getResourceIdList(), RelationType.RESOURCE);
+		List<EntityRelation> entityRelationList = findRelationById(meeting.getId());
+		
+		createRelation(meeting, request.getDiscussionIdList(), EntityType.DISCUSSION, entityRelationList);
+		createRelation(meeting, request.getResourceIdList(), EntityType.RESOURCE, entityRelationList);
 		
 		response.setAcknowledge(true);
 		response.setEntityId(meeting.getId());
@@ -274,8 +272,10 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		
 		meetingRepository.save(meeting);
 		
-		createRelation(meeting, RelationType.MEETING, request.getDiscussionIdList(), RelationType.DISCUSSION);
-		createRelation(meeting, RelationType.MEETING, request.getResourceIdList(), RelationType.RESOURCE);
+		List<EntityRelation> entityRelationList = findRelationById(meeting.getId());
+		
+		createRelation(meeting, request.getDiscussionIdList(), EntityType.DISCUSSION, entityRelationList);
+		createRelation(meeting, request.getResourceIdList(), EntityType.RESOURCE, entityRelationList);
 		
 		response.setAcknowledge(true);
 
@@ -300,7 +300,7 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		*/
 		
 		for (Meeting meeting : meetingList) {
-			List<EntityRelation> meetingDiscussionList = meetingDiscussionRepository.findRelationByMeetingId(meeting.getId());
+			List<EntityRelation> meetingDiscussionList = findRelationById(meeting.getId());
 			
 			response.addMeeting(meeting, meetingDiscussionList);
 		}
@@ -318,7 +318,7 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 
 		GetMeetingResponse response = new GetMeetingResponse();
 		
-		List<EntityRelation> meetingDiscussionList = meetingDiscussionRepository.findRelationByMeetingId(meeting.getId());
+		List<EntityRelation> meetingDiscussionList = findRelationById(meeting.getId());
 		
 		response.setMeeting(new ListMeetingResponse.MeetingObj(meeting, meetingDiscussionList));
 		response.setAcknowledge(true);
@@ -339,7 +339,7 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		for (String meetingId : meetingIdList) {
 			Meeting meeting = findById(meetingId);
 			
-			List<EntityRelation> meetingDiscussionList = meetingDiscussionRepository.findRelationByMeetingId(meeting.getId());
+			List<EntityRelation> meetingDiscussionList = findRelationById(meetingId);
 			
 			response.addMeeting(meeting, meetingDiscussionList);
 		}
@@ -392,113 +392,32 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 	public List<Meeting> findAllMeetingList() {
 		return meetingRepository.findAll();
 	}
-	
-	public ActionResponse linkDiscussion(LinkRequest request){
-		validate(request);
-		
-		ActionResponse response = new ActionResponse();
 
-		Meeting meeting = findById(request.getFromEntityId());
-		Discussion discussion = discussionService.findById(request.getToEntityId());
-		
-		EntityRelation meetingDiscussion = meetingDiscussionRepository.findRelation(meeting.getId(), RelationType.MEETING, discussion.getId(), RelationType.DISCUSSION);
-		if(meetingDiscussion != null){
-			throw new PinkElephantRuntimeException(400, ErrorCode.DUPLICATE_MEETING_DISCUSSION, "");
-		}
-		
-		createRelation(meeting, RelationType.MEETING, discussion, RelationType.DISCUSSION);
-		
-		response.setAcknowledge(true);
-		return response;
-	}
-	
-	public ActionResponse linkResource(LinkRequest request){
-		validate(request);
-		
-		ActionResponse response = new ActionResponse();
+	@Override
+	public List<EntityRelation> findRelationById(String meetindId) {
 
-		Meeting meeting = findById(request.getFromEntityId());
-		Resource resource = resourceService.findById(request.getToEntityId());
-		
-		EntityRelation meetingDiscussion = meetingDiscussionRepository.findRelation(meeting.getId(), RelationType.MEETING, resource.getId(), RelationType.RESOURCE);
-		if(meetingDiscussion != null){
-			throw new PinkElephantRuntimeException(400, ErrorCode.DUPLICATE_MEETING_DISCUSSION, "");
-		}
-		
-		createRelation(meeting, RelationType.MEETING, resource, RelationType.RESOURCE);
-		
-		response.setAcknowledge(true);
-		return response;
+		return getEntityRelationRepository().findRelationByMeetingId(meetindId);
 	}
-	
-	public ActionResponse removeResourceLink(LinkRequest request){
-		validate(request);
-		
-		ActionResponse response = new ActionResponse();
 
-		Meeting meeting = findById(request.getFromEntityId());
-		Resource resource = resourceService.findById(request.getToEntityId());
-		
-		EntityRelation meetingDiscussion = meetingDiscussionRepository.findRelation(meeting.getId(), RelationType.MEETING, resource.getId(), RelationType.RESOURCE);
-		if(meetingDiscussion == null){
-			throw new PinkElephantRuntimeException(400, ErrorCode.MEETING_DISCUSSION_NOT_FOUND, "");
-		}
-		
-		meetingDiscussionRepository.delete(meetingDiscussion);
-		
-		response.setAcknowledge(true);
-		return response;
+	@Override
+	protected ResourceService getResourceService() {
+		return resourceService;
 	}
-	
-	public ActionResponse removeDiscussionLink(LinkRequest request){
-		validate(request);
-		
-		ActionResponse response = new ActionResponse();
 
-		Meeting meeting = findById(request.getFromEntityId());
-		Discussion discussion = discussionService.findById(request.getToEntityId());
-		
-		EntityRelation meetingDiscussion = meetingDiscussionRepository.findRelation(meeting.getId(), RelationType.MEETING, discussion.getId(), RelationType.DISCUSSION);
-		if(meetingDiscussion == null){
-			throw new PinkElephantRuntimeException(400, ErrorCode.MEETING_DISCUSSION_NOT_FOUND, "");
-		}
-		
-		meetingDiscussionRepository.delete(meetingDiscussion);
-		
-		response.setAcknowledge(true);
-		return response;
+	@Override
+	protected MeetingService getMeetingService() {
+		return this;
+	}
+
+	@Override
+	protected DiscussionService getDiscussionService() {
+		return discussionService;
+	}
+
+	@Override
+	protected EntityRelationRepository getEntityRelationRepository() {
+		return meetingDiscussionRepository;
 	}
 	
-	private void createRelation(BaseEntity from, RelationType fromType, List<String> idList, RelationType toType){
-		if(idList == null || idList.isEmpty()){
-			return;
-		}
-		for (String id : idList) {
-			BaseEntity to = null;
-			if(toType == RelationType.MEETING){
-				to = findById(id);				
-			}else if(toType == RelationType.RESOURCE){
-				to = resourceService.findById(id);
-			}else if(toType == RelationType.DISCUSSION){
-				to = findById(id);
-			}
-			
-			EntityRelation meetingDiscussion = meetingDiscussionRepository.findRelation(from.getId(), fromType, to.getId(), toType);
-			if(meetingDiscussion != null){
-				throw new PinkElephantRuntimeException(400, ErrorCode.DUPLICATE_MEETING_DISCUSSION, "");
-			}
-			
-			createRelation(from, fromType, to, toType);
-		}
-	}
-	
-	private void createRelation(BaseEntity from, RelationType fromType, BaseEntity to, RelationType toType){
-		EntityRelation meetingDiscussion = new EntityRelation();
-		meetingDiscussion.setEntityFrom(from);
-		meetingDiscussion.setFromType(fromType);
-		meetingDiscussion.setEntityTo(to);
-		meetingDiscussion.setToType(toType);
-		
-		meetingDiscussionRepository.save(meetingDiscussion);
-	}
+
 }

@@ -20,17 +20,11 @@ public class EntityRelation extends BaseEntity{
 	}
 	
 	@DBRef
-	private BaseEntity entityFrom;
+	private Meeting meeting;
 
-	private RelationType fromType;
-	
-	private RelationType toType;
+	@DBRef
+	private Discussion discussion;
 	
 	@DBRef
-	private BaseEntity entityTo;
-	
-	public enum RelationType{
-    	DISCUSSION, RESOURCE, MEETING;
-    }
-	
+	private Resource resource;
 }

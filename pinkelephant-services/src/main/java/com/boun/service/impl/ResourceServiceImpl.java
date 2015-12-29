@@ -1,10 +1,13 @@
 package com.boun.service.impl;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import com.boun.http.response.ResourceResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +16,20 @@ import org.springframework.stereotype.Service;
 import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.ResourceType;
+import com.boun.data.mongo.model.EntityRelation;
 import com.boun.data.mongo.model.Group;
 import com.boun.data.mongo.model.Resource;
 import com.boun.data.mongo.model.TaggedEntity;
+import com.boun.data.mongo.repository.EntityRelationRepository;
 import com.boun.data.mongo.repository.ResourceRepository;
 import com.boun.data.session.PinkElephantSession;
 import com.boun.http.request.BasicDeleteRequest;
 import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateResourceRequest;
+import com.boun.http.response.ResourceResponse;
+import com.boun.service.DiscussionService;
 import com.boun.service.GroupService;
+import com.boun.service.MeetingService;
 import com.boun.service.PinkElephantTaggedService;
 import com.boun.service.ResourceService;
 import com.boun.service.TagService;
@@ -39,6 +47,15 @@ public class ResourceServiceImpl extends PinkElephantTaggedService implements Re
 
 	@Autowired
 	private GroupService groupService;
+	
+	@Autowired
+	private MeetingService meetingService;
+	
+	@Autowired
+	private DiscussionService discussionService;
+	
+	@Autowired
+	private EntityRelationRepository entityRelationRepository;
 
 	@Autowired
 	private TagService tagService;
@@ -165,5 +182,30 @@ public class ResourceServiceImpl extends PinkElephantTaggedService implements Re
 	@Override
 	protected TagService getTagService() {
 		return tagService;
+	}
+
+	@Override
+	protected ResourceService getResourceService() {
+		return this;
+	}
+
+	@Override
+	protected MeetingService getMeetingService() {
+		return meetingService;
+	}
+
+	@Override
+	protected DiscussionService getDiscussionService() {
+		return discussionService;
+	}
+
+	@Override
+	protected EntityRelationRepository getEntityRelationRepository() {
+		return entityRelationRepository;
+	}
+
+	@Override
+	public List<EntityRelation> findRelationById(String meetindId) {
+		return entityRelationRepository.findRelationByResourceId(meetindId);
 	}
 }

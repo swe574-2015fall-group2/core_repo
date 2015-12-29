@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.boun.data.mongo.model.EntityRelation;
-import com.boun.data.mongo.model.EntityRelation.RelationType;
 import com.boun.http.request.TagData;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -52,10 +51,10 @@ public class ListDiscussionResponse extends ActionResponse{
 				this.resourceIdList = new ArrayList<String>();
 				for (EntityRelation meetingDiscussion : meetingDiscussionList) {
 					
-					if(meetingDiscussion.getToType() == RelationType.MEETING){
-						this.meetingIdList.add(meetingDiscussion.getEntityTo().getId());	
-					}else if(meetingDiscussion.getToType() == RelationType.RESOURCE){
-						this.resourceIdList.add(meetingDiscussion.getEntityTo().getId());
+					if(meetingDiscussion.getMeeting() != null){
+						this.meetingIdList.add(meetingDiscussion.getMeeting().getId());	
+					}else if(meetingDiscussion.getResource() != null){
+						this.resourceIdList.add(meetingDiscussion.getResource().getId());
 					}
 					
 				}

@@ -11,9 +11,8 @@ import java.util.Set;
 import com.boun.data.common.enums.MeetingStatus;
 import com.boun.data.common.enums.MeetingType;
 import com.boun.data.mongo.model.ContactDetails;
-import com.boun.data.mongo.model.Meeting;
 import com.boun.data.mongo.model.EntityRelation;
-import com.boun.data.mongo.model.EntityRelation.RelationType;
+import com.boun.data.mongo.model.Meeting;
 import com.boun.data.mongo.model.User;
 import com.boun.http.request.TagData;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -99,10 +98,10 @@ public class ListMeetingResponse extends ActionResponse{
 				this.resourceIdList = new HashSet<String>();
 				for (EntityRelation meetingDiscussion : meetingDiscussionList) {
 					
-					if(meetingDiscussion.getToType() == RelationType.DISCUSSION){
-						this.discussionIdList.add(meetingDiscussion.getEntityTo().getId());	
-					}else if(meetingDiscussion.getToType() == RelationType.RESOURCE){
-						this.resourceIdList.add(meetingDiscussion.getEntityTo().getId());
+					if(meetingDiscussion.getDiscussion() != null){
+						this.discussionIdList.add(meetingDiscussion.getDiscussion().getId());	
+					}else if(meetingDiscussion.getResource() != null){
+						this.resourceIdList.add(meetingDiscussion.getResource().getId());
 					}
 				}	
 			}
