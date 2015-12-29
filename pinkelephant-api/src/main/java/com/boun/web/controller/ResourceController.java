@@ -1,8 +1,13 @@
 package com.boun.web.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
+import com.boun.http.response.ResourceResponse;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +31,8 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
+
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @Api(value = "resource", description = "Resource service")
@@ -72,6 +79,37 @@ public class ResourceController {
 			}
 		} catch (IOException e) {
 			throw new PinkElephantValidationException("Uploaded file is corrupt!");
+		}
+	}
+
+	@ApiOperation(value = "Download Resource")
+	@RequestMapping(value = "downloadResource", method = RequestMethod.GET)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
+	public @ResponseBody
+	void downloadResource(@RequestParam("resourceId")String resourceId, @RequestParam("authToken")String authToken,  HttpServletResponse response) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("downloadResource request received, request->" + resourceId);
+			}
+
+			try {
+
+				ResourceResponse resourceResponse =  resourceService.downloadResource(resourceId);
+				
+				response.setContentType("application/force-download");
+				response.setContentLength((int) resourceResponse.getFile().length());
+				response.setHeader("Content-Transfer-Encoding", "binary");
+				response.setHeader("Content-Disposition","attachment; filename=\"" + resourceResponse.getFileName() +"\"");
+
+				IOUtils.copy(new FileInputStream(resourceResponse.getFile()), response.getOutputStream());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("downloadResource operation finished");
+			}
 		}
 	}
 

@@ -1,13 +1,10 @@
 package com.boun.service.impl;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Date;
 import java.util.List;
 
+import com.boun.http.response.ResourceResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +92,18 @@ public class ResourceServiceImpl extends PinkElephantTaggedService implements Re
 		tagService.tag(request.getTagList(), resource, true);
 
 		return  resource;
+
+	}
+
+	public ResourceResponse downloadResource(String resourceId) throws FileNotFoundException {
+
+		ResourceResponse response = new ResourceResponse();
+
+		Resource resource = resourceRepository.findOne(resourceId);
+
+		response.setFile(new File(RESOURCE_FILES_PATH + resource.getId()));
+		response.setFileName(resource.getDescription());
+		return response;
 
 	}
 
