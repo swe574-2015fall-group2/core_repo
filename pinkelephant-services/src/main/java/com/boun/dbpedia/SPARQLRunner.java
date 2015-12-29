@@ -96,15 +96,15 @@ public class SPARQLRunner {
         	//TODO load umbel, wikidata and skos classes
         	
         	if(current == null){
-        		if(lastType == null){
-        			lastType = "http://www.w3.org/2002/07/owl#Thing";
-        		}
-        		String[] split = lastType.split("#");
-        		if(split.length == 2){
-        			response.addData(label, split[1], null);	
-        		}else{
-        			response.addData(label, split[0], null);
-        		}
+//        		if(lastType == null){
+//        			lastType = "http://www.w3.org/2002/07/owl#Thing";
+//        		}
+//        		String[] split = lastType.split("#");
+//        		if(split.length == 2){
+//        			response.addData(label, split[1], null);	
+//        		}else{
+//        			response.addData(label, split[0], null);
+//        		}
         			
 	        }else{
 	        	response.addData(label, current.getLabel(), null);
