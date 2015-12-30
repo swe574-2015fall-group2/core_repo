@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.boun.http.request.*;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.boun.app.exception.PinkElephantValidationException;
 import com.boun.data.mongo.model.Resource;
 import com.boun.data.mongo.model.TaggedEntity.EntityType;
-import com.boun.http.request.BasicDeleteRequest;
-import com.boun.http.request.BasicQueryRequest;
-import com.boun.http.request.CreateResourceRequest;
-import com.boun.http.request.LinkRequest;
-import com.boun.http.request.TagRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.ResourceResponse;
 import com.boun.service.ResourceService;
@@ -96,7 +92,7 @@ public class ResourceController {
 			try {
 
 				ResourceResponse resourceResponse =  resourceService.downloadResource(resourceId);
-				
+
 				response.setContentType("application/force-download");
 				response.setContentLength((int) resourceResponse.getFile().length());
 				response.setHeader("Content-Transfer-Encoding", "binary");
@@ -126,7 +122,7 @@ public class ResourceController {
 	@RequestMapping(value = "queryResourcesByGroup", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })
 	public @ResponseBody
-	List<Resource> queryMeetingByGroupId(@RequestBody BasicQueryRequest request) {
+	List<Resource> queryMeetingByGroupId(@RequestBody QueryResourceRequest request) {
 
 		try {
 			if (logger.isDebugEnabled()) {
