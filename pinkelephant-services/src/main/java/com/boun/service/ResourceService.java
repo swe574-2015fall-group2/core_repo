@@ -5,11 +5,7 @@ import java.util.List;
 
 import com.boun.data.mongo.model.Resource;
 import com.boun.data.mongo.model.TaggedEntity.EntityType;
-import com.boun.http.request.BasicDeleteRequest;
-import com.boun.http.request.BasicQueryRequest;
-import com.boun.http.request.CreateResourceRequest;
-import com.boun.http.request.LinkRequest;
-import com.boun.http.request.TagRequest;
+import com.boun.http.request.*;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.ResourceResponse;
 
@@ -25,7 +21,7 @@ public interface ResourceService {
 
     Resource uploadResource(byte[] bytes, String name, String groupId, String authToken);
 
-    List<Resource> queryResourcesOfGroup(BasicQueryRequest request);
+    List<Resource> queryResourcesOfGroup(QueryResourceRequest request);
 
     boolean delete(BasicDeleteRequest id);
     

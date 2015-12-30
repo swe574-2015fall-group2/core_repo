@@ -76,7 +76,7 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 		//TODO find group method will throw an exception if entity not found
 		Group group = groupService.findById(request.getGroupId());
 		//TODO check if user is in this group
-		
+
 		Meeting meeting = null;
 		try {
 			meeting = meetingService.findById(request.getMeetingId());
