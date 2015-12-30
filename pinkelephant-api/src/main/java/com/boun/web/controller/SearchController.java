@@ -38,7 +38,7 @@ public class SearchController {
     		if(logger.isDebugEnabled()){
     			logger.debug("search request received, request->" + request.toString());
     		}
-    		return semanticSearchService.search(request);
+    		return semanticSearchService.searchNew(request);
     	}finally{
     		if(logger.isDebugEnabled()){
     			logger.debug("search operation finished");

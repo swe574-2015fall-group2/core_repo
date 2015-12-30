@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import com.boun.data.cache.DBPediaCache;
 import com.boun.data.dbpedia.OWLClassHierarchy;
 import com.boun.data.dbpedia.OWLClassHierarchy.Node;
 import com.boun.http.response.QueryLabelResponse;
@@ -26,7 +27,7 @@ public class SPARQLRunner {
 										"?s rdf:type ?type.\n" +
 										"FILTER langMatches( lang(?label), 'EN' ).\n"+
 										"?label <bif:contains> '%s' .\n" +
-									"} LIMIT 200";
+									"} LIMIT 1000";
 	
 	
 	private SPARQLRunner(){
@@ -42,7 +43,11 @@ public class SPARQLRunner {
 	
 	public QueryLabelResponse runQuery(String queryString) {
 
-		QueryLabelResponse response = new QueryLabelResponse(queryString);
+		QueryLabelResponse response = DBPediaCache.getInstance().get(queryString);
+		if(response != null){
+			return response;
+		}
+		response = new QueryLabelResponse(queryString);
 		
         Query query = QueryFactory.create(String.format(DBPEDIA_QUERY, queryString));
         QueryExecution qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
@@ -67,7 +72,6 @@ public class SPARQLRunner {
         
         for (String label : resultTable.keySet()) {
         	Node current = null;
-        	String lastType = null;
         	
         	List<String> typeList = resultTable.get(label);
         	for (String type : typeList) {
@@ -75,7 +79,6 @@ public class SPARQLRunner {
         		if(type.equalsIgnoreCase("http://www.w3.org/2002/07/owl#Thing")){
         			continue;
         		}
-        		lastType = type;
         		
         		Node node = OWLClassHierarchy.getInstance().getHierarchy().get(type);
             	if(node == null){
@@ -94,22 +97,13 @@ public class SPARQLRunner {
 			}
         	
         	//TODO load umbel, wikidata and skos classes
-        	
-        	if(current == null){
-//        		if(lastType == null){
-//        			lastType = "http://www.w3.org/2002/07/owl#Thing";
-//        		}
-//        		String[] split = lastType.split("#");
-//        		if(split.length == 2){
-//        			response.addData(label, split[1], null);	
-//        		}else{
-//        			response.addData(label, split[0], null);
-//        		}
-        			
-	        }else{
+
+        	if(current != null){
 	        	response.addData(label, current.getLabel(), null);
 	        }
 		}
+        
+        DBPediaCache.getInstance().put(queryString, response);
         
         return response;
     }
