@@ -9,6 +9,8 @@ public interface SemanticTagSearchService {
 
 	public SemanticSearchResponse search(TagSearchRequest request);
 	
+	public SemanticSearchResponse searchNew(TagSearchRequest request);
+	
 	public QueryLabelResponse queryLabel(BasicSearchRequest request);
 	
 	public QueryLabelResponse querySearchString(BasicSearchRequest request);

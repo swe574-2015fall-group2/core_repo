@@ -103,6 +103,58 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		return SPARQLRunner.getInstance().runQuery(request.getQueryString());
 	}
 	
+	public SemanticSearchResponse searchNew(TagSearchRequest request){
+		
+		SemanticSearchResponse response = new SemanticSearchResponse();
+		
+		TagData tagData = request.getTagData();
+		if(tagData == null){
+			throw new PinkElephantRuntimeException(400, ErrorCode.INVALID_INPUT, "Query string cannot be null", "");
+		}
+	
+		List<SemanticSearchIndex> searchIndex = new ArrayList<SemanticSearchIndex>();
+		
+		List<TagData> tagList = TagCache.getInstance(tagService).getAllTags();
+		for (TagData tag : tagList) {
+			
+			if(tagData.getClazz() != null && tag.getClazz() != null){
+				
+				if(tag.equals(tagData)){
+					searchIndex.add(new SemanticSearchIndex(tag, 10)); //If both these tags are same, mark it with highest value	
+				}else if(tag.getClazz().equalsIgnoreCase(tagData.getClazz())){
+					searchIndex.add(new SemanticSearchIndex(tag, 9)); //If both these tags have same class, mark it with higher value
+					
+				}else if(OWLClassHierarchy.getInstance().isChild(tagData.getClazz(), tag.getClazz()) ||
+						 OWLClassHierarchy.getInstance().isChild(tag.getClazz(), tagData.getClazz())){
+					searchIndex.add(new SemanticSearchIndex(tag, 5)); //If both these tags have relation, mark it with high value
+				}
+			}else if(tagData.getClazz() == null || "".equalsIgnoreCase(tagData.getClazz())){
+				
+				//If both input tag has no context, compare their similarity 
+				float similarityIndex = getSimilarityIndex(tag.getTag(), tagData.getTag());
+				if(similarityIndex != 0){
+					searchIndex.add(new SemanticSearchIndex(tag, similarityIndex));
+				}
+			}
+		}
+		
+		Collections.sort(searchIndex, new SemanticSearchIndexSort());
+		
+		for (SemanticSearchIndex index : searchIndex) {
+			List<TaggedEntityMetaData> tagEntityIdList = TagCache.getInstance(tagService).getTag(index.getTag());
+			
+			if(tagEntityIdList == null || tagEntityIdList.isEmpty()){
+				continue;
+			}
+			
+			for (TaggedEntityMetaData taggedEntityMetaData : tagEntityIdList) {
+				addResultList(response, resolveEntity(taggedEntityMetaData), index.getTag(), index.getSimilarityIndex());
+			}
+		}
+
+		return response;
+	}
+	
 	@Override
 	public SemanticSearchResponse search(TagSearchRequest request) {
 
