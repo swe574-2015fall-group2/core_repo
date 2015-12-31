@@ -180,7 +180,7 @@ public class ResourceServiceImpl extends PinkElephantTaggedService implements Re
 		}
 
 		if(request.getGroupId() != null) {
-			Group group = groupService.findById(request.getNoteId());
+			Group group = groupService.findById(request.getGroupId());
 			resources = resourceRepository.findResources(group.getId());
 		}
 
