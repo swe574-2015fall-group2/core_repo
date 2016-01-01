@@ -21,12 +21,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ListMeetingResponse extends ActionResponse{
 
 	private List<MeetingObj> meetingList;
-	
+
+	public ListMeetingResponse() {
+		meetingList = new ArrayList<>();
+	}
+
 	public void addMeeting(Meeting meeting, List<EntityRelation> meetingDiscussionList){
 		if(meetingList == null){
 			meetingList = new ArrayList<MeetingObj>();
@@ -131,6 +135,10 @@ public class ListMeetingResponse extends ActionResponse{
 	    	
 	    	return (o1.getDatetime().before(o2.getDatetime())) ? -1 : 1;
 	    }
+	}
+
+	public String toString() {
+		return "";
 	}
 }
 
