@@ -173,31 +173,31 @@ public class OWLClassHierarchy {
         hierarchy.put(childClazzUri, node);
 	}
 	
-	public boolean isChild(String clazz1, String clazz2){
+	public int isChild(String clazz1, String clazz2, int level){
 		
 		Node node1 = getInstance().getHierarchy().get(clazz1);
 		Node node2 = getInstance().getHierarchy().get(clazz2);
 		
 		if(node1 == null || node2 == null){
-			return false;
+			return 0;
 		}
 		
 		if(node1.getParent().getLabel().equalsIgnoreCase(node2.getLabel())){
-			return true;
+			return level;
 		}
 		
 		for (Element element : node2.getChildList()) {
 			if(node1.getLabel().equalsIgnoreCase(element.getLabel())){
-				return true;
+				return level;
 			}
 		}
 		
 		for (Element element : node2.getChildList()) {
-			if(isChild(clazz1, element.getLabel())){
-				return true;
+			if(isChild(clazz1, element.getLabel(), ++level) != 0){
+				return level;
 			}
 		}
 		
-		return false;
+		return 0;
 	}
 }

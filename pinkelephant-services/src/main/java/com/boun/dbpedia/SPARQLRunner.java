@@ -92,8 +92,8 @@ public class SPARQLRunner {
             		continue;
             	}
             	
-            	boolean isChild = OWLClassHierarchy.getInstance().isChild(node.getUri(), current.getUri());
-            	if(isChild){
+            	int level = OWLClassHierarchy.getInstance().isChild(node.getUri(), current.getUri(), 0);
+            	if(level != 0){
             		current = node;
             	}
 			}

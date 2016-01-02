@@ -22,6 +22,7 @@ import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.cache.TagCache;
 import com.boun.data.cache.TagCache.TaggedEntityMetaData;
+import com.boun.data.common.Constants;
 import com.boun.data.dbpedia.OWLClassHierarchy;
 import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.model.TaggedEntity.EntityType;
@@ -118,13 +119,21 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 			if(tagData.getClazz() != null && tag.getClazz() != null){
 				
 				if(tag.equals(tagData)){
-					searchIndex.add(new SemanticSearchIndex(tag, 10)); //If both these tags are same, mark it with highest value	
+					searchIndex.add(new SemanticSearchIndex(tag, Constants.SEMANTIC_SAME_TAG_FACTOR)); //If both these tags are same, mark it with highest value	
 				}else if(tag.getClazz().equalsIgnoreCase(tagData.getClazz())){
-					searchIndex.add(new SemanticSearchIndex(tag, 9)); //If both these tags have same class, mark it with higher value
+					searchIndex.add(new SemanticSearchIndex(tag, Constants.SEMANTIC_SAME_CONTEXT_FACTOR)); //If both these tags have same class, mark it with higher value
 					
-				}else if(OWLClassHierarchy.getInstance().isChild(tagData.getClazz(), tag.getClazz()) ||
-						 OWLClassHierarchy.getInstance().isChild(tag.getClazz(), tagData.getClazz())){
-					searchIndex.add(new SemanticSearchIndex(tag, 5)); //If both these tags have relation, mark it with high value
+				}else{
+					
+					int level = OWLClassHierarchy.getInstance().isChild(tagData.getClazz(), tag.getClazz(), 0);
+					if(level == 0){
+						level = OWLClassHierarchy.getInstance().isChild(tag.getClazz(), tagData.getClazz(), 0);	
+					}
+					 
+					if(level != 0){
+					
+						searchIndex.add(new SemanticSearchIndex(tag, Constants.SEMANTIC_CONTEXT_RELATION_FACTOR / level)); //If both these tags have relation, mark it with high value
+					}
 				}
 			}else if(tagData.getClazz() == null || "".equalsIgnoreCase(tagData.getClazz())){
 				
@@ -146,7 +155,6 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 			}
 			
 			for (TaggedEntityMetaData taggedEntityMetaData : tagEntityIdList) {
-				//TODO find co-occurence
 				addResultList(response, resolveEntity(taggedEntityMetaData), index.getTag(), index.getSimilarityIndex());
 			}
 		}
@@ -189,13 +197,18 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 					
 					searchIndex.add(new SemanticSearchIndex(tag, 1));
 					
-				}else if(OWLClassHierarchy.getInstance().isChild(tagData.getClazz(), tag.getClazz()) ||
-						 OWLClassHierarchy.getInstance().isChild(tag.getClazz(), tagData.getClazz())){
-					
-					searchIndex.add(new SemanticSearchIndex(tag, 0.5F));
-					
 				}else{
-					continue;
+					
+					int level = OWLClassHierarchy.getInstance().isChild(tagData.getClazz(), tag.getClazz(), 0);
+					if(level == 0){
+						level = OWLClassHierarchy.getInstance().isChild(tag.getClazz(), tagData.getClazz(), 0);
+					}
+					
+					if(level != 0){
+						searchIndex.add(new SemanticSearchIndex(tag, 0.5F));	
+					}else{
+						continue;
+					}
 				}
 				
 				resolveTagRelations(tag, searchIndex);
@@ -269,10 +282,14 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 			return true;
 		}
 		
-		if(OWLClassHierarchy.getInstance().isChild(tagData.getClazz(), tag.getClazz())){
+		int level = OWLClassHierarchy.getInstance().isChild(tagData.getClazz(), tag.getClazz(), 0);
+		
+		if(level != 0){
 			return true;
 		}
-		if(OWLClassHierarchy.getInstance().isChild(tag.getClazz(), tagData.getClazz())){
+		
+		level = OWLClassHierarchy.getInstance().isChild(tag.getClazz(), tagData.getClazz(), 0);
+		if(level != 0){
 			return true;
 		}
 		
@@ -307,12 +324,12 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		}
 		return null;
 	}
-	private void addResultList(SemanticSearchResponse response, TaggedEntity taggedEntity, TagData tag, float priority){
+	private void addResultList(SemanticSearchResponse response, TaggedEntity taggedEntity, TagData tag, float rank){
 		if(taggedEntity == null){
 			return;
 		}
 		
-		response.addDetail(taggedEntity.getEntityType(), taggedEntity.getId(), taggedEntity.getDescription(), tag, priority);	
+		response.addDetail(taggedEntity.getEntityType(), taggedEntity.getId(), taggedEntity.getDescription(), tag, rank);	
 	}
 	
 	public static float getSimilarityIndex(String str1, String str2){

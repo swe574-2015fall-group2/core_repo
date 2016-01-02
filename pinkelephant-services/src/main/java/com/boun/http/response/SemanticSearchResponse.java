@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import com.boun.data.common.Constants;
 import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.http.request.TagData;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,12 +21,16 @@ public class SemanticSearchResponse {
 	private List<SearchDetail> resultList;
 	private List<String> clazzList;
 	
-	public void addDetail(TaggedEntity.EntityType type, String id, String description, TagData tag, float priority){
+	public void addDetail(TaggedEntity.EntityType type, String id, String description, TagData tag, float rank){
 		if(resultList == null){
 			resultList = new ArrayList<SearchDetail>();
 		}
-		SearchDetail detail = new SearchDetail(type, id, description, tag, priority);
+		SearchDetail detail = new SearchDetail(type, id, description, tag, rank);
 		if(!resultList.contains(detail)){
+			resultList.add(detail);	
+		}else{
+			resultList.remove(detail);
+			detail.setRank(rank + Constants.SEMANTIC_CO_OCCURANCE_FACTOR);
 			resultList.add(detail);	
 		}
 		
