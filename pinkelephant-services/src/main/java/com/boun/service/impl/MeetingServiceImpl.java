@@ -365,7 +365,8 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		meeting.setTagList(request.getTagList());
 		meeting.setIsPinned(request.getIsPinned());
 		meeting.setResources(resources);
-		
+		meeting.setContactDetails(request.getContactDetails());
+
 		if(request.getInvitedUserIdList() == null || request.getInvitedUserIdList().isEmpty()){
 			return meeting;
 		}
@@ -383,7 +384,7 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 			}
 		}
 		meeting.setInvitedUserSet(invitedList);
-		meeting.setContactDetails(request.getContactDetails());
+
 
 
 		return meeting;
