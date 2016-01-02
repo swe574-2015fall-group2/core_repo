@@ -116,26 +116,35 @@ public class NoteServiceImpl extends PinkElephantTaggedService implements NoteSe
 
 		Note note = findById(request.getId());
 
-		//TODO find group method will throw an exception if entity not found
-		Group group = groupService.findById(request.getGroupId());
+		if(request.getGroupId() != null && !"".equalsIgnoreCase(request.getGroupId())){
+			Group group = groupService.findById(request.getGroupId());
+			note.setGroup(group);
+		}
+		
+		if(request.getMeetingId() != null && !"".equalsIgnoreCase(request.getMeetingId())){
+			Meeting meeting = meetingService.findById(request.getMeetingId());
+			note.setMeeting(meeting);
+		}
+		
 		//TODO check if user is in this group
 
-		//TODO find meeting method will throw an exception if entity not found
-		Meeting meeting = meetingService.findById(request.getMeetingId());
-		List<Resource> resources = resourceService.findByIds(request.getResourceIds());
+		if(request.getResourceIds() != null && !request.getResourceIds().isEmpty()){
+			List<Resource> resources = resourceService.findByIds(request.getResourceIds());	
+			note.setResources(resources);
+		}
 
 		note.setTitle(request.getTitle());
 		note.setDescription(request.getText());
-		note.setGroup(group);
+		
 		updateTag(note, request.getTagList());
 		
 		//note.setCreator(PinkElephantSession.getInstance().getUser(request.getAuthToken()));
 		//note.setCreatedAt(new Date());
 		//TODO modifiedDate, modifiedBy
-
-		note.setMeeting(meeting);
-		note.setResources(resources);
-		note.setIsPinned(request.getIsPinned());
+		
+		if(request.getIsPinned() != null){
+			note.setIsPinned(request.getIsPinned());	
+		}
 
 		note = noteRepository.save(note);
 
