@@ -26,7 +26,7 @@ public class SPARQLRunner {
 										"?s rdfs:label ?label.\n" +
 										"?s rdf:type ?type.\n" +
 										"FILTER langMatches( lang(?label), 'EN' ).\n"+
-										"?label <bif:contains> '%s' .\n" +
+										"?label <bif:contains> \"'%s'\" .\n" +
 									"} LIMIT 1000";
 	
 	
@@ -49,7 +49,9 @@ public class SPARQLRunner {
 		}
 		response = new QueryLabelResponse(queryString);
 		
-        Query query = QueryFactory.create(String.format(DBPEDIA_QUERY, queryString));
+		String dbpeaidSparqlQueryString = String.format(DBPEDIA_QUERY, queryString);
+		
+        Query query = QueryFactory.create(dbpeaidSparqlQueryString);
         QueryExecution qExe = QueryExecutionFactory.sparqlService( "http://dbpedia.org/sparql", query );
         ResultSet results = qExe.execSelect();
         

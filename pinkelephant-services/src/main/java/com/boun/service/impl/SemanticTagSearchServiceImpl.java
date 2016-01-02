@@ -48,8 +48,6 @@ import lombok.Data;
 public class SemanticTagSearchServiceImpl extends PinkElephantService implements SemanticTagSearchService{
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	
 	
 	@Autowired
 	private TagService tagService;
@@ -148,6 +146,7 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 			}
 			
 			for (TaggedEntityMetaData taggedEntityMetaData : tagEntityIdList) {
+				//TODO find co-occurence
 				addResultList(response, resolveEntity(taggedEntityMetaData), index.getTag(), index.getSimilarityIndex());
 			}
 		}
