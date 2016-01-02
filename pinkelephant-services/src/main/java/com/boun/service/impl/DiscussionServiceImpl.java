@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.boun.data.mongo.model.*;
+import com.boun.http.request.BasicDeleteRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +66,21 @@ public class DiscussionServiceImpl extends PinkElephantTaggedService implements 
 	public void save(TaggedEntity entity) {
 		discussionRepository.save((Discussion)entity);
 	}
-	
+
+	public void delete(Discussion entity) {
+		discussionRepository.delete(entity);
+	}
+
+	@Override
+	public boolean archiveDiscussion(BasicDeleteRequest request) {
+		Discussion discussion = discussionRepository.findOne(request.getId());
+
+		delete(discussion);
+
+		return true;
+	}
+
+
 	public ActionResponse createDiscussion(CreateDiscussionRequest request){
 		
 		validate(request);

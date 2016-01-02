@@ -1,5 +1,6 @@
 package com.boun.web.controller;
 
+import com.boun.http.request.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boun.data.mongo.model.TaggedEntity.EntityType;
-import com.boun.http.request.AddCommentRequest;
-import com.boun.http.request.BasicQueryRequest;
-import com.boun.http.request.CreateDiscussionRequest;
-import com.boun.http.request.LinkRequest;
-import com.boun.http.request.TagRequest;
-import com.boun.http.request.UpdateDiscussionRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.GetDiscussionResponse;
 import com.boun.http.response.ListDiscussionResponse;
@@ -217,5 +212,23 @@ public class DiscussionController {
 				logger.debug("removeMeetingLink operation finished");
 			}
 		}
+	}
+
+	@ApiOperation(value = "Archive a discussion")
+	@RequestMapping(value="/{id}", method = RequestMethod.DELETE)
+	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
+	public boolean archiveDiscussion(@RequestBody BasicDeleteRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("archiveDiscussion request received, request->" + request.toString());
+			}
+			return discussionService.archiveDiscussion(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("archiveDiscussion operation finished");
+			}
+		}
+
 	}
 }
