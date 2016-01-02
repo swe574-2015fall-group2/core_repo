@@ -63,10 +63,10 @@ public class ListMeetingResponse extends ActionResponse{
 		private Boolean isPinned;
 		private ContactDetails contactDetails;
 		
-		private Set<String> invitedUserSet;
-		private Set<String> attandedUserSet;
-		private Set<String> rejectedUserSet;
-		private Set<String> tentativeUserSet;
+		private Set<User> invitedUserSet;
+		private Set<User> attandedUserSet;
+		private Set<User> rejectedUserSet;
+		private Set<User> tentativeUserSet;
 		
 		private Set<String> discussionIdList;
 		private Set<String> resourceIdList;
@@ -79,14 +79,14 @@ public class ListMeetingResponse extends ActionResponse{
 			this.description = meeting.getDescription();
 			this.actualDuration = meeting.getActualDuration();
 			this.agendaSet = meeting.getAgendaSet();
-			this.attandedUserSet = getUsernameSet(meeting.getAttendedUserSet());
+			this.attandedUserSet = meeting.getAttendedUserSet();
 			this.datetime = meeting.getDatetime();
 			this.timezone = meeting.getTimezone();
 			this.startHour = meeting.getStartHour();
 			this.endHour = meeting.getEndHour();
-			this.invitedUserSet = getUsernameSet(meeting.getInvitedUserSet());
-			this.rejectedUserSet = getUsernameSet(meeting.getRejectedUserSet());
-			this.tentativeUserSet = getUsernameSet(meeting.getTentativeUserSet());
+			this.invitedUserSet = meeting.getInvitedUserSet();
+			this.rejectedUserSet = meeting.getRejectedUserSet();
+			this.tentativeUserSet = meeting.getTentativeUserSet();
 			this.location = meeting.getLocation();
 			this.status = meeting.getStatus();
 			this.todoSet = meeting.getTodoSet();
