@@ -92,7 +92,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			BasicDBObject user = (BasicDBObject)cursor.next();
 			String firstname = user.getString("firstname");
 			String lastname = user.getString("lastname");
-			String userId = user.getString("id");
+			String userId = user.getString("_id");
 			String username = user.getString("username");
 			
 			User u = new User();
