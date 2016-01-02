@@ -163,9 +163,10 @@ public class ResourceServiceImpl extends PinkElephantTaggedService implements Re
 		Resource resource = findById(request.getId());
 
 		//TODO seperate service or function for files?
-		File file = new File(RESOURCE_FILES_PATH + resource.getId());
-		file.delete();
-
+		//if(resource.getType().equals(ResourceType.INTERNAL)) {
+			File file = new File(RESOURCE_FILES_PATH + resource.getId());
+			file.delete();
+		//}
 		resourceRepository.delete(resource);
 
 		return true;
@@ -182,6 +183,16 @@ public class ResourceServiceImpl extends PinkElephantTaggedService implements Re
 		if(request.getGroupId() != null) {
 			Group group = groupService.findById(request.getGroupId());
 			resources = resourceRepository.findResources(group.getId());
+		}
+
+		if(request.getMeetingId() != null) {
+			Meeting meeting = meetingService.findById(request.getMeetingId());
+			resources = meeting.getResources();
+		}
+
+		if(request.getDiscussionId() != null) {
+			Discussion discussion = discussionService.findById(request.getDiscussionId());
+			resources = discussion.getResources();
 		}
 
 		return resources;

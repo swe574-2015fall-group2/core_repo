@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.boun.data.mongo.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +14,7 @@ import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.MeetingInvitationResult;
 import com.boun.data.common.enums.MeetingStatus;
-import com.boun.data.mongo.model.EntityRelation;
-import com.boun.data.mongo.model.Group;
-import com.boun.data.mongo.model.Meeting;
-import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.model.TaggedEntity.EntityType;
-import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.EntityRelationRepository;
 import com.boun.data.mongo.repository.MeetingRepository;
 import com.boun.data.mongo.repository.UserRepository;
@@ -107,7 +103,6 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		List<EntityRelation> entityRelationList = findRelationById(meeting.getId());
 		
 		createRelation(meeting, request.getDiscussionIdList(), EntityType.DISCUSSION, entityRelationList);
-		createRelation(meeting, request.getResourceIdList(), EntityType.RESOURCE, entityRelationList);
 		
 		response.setAcknowledge(true);
 		response.setEntityId(meeting.getId());
@@ -352,7 +347,11 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 	private Meeting mapRequestToMeeting(CreateMeetingRequest request){
 		
 		Meeting meeting = new Meeting();
-		
+
+		List<Resource> resources = null;
+		if(request.getResourceIdList() != null)
+			resources = resourceService.findByIds(request.getResourceIdList());
+
 		meeting.setName(request.getName());
 		meeting.setAgendaSet(request.getAgendaSet());
 		meeting.setDatetime(request.getDatetime());
@@ -365,6 +364,7 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		meeting.setTimezone(request.getTimezone());
 		meeting.setTagList(request.getTagList());
 		meeting.setIsPinned(request.getIsPinned());
+		meeting.setResources(resources);
 		
 		if(request.getInvitedUserIdList() == null || request.getInvitedUserIdList().isEmpty()){
 			return meeting;
@@ -384,7 +384,8 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		}
 		meeting.setInvitedUserSet(invitedList);
 		meeting.setContactDetails(request.getContactDetails());
-		
+
+
 		return meeting;
 	}
 

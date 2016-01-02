@@ -12,4 +12,8 @@ public class QueryResourceRequest extends BaseRequest{
 	private String groupId;
 
 	private String noteId;
+
+	private String meetingId;
+
+	private String discussionId;
 }

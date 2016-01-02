@@ -1,6 +1,7 @@
 package com.boun.data.mongo.model;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -27,7 +28,10 @@ public class Discussion extends TaggedEntity{
 	
 	@DBRef
 	private User creator;
-	
+
+	@DBRef
+	private List<Resource> resources;
+
 	private String name;
 	private Date creationTime;
 	private Date updateTime;

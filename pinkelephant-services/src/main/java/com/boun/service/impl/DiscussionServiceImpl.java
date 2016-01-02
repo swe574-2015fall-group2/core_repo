@@ -4,18 +4,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.boun.data.mongo.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
-import com.boun.data.mongo.model.Comment;
-import com.boun.data.mongo.model.Discussion;
-import com.boun.data.mongo.model.EntityRelation;
-import com.boun.data.mongo.model.Group;
-import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.model.TaggedEntity.EntityType;
-import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.DiscussionRepository;
 import com.boun.data.mongo.repository.EntityRelationRepository;
 import com.boun.data.session.PinkElephantSession;
@@ -74,7 +69,11 @@ public class DiscussionServiceImpl extends PinkElephantTaggedService implements 
 	public ActionResponse createDiscussion(CreateDiscussionRequest request){
 		
 		validate(request);
-		
+
+		List<Resource> resources = null;
+		if(request.getResourceIdList() != null)
+			resources = resourceService.findByIds(request.getResourceIdList());
+
 		Group group = groupService.findById(request.getGroupId());
 		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
 		
@@ -86,13 +85,13 @@ public class DiscussionServiceImpl extends PinkElephantTaggedService implements 
 		discussion.setName(request.getName());
 		discussion.setTagList(request.getTagList());
 		discussion.setIsPinned(request.getIsPinned());
+		discussion.setResources(resources);
 
 		discussionRepository.save(discussion);
 		
 		List<EntityRelation> entityRelationList = findRelationById(discussion.getId());
 		
 		createRelation(discussion, request.getMeetingIdList(), EntityType.MEETING, entityRelationList);
-		createRelation(discussion, request.getResourceIdList(), EntityType.RESOURCE, entityRelationList);
 		
 		tagService.tag(request.getTagList(), discussion, true);	
 		

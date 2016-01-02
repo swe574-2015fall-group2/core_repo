@@ -19,7 +19,7 @@ import com.boun.http.response.ListMeetingResponse;
 
 public interface MeetingService {
 
-	Meeting findById(String groupId);
+	Meeting findById(String meetingId);
 
 	CreateResponse createMeeting(CreateMeetingRequest request);
 	

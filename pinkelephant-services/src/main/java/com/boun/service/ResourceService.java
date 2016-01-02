@@ -25,7 +25,7 @@ public interface ResourceService {
 
     boolean delete(BasicDeleteRequest id);
     
-    public ActionResponse tag(TagRequest request);
+    ActionResponse tag(TagRequest request);
     
 	ActionResponse link(LinkRequest request, EntityType toType);
 	

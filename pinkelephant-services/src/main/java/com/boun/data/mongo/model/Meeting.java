@@ -1,6 +1,7 @@
 package com.boun.data.mongo.model;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -46,6 +47,9 @@ public class Meeting extends TaggedEntity{
 	
 	@DBRef
 	private Group group;
+
+	@DBRef
+	private List<Resource> resources;
 
 	@DBRef
 	private Set<User> invitedUserSet;
