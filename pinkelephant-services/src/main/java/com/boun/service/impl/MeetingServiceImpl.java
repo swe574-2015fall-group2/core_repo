@@ -263,14 +263,33 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		meeting.setStatus(request.getStatus());
 		meeting.setType(request.getType());
 		meeting.setTodoSet(request.getTodoSet());
+		meeting.setIsPinned(request.getIsPinned());
+		meeting.setContactDetails(request.getContactDetails());
+
 		updateTag(meeting, request.getTagList());
+
+		if(request.getInvitedUserIdList() != null && !request.getInvitedUserIdList().isEmpty()){
+			Set<User> invitedList = new HashSet<User>();
+			for (String id : request.getInvitedUserIdList()) {
+
+				User user = userRepository.findOne(id);
+				if(user == null){
+					throw new PinkElephantRuntimeException(400, ErrorCode.USER_NOT_FOUND, "");
+				}
+
+				if(!invitedList.contains(user)){
+					invitedList.add(user);
+				}
+			}
+			meeting.setInvitedUserSet(invitedList);
+		}
 		
 		meetingRepository.save(meeting);
 		
 		List<EntityRelation> entityRelationList = findRelationById(meeting.getId());
 		
 		createRelation(meeting, request.getDiscussionIdList(), EntityType.DISCUSSION, entityRelationList);
-		createRelation(meeting, request.getResourceIdList(), EntityType.RESOURCE, entityRelationList);
+
 		
 		response.setAcknowledge(true);
 
