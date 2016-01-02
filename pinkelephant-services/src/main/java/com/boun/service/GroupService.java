@@ -3,12 +3,7 @@ package com.boun.service;
 import java.util.List;
 
 import com.boun.data.mongo.model.Group;
-import com.boun.http.request.BaseRequest;
-import com.boun.http.request.BasicQueryRequest;
-import com.boun.http.request.CreateUpdateGroupRequest;
-import com.boun.http.request.JoinLeaveGroupRequest;
-import com.boun.http.request.TagRequest;
-import com.boun.http.request.UploadImageRequest;
+import com.boun.http.request.*;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
 import com.boun.http.response.GetGroupResponse;
@@ -19,6 +14,8 @@ public interface GroupService {
 	Group findById(String groupId);
 
 	Group findByName(String groupName);
+
+	boolean archiveGroup(BasicDeleteRequest request);
 
 	CreateResponse createGroup(CreateUpdateGroupRequest request);
 	

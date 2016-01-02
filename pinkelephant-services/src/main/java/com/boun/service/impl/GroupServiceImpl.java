@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import com.boun.http.request.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,6 @@ import com.boun.data.mongo.repository.EntityRelationRepository;
 import com.boun.data.mongo.repository.GroupMemberRepository;
 import com.boun.data.mongo.repository.GroupRepository;
 import com.boun.data.session.PinkElephantSession;
-import com.boun.http.request.BaseRequest;
-import com.boun.http.request.BasicQueryRequest;
-import com.boun.http.request.CreateUpdateGroupRequest;
-import com.boun.http.request.JoinLeaveGroupRequest;
-import com.boun.http.request.SetRolesRequest;
-import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
 import com.boun.http.response.GetGroupResponse;
@@ -92,6 +87,19 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 	@Override
 	public void save(TaggedEntity entity) {
 		groupRepository.save((Group) entity);
+	}
+
+	public void delete(Group entity) {
+		groupRepository.delete(entity);
+	}
+
+	@Override
+	public boolean archiveGroup(BasicDeleteRequest request) {
+		Group group = groupRepository.findOne(request.getId());
+
+		delete(group);
+
+		return true;
 	}
 
 	@Override
@@ -409,6 +417,8 @@ public class GroupServiceImpl extends PinkElephantTaggedService implements Group
 		}
 		return false;
 	}
+
+
 	
 	@Override
 	protected TagService getTagService() {

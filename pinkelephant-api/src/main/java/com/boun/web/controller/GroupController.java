@@ -1,5 +1,6 @@
 package com.boun.web.controller;
 
+import com.boun.http.request.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boun.http.request.BaseRequest;
-import com.boun.http.request.BasicQueryRequest;
-import com.boun.http.request.CreateUpdateGroupRequest;
-import com.boun.http.request.JoinLeaveGroupRequest;
-import com.boun.http.request.TagRequest;
-import com.boun.http.request.UploadImageRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
 import com.boun.http.response.GetGroupResponse;
@@ -135,7 +130,25 @@ public class GroupController {
 			}
 		}
 	}
-	
+
+	@ApiOperation(value = "Archive a group")
+	@RequestMapping(value="/{id}", method = RequestMethod.DELETE)
+	@ApiResponses(value={@ApiResponse(code=200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error")})
+	public boolean archiveGroup(@RequestBody BasicDeleteRequest request) {
+
+		try {
+			if (logger.isDebugEnabled()) {
+				logger.debug("archiveGroup request received, request->" + request.toString());
+			}
+			return groupService.archiveGroup(request);
+		} finally {
+			if (logger.isDebugEnabled()) {
+				logger.debug("archiveGroup operation finished");
+			}
+		}
+
+	}
+
 	@ApiOperation(value = "List all groups")
 	@RequestMapping(value = "listAll", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"),
