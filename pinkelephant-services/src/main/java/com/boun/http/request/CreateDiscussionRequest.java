@@ -16,7 +16,7 @@ public class CreateDiscussionRequest extends BaseRequest{
 	private String groupId;
 	
 	@NotNull
-	@Size(min=1, max=30)
+	@Size(min=1, max=1000)
 	private String name;
 	
 	@NotNull
