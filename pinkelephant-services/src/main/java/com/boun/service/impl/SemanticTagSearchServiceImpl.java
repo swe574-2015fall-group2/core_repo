@@ -123,8 +123,9 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 				}else if(tag.getClazz().equalsIgnoreCase(tagData.getClazz())){
 					
 					float similarityIndex = getSimilarityIndex(tag.getTag(), tagData.getTag());
-					
-					searchIndex.add(new SemanticSearchIndex(tag, Constants.SEMANTIC_SAME_CONTEXT_FACTOR + similarityIndex)); //If both these tags have same class, mark it with higher value
+					if(similarityIndex > 0.5F){
+						searchIndex.add(new SemanticSearchIndex(tag, Constants.SEMANTIC_SAME_CONTEXT_FACTOR + similarityIndex)); //If both these tags have same class, mark it with higher value	
+					}
 					
 				}else{
 					
