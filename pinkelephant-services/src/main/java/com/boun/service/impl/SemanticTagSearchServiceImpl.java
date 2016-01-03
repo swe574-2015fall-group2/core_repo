@@ -128,22 +128,38 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 					
 				}else{
 					
-					int level = OWLClassHierarchy.getInstance().isChild(tagData.getClazz(), tag.getClazz(), 0);
-					if(level == 0){
-						level = OWLClassHierarchy.getInstance().isChild(tag.getClazz(), tagData.getClazz(), 0);	
-					}
-					 
-					if(level != 0){
+					String clazz1URI = OWLClassHierarchy.getInstance().getClazzURI(tagData.getClazz());
+					String clazz2URI = OWLClassHierarchy.getInstance().getClazzURI(tag.getClazz());
 					
-						searchIndex.add(new SemanticSearchIndex(tag, Constants.SEMANTIC_CONTEXT_RELATION_FACTOR / level)); //If both these tags have relation, mark it with high value
+					float level = getRelationLevel(clazz1URI, clazz2URI); 
+					if(level != 0){
+						searchIndex.add(new SemanticSearchIndex(tag, level)); //If both these tags have relation, mark it with high value
 					}
 				}
 			}else if(tagData.getClazz() == null || "".equalsIgnoreCase(tagData.getClazz())){
 				
-				//If both input tag has no context, compare their similarity 
-				float similarityIndex = getSimilarityIndex(tag.getTag(), tagData.getTag());
-				if(similarityIndex != 0){
-					searchIndex.add(new SemanticSearchIndex(tag, similarityIndex));
+				String clazz1URI = OWLClassHierarchy.getInstance().getClazzURI(tagData.getTag());
+				if(clazz1URI != null){
+					//If search string is an actual class, then process it as if it is a context information
+					String clazz2URI = OWLClassHierarchy.getInstance().getClazzURI(tag.getClazz());
+					
+					float level = getRelationLevel(clazz1URI, clazz2URI);
+					if(level != 0){
+						searchIndex.add(new SemanticSearchIndex(tag, level)); //If both these tags have relation, mark it with high value
+					}
+				}else{
+					
+					//Compare entered text with context information, if they are similar at a degree, consider it as a possible result
+					float similarityIndex = getSimilarityIndex(tag.getClazz(), tagData.getTag());
+					if(similarityIndex > 0.5F){
+						searchIndex.add(new SemanticSearchIndex(tag, similarityIndex));
+					}else{
+						//If both input tag has no context, compare their similarity 
+						similarityIndex = getSimilarityIndex(tag.getTag(), tagData.getTag());
+						if(similarityIndex != 0){
+							searchIndex.add(new SemanticSearchIndex(tag, similarityIndex));
+						}	
+					}	
 				}
 			}
 		}
@@ -167,6 +183,19 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 		}
 
 		return response;
+	}
+	
+	private float getRelationLevel(String clazz1URI, String clazz2URI){
+		int level = OWLClassHierarchy.getInstance().isChild(clazz1URI, clazz2URI, 0);
+		if(level == 0){
+			level = OWLClassHierarchy.getInstance().isChild(clazz2URI, clazz1URI, 0);	
+		}
+		 
+		if(level == 0){
+			return 0;
+		}
+		
+		return (Constants.SEMANTIC_CONTEXT_RELATION_FACTOR / level);		
 	}
 	
 	@Override
@@ -205,14 +234,16 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 					searchIndex.add(new SemanticSearchIndex(tag, 1));
 					
 				}else{
+					String clazz1URI = OWLClassHierarchy.getInstance().getClazzURI(tagData.getClazz());
+					String clazz2URI = OWLClassHierarchy.getInstance().getClazzURI(tag.getClazz());
 					
-					int level = OWLClassHierarchy.getInstance().isChild(tagData.getClazz(), tag.getClazz(), 0);
+					int level = OWLClassHierarchy.getInstance().isChild(clazz1URI, clazz2URI, 0);
 					if(level == 0){
-						level = OWLClassHierarchy.getInstance().isChild(tag.getClazz(), tagData.getClazz(), 0);
+						level = OWLClassHierarchy.getInstance().isChild(clazz2URI, clazz1URI, 0);
 					}
 					
 					if(level != 0){
-						searchIndex.add(new SemanticSearchIndex(tag, 0.5F));	
+						searchIndex.add(new SemanticSearchIndex(tag, Constants.SEMANTIC_CONTEXT_RELATION_FACTOR / level));	
 					}else{
 						continue;
 					}
@@ -289,13 +320,16 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 			return true;
 		}
 		
-		int level = OWLClassHierarchy.getInstance().isChild(tagData.getClazz(), tag.getClazz(), 0);
+		String clazz1URI = OWLClassHierarchy.getInstance().getClazzURI(tagData.getClazz());
+		String clazz2URI = OWLClassHierarchy.getInstance().getClazzURI(tag.getClazz());
+		
+		int level = OWLClassHierarchy.getInstance().isChild(clazz1URI, clazz2URI, 0);
 		
 		if(level != 0){
 			return true;
 		}
 		
-		level = OWLClassHierarchy.getInstance().isChild(tag.getClazz(), tagData.getClazz(), 0);
+		level = OWLClassHierarchy.getInstance().isChild(clazz2URI, clazz1URI, 0);
 		if(level != 0){
 			return true;
 		}

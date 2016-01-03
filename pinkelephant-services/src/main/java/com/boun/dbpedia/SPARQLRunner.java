@@ -27,7 +27,7 @@ public class SPARQLRunner {
 										"?s rdf:type ?type.\n" +
 										"FILTER langMatches( lang(?label), 'EN' ).\n"+
 										"?label <bif:contains> \"'%s'\" .\n" +
-									"} LIMIT 1000";
+									"} LIMIT 1500";
 	
 	
 	private SPARQLRunner(){

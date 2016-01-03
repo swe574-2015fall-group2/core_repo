@@ -25,7 +25,7 @@ public class OWLClassHierarchy {
 	
 	private Hashtable<String, Node> hierarchy = new Hashtable<String, Node>();
 	
-	private List<String> allClassList = new ArrayList<String>();
+	private Hashtable<String,String> classURITable = new Hashtable<String,String>();
 	
 	private OWLClassHierarchy() {
 		try{
@@ -44,8 +44,8 @@ public class OWLClassHierarchy {
 		return hierarchy;
 	}
 	
-	public List<String> getAllClassList() {
-		return allClassList;
+	public String getClazzURI(String clazz){
+		return classURITable.get(clazz);
 	}
 	
 	@Data
@@ -110,7 +110,8 @@ public class OWLClassHierarchy {
             processParent(parentClazz, parentClazzUri, clazz, clazzUri);
             processChild(parentClazz, parentClazzUri, clazz, clazzUri);
             
-            allClassList.add(clazz);
+            classURITable.put(clazz, clazzUri);
+            classURITable.put(parentClazz, parentClazzUri);
         }
 	}
 	
@@ -143,7 +144,8 @@ public class OWLClassHierarchy {
             processParent(parentClazz, parentClazzUri, clazz, clazzUri);
             processChild(parentClazz, parentClazzUri, clazz, clazzUri);
             
-            allClassList.add(clazz);
+            classURITable.put(clazz, clazzUri);
+            classURITable.put(parentClazz, parentClazzUri);
         }
 	}
 	
@@ -173,13 +175,19 @@ public class OWLClassHierarchy {
         hierarchy.put(childClazzUri, node);
 	}
 	
-	public int isChild(String clazz1, String clazz2, int level){
-		
-		Node node1 = getInstance().getHierarchy().get(clazz1);
-		Node node2 = getInstance().getHierarchy().get(clazz2);
+	public int isChild(String clazz1URI, String clazz2URI, int level){
+		 
+		Node node1 = getInstance().getHierarchy().get(clazz1URI);
+		Node node2 = getInstance().getHierarchy().get(clazz2URI);
 		
 		if(node1 == null || node2 == null){
-			return 0;
+			return level;
+		}
+
+		++level;
+
+		if(clazz1URI.equalsIgnoreCase(clazz2URI)){
+			return level;
 		}
 		
 		if(node1.getParent().getLabel().equalsIgnoreCase(node2.getLabel())){
@@ -193,7 +201,7 @@ public class OWLClassHierarchy {
 		}
 		
 		for (Element element : node2.getChildList()) {
-			if(isChild(clazz1, element.getLabel(), ++level) != 0){
+			if(isChild(clazz1URI, element.getUri(), ++level) != 0){
 				return level;
 			}
 		}

@@ -36,7 +36,10 @@ public class TagServiceImpl extends PinkElephantService implements TagService{
 		}
 		
 		if(tagStr.getClazz() != null && !"".contentEquals(tagStr.getClazz())){
-			if(!OWLClassHierarchy.getInstance().getAllClassList().contains(tagStr.getClazz())){
+			
+			String clazzURI = OWLClassHierarchy.getInstance().getClazzURI(tagStr.getClazz());
+			
+			if(clazzURI == null){
 				throw new PinkElephantRuntimeException(400, ErrorCode.TAG_CLASS_NOT_FOUND, "");
 			}	
 		}
