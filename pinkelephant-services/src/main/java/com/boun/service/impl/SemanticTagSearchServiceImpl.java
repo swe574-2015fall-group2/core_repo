@@ -121,7 +121,10 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 				if(tag.equals(tagData)){
 					searchIndex.add(new SemanticSearchIndex(tag, Constants.SEMANTIC_SAME_TAG_FACTOR)); //If both these tags are same, mark it with highest value	
 				}else if(tag.getClazz().equalsIgnoreCase(tagData.getClazz())){
-					searchIndex.add(new SemanticSearchIndex(tag, Constants.SEMANTIC_SAME_CONTEXT_FACTOR)); //If both these tags have same class, mark it with higher value
+					
+					float similarityIndex = getSimilarityIndex(tag.getTag(), tagData.getTag());
+					
+					searchIndex.add(new SemanticSearchIndex(tag, Constants.SEMANTIC_SAME_CONTEXT_FACTOR + similarityIndex)); //If both these tags have same class, mark it with higher value
 					
 				}else{
 					
@@ -143,6 +146,10 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 					searchIndex.add(new SemanticSearchIndex(tag, similarityIndex));
 				}
 			}
+		}
+		
+		if(searchIndex.isEmpty()){
+			return response;
 		}
 		
 		Collections.sort(searchIndex, new SemanticSearchIndexSort());
