@@ -22,12 +22,13 @@ public class SPARQLRunner {
 	private String DBPEDIA_QUERY ="PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
 									"PREFIX  rdfs:<http://www.w3.org/2000/01/rdf-schema#>\n" +
 									"PREFIX dbpedia-owl:<http://dbpedia.org/ontology/>\n\n" +
-										"select ?label ?type where {\n" +
+										"select ?label ?type ?ctgry where {\n" +
 										"?s rdfs:label ?label.\n" +
 										"?s rdf:type ?type.\n" +
+										"?s rdfs:subClassOf* ?ctgry.\n" +
 										"FILTER langMatches( lang(?label), 'EN' ).\n"+
 										"?label <bif:contains> \"'%s'\" .\n" +
-									"} LIMIT 1500";
+									"} LIMIT 1000";
 	
 	
 	private SPARQLRunner(){
@@ -62,12 +63,22 @@ public class SPARQLRunner {
         	
         	String label = qs.get("label").asLiteral().getString();
         	String type = qs.get("type").toString();
+        	String ctgry = qs.get("ctgry").toString();
+        	
+        	Node node = OWLClassHierarchy.getInstance().getHierarchy().get(type);
+        	if(node == null){
+        		node = OWLClassHierarchy.getInstance().getHierarchy().get(ctgry);
+        	}
+        	
+        	if(node == null){
+        		continue;
+        	}
         	
         	List<String> typeList = resultTable.get(label);
         	if(typeList == null){
         		typeList = new ArrayList<String>();
         	}
-        	typeList.add(type);
+        	typeList.add(node.getUri());
         	
         	resultTable.put(label, typeList);
         }

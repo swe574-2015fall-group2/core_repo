@@ -115,7 +115,7 @@ public class OWLClassHierarchy {
         }
 	}
 	
-	protected void initializeYAGO() {
+	private void initializeYAGO() {
 
 		String localFile = "C:/Users/mehmetce/Desktop/test/yago_taxonomy.nt";
 		String remoteFile = "/swe574/resources/yago_taxonomy.nt";
