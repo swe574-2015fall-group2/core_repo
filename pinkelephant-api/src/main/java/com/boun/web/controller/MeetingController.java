@@ -3,6 +3,8 @@ package com.boun.web.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,6 +48,14 @@ public class MeetingController {
     @Autowired
     private MeetingProposalService meetingProposalService;
     
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	@ResponseBody
+	public String handleException1(HttpMessageNotReadableException ex)
+	{
+		ex.printStackTrace();
+	    return ex.getMessage();
+	}
+	
 	@ApiOperation(value = "Create Meeting")
 	@RequestMapping(value = "create", method = RequestMethod.POST)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success"), @ApiResponse(code = 500, message = "Internal Server Error") })

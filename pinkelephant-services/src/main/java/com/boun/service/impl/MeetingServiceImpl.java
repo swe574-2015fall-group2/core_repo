@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.boun.data.mongo.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,13 @@ import com.boun.app.common.ErrorCode;
 import com.boun.app.exception.PinkElephantRuntimeException;
 import com.boun.data.common.enums.MeetingInvitationResult;
 import com.boun.data.common.enums.MeetingStatus;
+import com.boun.data.mongo.model.EntityRelation;
+import com.boun.data.mongo.model.Group;
+import com.boun.data.mongo.model.Meeting;
+import com.boun.data.mongo.model.Resource;
+import com.boun.data.mongo.model.TaggedEntity;
 import com.boun.data.mongo.model.TaggedEntity.EntityType;
+import com.boun.data.mongo.model.User;
 import com.boun.data.mongo.repository.EntityRelationRepository;
 import com.boun.data.mongo.repository.MeetingRepository;
 import com.boun.data.mongo.repository.UserRepository;
@@ -24,6 +29,7 @@ import com.boun.http.request.BasicQueryRequest;
 import com.boun.http.request.CreateMeetingRequest;
 import com.boun.http.request.InviteUserToMeetingRequest;
 import com.boun.http.request.MeetingInvitationReplyRequest;
+import com.boun.http.request.SendMessageRequest;
 import com.boun.http.request.UpdateMeetingRequest;
 import com.boun.http.response.ActionResponse;
 import com.boun.http.response.CreateResponse;
@@ -32,9 +38,11 @@ import com.boun.http.response.ListMeetingResponse;
 import com.boun.service.DiscussionService;
 import com.boun.service.GroupService;
 import com.boun.service.MeetingService;
+import com.boun.service.MessageboxService;
 import com.boun.service.PinkElephantTaggedService;
 import com.boun.service.ResourceService;
 import com.boun.service.TagService;
+import com.boun.service.UserService;
 
 @Service
 public class MeetingServiceImpl extends PinkElephantTaggedService implements MeetingService{
@@ -54,6 +62,9 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 	private UserRepository userRepository;
 	
 	@Autowired
+	private UserService userService;
+	
+	@Autowired
 	private TagService tagService;
 	
 	@Autowired
@@ -61,6 +72,9 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 	
 	@Autowired
 	private ResourceService resourceService;
+	
+	@Autowired
+	private MessageboxService messageBoxService;
 
 	@Override
 	public void save(TaggedEntity entity) {
@@ -88,6 +102,8 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 
 		validate(request);
 
+		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
+		
 		//PermissionUtil.checkPermission(request, request.getGroupId(), Permission.CREATE_MEETING);
 
 		CreateResponse response = new CreateResponse();
@@ -109,6 +125,8 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 			
 		tagService.tag(request.getTagList(), meeting, true);	
 		
+		sendMessageToInvitedPeople(authenticatedUser, meeting, request.getAuthToken(), meeting.getInvitedUserSet());
+		
 		return response;
 	}
 	
@@ -118,6 +136,8 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 
 		validate(request);
 
+		User authenticatedUser = PinkElephantSession.getInstance().getUser(request.getAuthToken());
+		
 		Meeting meeting = findById(request.getMeetingId());
 
 		//PermissionUtil.checkPermission(request, meeting.getGroup().getId(), Permission.INVITE_USER_TO_MEETING);
@@ -129,8 +149,6 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 			throw new PinkElephantRuntimeException(400, ErrorCode.INVALID_INPUT, "UserIdList is empty", "");
 		}
 		
-
-
 		Set<User> invitedList = meeting.getInvitedUserSet();
 		if(invitedList == null){
 			invitedList = new HashSet<User>();
@@ -150,6 +168,8 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		meeting.setInvitedUserSet(invitedList);
 		
 		meetingRepository.save(meeting);
+		
+		sendMessageToInvitedPeople(authenticatedUser, meeting, request.getAuthToken(), invitedList);
 		
 		response.setAcknowledge(true);
 
@@ -404,9 +424,33 @@ public class MeetingServiceImpl extends PinkElephantTaggedService implements Mee
 		}
 		meeting.setInvitedUserSet(invitedList);
 
-
-
 		return meeting;
+	}
+	
+	private void sendMessageToInvitedPeople(User user, Meeting meeting, String authToken, Set<User> invitedList){
+		for (User invitedPeople : invitedList) {
+			
+			SendMessageRequest request = new SendMessageRequest();
+			request.setAuthToken(authToken);
+			request.setReceiverId(invitedPeople.getId());
+			
+			StringBuffer buffer = new StringBuffer();
+			
+			buffer.append("Hello ");
+			buffer.append(invitedPeople.getFirstname()).append(" ").append(invitedPeople.getLastname()).append("\n\n");
+			
+			buffer.append("I would like to invite you to meeting [").append(meeting.getName()).append("]");
+			buffer.append("on ").append(meeting.getDatetime()).append(", between ").append(meeting.getStartHour()).append("-").append(meeting.getEndHour()).append("\n\n");
+			
+			buffer.append("Sincerely\n");
+			buffer.append(user.getFirstname()).append(" ").append(user.getLastname()).append("\n\n");
+			
+			buffer.append("Group:").append(meeting.getGroup().getName());
+			
+			request.setMessage(buffer.toString());
+		
+			messageBoxService.sendMessage(request);	
+		}
 	}
 
 	@Override
