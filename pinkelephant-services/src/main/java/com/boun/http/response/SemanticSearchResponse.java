@@ -21,14 +21,14 @@ public class SemanticSearchResponse {
 	private List<SearchDetail> resultList;
 	private List<String> clazzList;
 	
-	public void addDetail(TaggedEntity.EntityType type, String id, String description, TagData tag, float rank){
+	public void addDetail(TaggedEntity.EntityType type, String id, String description, TagData tag, float rank, boolean increaseCoOccuranceRank){
 		if(resultList == null){
 			resultList = new ArrayList<SearchDetail>();
 		}
 		SearchDetail detail = new SearchDetail(type, id, description, tag, rank);
 		if(!resultList.contains(detail)){
 			resultList.add(detail);	
-		}else{
+		}else if(increaseCoOccuranceRank){
 			resultList.remove(detail);
 			detail.setRank(rank + Constants.SEMANTIC_CO_OCCURANCE_FACTOR);
 			resultList.add(detail);	

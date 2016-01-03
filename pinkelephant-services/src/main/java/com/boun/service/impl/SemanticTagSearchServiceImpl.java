@@ -375,7 +375,27 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 			return;
 		}
 		
-		response.addDetail(taggedEntity.getEntityType(), taggedEntity.getId(), taggedEntity.getDescription(), tag, rank);	
+		response.addDetail(taggedEntity.getEntityType(), taggedEntity.getId(), taggedEntity.getDescription(), tag, rank, true);
+		
+		if(rank > Constants.SEMANTIC_INDEX_LIMIT){
+			//If rank is higher than given amount, resolve tag relations of that entity
+			for (TagData tagData : taggedEntity.getTagList()) {
+				
+				List<TaggedEntityMetaData> tagEntityIdList = TagCache.getInstance(tagService).getTag(tagData);
+				if(tagEntityIdList == null || tagEntityIdList.isEmpty()){
+					continue;
+				}
+				
+				for (TaggedEntityMetaData taggedEntityMetaData : tagEntityIdList) {
+					TaggedEntity entity = resolveEntity(taggedEntityMetaData);
+					if(entity == null){
+						continue;
+					}
+					
+					response.addDetail(entity.getEntityType(), entity.getId(), entity.getDescription(), tagData, Constants.SEMANTIC_INDEX_LIMIT, false);
+				}
+			}
+		}
 	}
 	
 	public static float getSimilarityIndex(String str1, String str2){

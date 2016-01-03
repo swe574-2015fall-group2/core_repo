@@ -8,4 +8,6 @@ public final class Constants {
 	public static final float SEMANTIC_SAME_TAG_FACTOR = 100F;
 	public static final float SEMANTIC_SAME_CONTEXT_FACTOR = 80F;
 	public static final float SEMANTIC_CONTEXT_RELATION_FACTOR = 60F;
+	
+	public static final float SEMANTIC_INDEX_LIMIT = 80F;
 }
