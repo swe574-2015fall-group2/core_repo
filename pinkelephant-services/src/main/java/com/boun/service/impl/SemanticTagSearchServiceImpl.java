@@ -150,15 +150,19 @@ public class SemanticTagSearchServiceImpl extends PinkElephantService implements
 				}else{
 					
 					//Compare entered text with context information, if they are similar at a degree, consider it as a possible result
-					float similarityIndex = getSimilarityIndex(tag.getClazz(), tagData.getTag());
-					if(similarityIndex > 0.5F){
-						searchIndex.add(new SemanticSearchIndex(tag, similarityIndex));
-					}else{
-						//If both input tag has no context, compare their similarity 
-						similarityIndex = getSimilarityIndex(tag.getTag(), tagData.getTag());
-						if(similarityIndex != 0){
+					
+					float similarityIndex = 0;
+					if(tag.getClazz() != null){
+						similarityIndex = getSimilarityIndex(tag.getClazz(), tagData.getTag());
+						if(similarityIndex > 0.5F){
 							searchIndex.add(new SemanticSearchIndex(tag, similarityIndex));
+							continue;
 						}	
+					}
+					//If both input tag has no context, compare their similarity 
+					similarityIndex = getSimilarityIndex(tag.getTag(), tagData.getTag());
+					if(similarityIndex != 0){
+						searchIndex.add(new SemanticSearchIndex(tag, similarityIndex));
 					}	
 				}
 			}

@@ -45,6 +45,9 @@ public class OWLClassHierarchy {
 	}
 	
 	public String getClazzURI(String clazz){
+		if(clazz == null){
+			return null;
+		}
 		return classURITable.get(clazz);
 	}
 	
@@ -177,6 +180,10 @@ public class OWLClassHierarchy {
 	
 	public int isChild(String clazz1URI, String clazz2URI, int level){
 		 
+		if(clazz1URI == null || clazz2URI == null){
+			return level;
+		}
+		
 		Node node1 = getInstance().getHierarchy().get(clazz1URI);
 		Node node2 = getInstance().getHierarchy().get(clazz2URI);
 		

@@ -25,7 +25,16 @@ public class TagData {
 		if(o == null){
 			return false;
 		}
+		
+		if(getClazz() == null){
+			return false;
+		}
+		
 		TagData d = (TagData)o;
+		
+		if(d.getClazz() == null){
+			return false;
+		}
 		
 		return d.getTag().equalsIgnoreCase(getTag()) && d.getClazz().equalsIgnoreCase(getClazz());
 	}
